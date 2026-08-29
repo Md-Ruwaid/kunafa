@@ -33,10 +33,6 @@ export default function MenuPreview() {
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
             Handcrafted with <SwashAccent color="gold">Uncompromising Precision</SwashAccent>
           </h2>
-
-          <p className="font-sans text-xs sm:text-base text-white/70">
-            Every portion is baked fresh upon order in traditional shallow copper pans. Zero frozen ingredients. Zero microwave reheating.
-          </p>
         </div>
 
         {/* 3D WebGL CircularGallery Showcase from React Bits - Mobile Optimized */}
