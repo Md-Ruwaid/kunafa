@@ -17,15 +17,16 @@ export interface BranchLocation {
   description: string;
   lat: number;
   lng: number;
+  mapUrl: string;
+  embedQuery: string;
 }
 
 const GOLD = "#EFB80D";
 
-// Build a custom DivIcon for each branch marker
 function createMarkerIcon(isActive: boolean) {
   const size = isActive ? 36 : 24;
   const ring = isActive
-    ? `<circle cx="18" cy="18" r="16" fill="none" stroke="${GOLD}" stroke-width="3" opacity="0.5"/>`
+    ? `<circle cx="18" cy="18" r="16" fill="none" stroke="${GOLD}" stroke-width="3" opacity="0.55"/>`
     : "";
   const inner = isActive
     ? `<circle cx="18" cy="18" r="10" fill="${GOLD}" stroke="#FFFFFF" stroke-width="2"/><circle cx="18" cy="18" r="4" fill="#000000"/>`
@@ -42,25 +43,24 @@ function createMarkerIcon(isActive: boolean) {
 }
 
 function createShipIcon() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
-    <circle cx="15" cy="15" r="14" fill="${GOLD}" stroke="#FFFFFF" stroke-width="2.5"/>
-    <path d="M15 6L18 12H12L15 6ZM7 17L15 15L23 17L20 23H10L7 17Z" fill="#000000"/>
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="15" fill="${GOLD}" stroke="#FFFFFF" stroke-width="2.5"/>
+    <path d="M16 6L19.5 13H12.5L16 6ZM7.5 18L16 16L24.5 18L21.5 24.5H10.5L7.5 18Z" fill="#000000"/>
   </svg>`;
 
   return L.divIcon({
     html: svg,
     className: "captain-map-ship",
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
   });
 }
 
-// Controller to smoothly pan & resize map
 function MapController({ activeBranch }: { activeBranch: BranchLocation }) {
   const map = useMap();
 
   useEffect(() => {
-    map.flyTo([activeBranch.lat, activeBranch.lng], 13.5, {
+    map.flyTo([activeBranch.lat, activeBranch.lng], 14, {
       duration: 1.1,
       easeLinearity: 0.25,
     });
@@ -69,7 +69,7 @@ function MapController({ activeBranch }: { activeBranch: BranchLocation }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       map.invalidateSize();
-    }, 200);
+    }, 250);
     return () => clearTimeout(timer);
   }, [map]);
 
@@ -84,10 +84,10 @@ interface CaptainsMapProps {
   routeLatLngs: [number, number][];
 }
 
-const HYD_CENTER: [number, number] = [17.34, 78.45];
+const HYD_CENTER: [number, number] = [17.37, 78.45];
 const HYD_BOUNDS: [[number, number], [number, number]] = [
-  [17.1, 78.1],
-  [17.6, 78.8],
+  [17.15, 78.2],
+  [17.55, 78.7],
 ];
 
 function CaptainsMap({
@@ -113,11 +113,11 @@ function CaptainsMap({
       stepIndex++;
       setDrawnPoints(routeLatLngs.slice(0, stepIndex + 1));
       if (stepIndex < routeLatLngs.length - 1) {
-        timeoutId = setTimeout(animateStep, 160);
+        timeoutId = setTimeout(animateStep, 180);
       }
     };
 
-    timeoutId = setTimeout(animateStep, 350);
+    timeoutId = setTimeout(animateStep, 300);
     return () => clearTimeout(timeoutId);
   }, [isVisible, routeLatLngs, drawnPoints.length]);
 
@@ -140,7 +140,7 @@ function CaptainsMap({
           maxZoom={19}
         />
 
-        {/* Animated Golden Route Polyline */}
+        {/* Animated Golden Route Polyline connecting all 4 branches */}
         {drawnPoints.length > 1 && (
           <Polyline
             positions={drawnPoints}
@@ -153,7 +153,7 @@ function CaptainsMap({
           />
         )}
 
-        {/* Active Branch Flagship Ship Marker */}
+        {/* Active Branch Flagship Vessel */}
         {activeBranch && (
           <Marker
             position={[activeBranch.lat, activeBranch.lng]}
@@ -162,7 +162,7 @@ function CaptainsMap({
           />
         )}
 
-        {/* Branch Markers */}
+        {/* 4 Official Branch Markers */}
         {branches.map((branch, idx) => {
           const isActive = idx === activeBranchIndex;
           return (

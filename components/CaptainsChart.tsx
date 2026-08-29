@@ -11,12 +11,15 @@ import {
   Navigation,
   Sparkles,
   MessageCircle,
+  ExternalLink,
+  Layers,
+  Map as MapIcon,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import { ShipHelm } from "@/components/NauticalElements";
 import type { BranchLocation } from "@/components/CaptainsMap";
 
-// ─── Branch Data ────────────────────────────────────────────────────────────
+// ─── 4 Official Captain Kunafa Branches in Hyderabad ────────────────────────
 
 const BRANCHES: BranchLocation[] = [
   {
@@ -32,6 +35,8 @@ const BRANCHES: BranchLocation[] = [
       "Where Captain Kunafa began in 2021. Live open woodfire-style copper hearths roasting our signature 18-hr mountain Akawi recipe fresh for every voyager.",
     lat: 17.3115,
     lng: 78.4871,
+    mapUrl: "https://maps.app.goo.gl/y5wwh2sxghvovp5n6",
+    embedQuery: "Captain+Kunafa+Barkas+Hyderabad",
   },
   {
     id: "malakpet",
@@ -46,6 +51,8 @@ const BRANCHES: BranchLocation[] = [
       "A fast-paced evening dock serving steaming hot take-away platters, famous for double-pistachio loaded crispy crowns and instant rose-attar syrups.",
     lat: 17.3753,
     lng: 78.4983,
+    mapUrl: "https://maps.app.goo.gl/MM6KRGcwqYmFpFAY7",
+    embedQuery: "Captain+Kunafa+Malakpet+Hyderabad",
   },
   {
     id: "tolichowki",
@@ -60,45 +67,31 @@ const BRANCHES: BranchLocation[] = [
       "A bustling late-night dessert haven with multiple copper burners firing simultaneously. Renowned for Dark Choco Lava Kunafa and fresh buffalo ashta cream.",
     lat: 17.4014,
     lng: 78.4111,
-  },
-  {
-    id: "aerocity",
-    name: "Aero City Branch",
-    area: "Airport Corridor — Shamshabad",
-    code: "HYD-04",
-    address: "Commercial Zone, Shamshabad International Airport Corridor",
-    phone: "+91 90000 00004",
-    hours: "10:00 AM – 02:30 AM",
-    highlight: "Airport Corridor Terminal",
-    description:
-      "Open until 2:30 AM for travelers. Special insulated thermal takeaway packaging guarantees your kunafa arrives crisp, fragrant, and steaming warm.",
-    lat: 17.2403,
-    lng: 78.4294,
+    mapUrl: "https://maps.app.goo.gl/Kd7TQcDZaQmBaMXt5",
+    embedQuery: "Captain+Kunafa+Tolichowki+Hyderabad",
   },
   {
     id: "jubileehills",
     name: "Jubilee Hills Branch",
     area: "HITEC Corridor — Road No. 36",
-    code: "HYD-05",
+    code: "HYD-04",
     address: "Road No. 36, Near Peddamma Temple, Jubilee Hills, Hyderabad",
-    phone: "+91 90000 00005",
+    phone: "+91 90000 00004",
     hours: "12:00 PM – 01:30 AM",
     highlight: "Artisanal Tasting Lounge",
     description:
       "The premier destination tasting room. Premium table service, full dessert menu including Lotus Biscoff Royale and celebration sharing boxes.",
     lat: 17.4325,
     lng: 78.4071,
+    mapUrl: "https://maps.app.goo.gl/oYpmAV1PJbHGApUB6",
+    embedQuery: "Captain+Kunafa+Jubilee+Hills+Hyderabad",
   },
 ];
 
-// Logical route order: Barkas (south-east) → Malakpet → Aero City (south-west) → Tolichowki → Jubilee Hills
-const ROUTE_ORDER = [0, 1, 3, 2, 4];
-const ROUTE_LATLNGS: [number, number][] = ROUTE_ORDER.map((i) => [
-  BRANCHES[i].lat,
-  BRANCHES[i].lng,
-]);
+// Logical maritime route order: Barkas → Malakpet → Tolichowki → Jubilee Hills
+const ROUTE_LATLNGS: [number, number][] = BRANCHES.map((b) => [b.lat, b.lng]);
 
-// Dynamically imported: SSR disabled for Leaflet window/DOM access
+// Dynamically imported Leaflet map (SSR disabled for window/DOM access)
 const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
   ssr: false,
   loading: () => (
@@ -111,10 +104,11 @@ const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
 
 export default function CaptainsChart() {
   const [activeBranchIndex, setActiveBranchIndex] = useState(0);
+  const [mapMode, setMapMode] = useState<"nautical" | "google">("nautical");
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Single IntersectionObserver trigger — smooth standard page scroll
+  // IntersectionObserver to smoothly initialize on viewport entry
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -157,7 +151,7 @@ export default function CaptainsChart() {
           </h2>
 
           <p className="font-sans text-xs sm:text-sm text-white/70">
-            Follow the golden maritime route across Hyderabad&apos;s 5 signature hearths.
+            Visit our 4 signature live copper hearths across Hyderabad.
           </p>
         </div>
 
@@ -165,7 +159,7 @@ export default function CaptainsChart() {
         <div
           role="group"
           aria-label="Select a Captain Kunafa branch"
-          className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8"
+          className="flex flex-wrap justify-center gap-2 sm:gap-2.5 mb-6 sm:mb-8"
         >
           {BRANCHES.map((branch, idx) => {
             const isCurrent = idx === activeBranchIndex;
@@ -177,7 +171,7 @@ export default function CaptainsChart() {
                 aria-label={`View ${branch.name} on map`}
                 aria-pressed={isCurrent}
                 onClick={() => handleSelectBranch(idx)}
-                className={`font-mono text-[10.5px] sm:text-xs px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]
+                className={`font-mono text-[10.5px] sm:text-xs px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]
                   ${
                     isCurrent
                       ? "bg-[#EFB80D] text-[#000000] border-[#EFB80D] font-black scale-105 shadow-[0_0_20px_rgba(239,184,13,0.4)]"
@@ -185,7 +179,7 @@ export default function CaptainsChart() {
                   }`}
               >
                 <span className="hidden sm:inline">{branch.code} · {branch.name}</span>
-                <span className="sm:hidden">{branch.code}</span>
+                <span className="sm:hidden">{branch.code} · {branch.name.split(" ")[0]}</span>
               </button>
             );
           })}
@@ -193,24 +187,87 @@ export default function CaptainsChart() {
 
         {/* Map & Active Branch Spotlight Card Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
-          {/* Map Container */}
-          <div
-            className="lg:col-span-7 rounded-[20px] sm:rounded-[28px] overflow-hidden border border-white/10 shadow-2xl bg-[#0c0c0c]"
-            style={{ height: "min(460px, 58vw)", minHeight: 300 }}
-          >
-            {isVisible ? (
-              <CaptainsMap
-                branches={BRANCHES}
-                activeBranchIndex={activeBranchIndex}
-                onSelectBranch={handleSelectBranch}
-                isVisible={isVisible}
-                routeLatLngs={ROUTE_LATLNGS}
-              />
-            ) : (
-              <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+          {/* Map Container with Mode Controls */}
+          <div className="lg:col-span-7 flex flex-col rounded-[20px] sm:rounded-[28px] overflow-hidden border border-white/10 shadow-2xl bg-[#0c0c0c]">
+            {/* Map Top Bar with Live Mode Toggle & Google Maps Direct Link */}
+            <div className="flex items-center justify-between px-3.5 sm:px-5 py-2.5 bg-[#121212] border-b border-white/10 z-20">
+              <div className="flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-white/80 font-bold">
+                <MapPin className="w-3.5 h-3.5 text-[#EFB80D]" />
+                <span className="truncate">{activeBranch.name}</span>
               </div>
-            )}
+
+              <div className="flex items-center gap-2">
+                {/* View Mode Toggle: Nautical Route vs Google Maps Live Embed */}
+                <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-lg border border-white/10 text-[10px] sm:text-xs font-mono">
+                  <button
+                    type="button"
+                    onClick={() => setMapMode("nautical")}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      mapMode === "nautical"
+                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
+                        : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    <Layers className="w-3 h-3" />
+                    <span className="hidden xs:inline">Route</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMapMode("google")}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      mapMode === "google"
+                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
+                        : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    <MapIcon className="w-3 h-3" />
+                    <span>Google Maps</span>
+                  </button>
+                </div>
+
+                {/* Direct Google Maps Shortlink */}
+                <a
+                  href={activeBranch.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open in Google Maps application"
+                  className="hidden sm:inline-flex items-center gap-1 text-[#EFB80D] hover:text-white font-mono text-[11px] transition-colors"
+                >
+                  <span>Open App</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+
+            {/* Main Interactive Map Viewport */}
+            <div
+              className="relative w-full"
+              style={{ height: "min(440px, 56vw)", minHeight: 300 }}
+            >
+              {isVisible ? (
+                mapMode === "nautical" ? (
+                  <CaptainsMap
+                    branches={BRANCHES}
+                    activeBranchIndex={activeBranchIndex}
+                    onSelectBranch={handleSelectBranch}
+                    isVisible={isVisible}
+                    routeLatLngs={ROUTE_LATLNGS}
+                  />
+                ) : (
+                  <iframe
+                    title={`Google Maps Location for ${activeBranch.name}`}
+                    src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                    className="w-full h-full border-0"
+                    loading="lazy"
+                    allowFullScreen
+                  />
+                )
+              ) : (
+                <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Active Branch Spotlight Card */}
@@ -273,14 +330,14 @@ export default function CaptainsChart() {
                     </div>
                   </div>
 
-                  {/* Actions — Directions, WhatsApp & Real Call links */}
+                  {/* Actions — Official Google Maps Link, WhatsApp & Direct Call */}
                   <div className="grid grid-cols-3 gap-2">
-                    {/* Directions / Google Maps */}
+                    {/* Real Google Maps Shortlink */}
                     <a
-                      href={`https://maps.google.com/?q=${encodeURIComponent(activeBranch.address)}`}
+                      href={activeBranch.mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Get directions to ${activeBranch.name}`}
+                      aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
                       className="flex flex-col items-center justify-center gap-1 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-xl transition-all cursor-pointer active:scale-95 shadow-sm focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
                     >
                       <Navigation className="w-3.5 h-3.5" />
