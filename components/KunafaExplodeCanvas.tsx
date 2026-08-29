@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose, ShipHelm, CaptainSeal } from "@/components/NauticalElements";
+import { ShipHelm } from "@/components/NauticalElements";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
@@ -14,8 +14,6 @@ const ACTS = [
   {
     range: [0, 0.22] as [number, number],
     align: "center" as const,
-    badge: "ROYAL LEVANTINE ATELIER",
-    label: null,
     headline: (
       <>
         Hyderabad's Most{" "}
@@ -24,14 +22,10 @@ const ACTS = [
       </>
     ),
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
-    coords: "17.3115° N, 78.4871° E · BARKAS HQ",
   },
   {
     range: [0.25, 0.50] as [number, number],
     align: "left" as const,
-    badge: null,
-    label: "ACT I · THE KATAIFI TENSION",
-    labelColor: "#EFB80D",
     headline: (
       <>
         Deconstructed{" "}
@@ -40,15 +34,10 @@ const ACTS = [
       </>
     ),
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
-    metric: "ROAST: 205°C COPPER SEAR · 48 dB ACOUSTIC CRUNCH",
-    coords: null,
   },
   {
     range: [0.53, 0.78] as [number, number],
     align: "right" as const,
-    badge: null,
-    label: "ACT II · THE MOLTEN CORE",
-    labelColor: "#EFB80D",
     headline: (
       <>
         The Molten{" "}
@@ -57,15 +46,10 @@ const ACTS = [
       </>
     ),
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
-    metric: "CHEESE BLEND: 70% AKAWI / 30% NABLUSI · 45CM PULL",
-    coords: null,
   },
   {
     range: [0.82, 1.0] as [number, number],
     align: "center" as const,
-    badge: null,
-    label: "ACT III · THE CAPTAIN'S PROMISE",
-    labelColor: "#EFB80D",
     headline: (
       <>
         Reassembled to{" "}
@@ -73,8 +57,6 @@ const ACTS = [
       </>
     ),
     body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to our branches — fresh-pressed, every time.",
-    metric: "SERVED FRESH ACROSS OUR BRANCHES IN HYDERABAD",
-    coords: "HYDERABAD · EST. 2021",
   },
 ];
 
@@ -113,7 +95,7 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing with mobile performance & containment
+  // Canvas drawing with dynamic mobile portrait cover scaling
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
@@ -137,7 +119,12 @@ export default function KunafaExplodeCanvas() {
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    const scale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
+    // Responsive scaling: in portrait mobile view, use cover scaling so animation fills the portrait screen immersively
+    const isPortrait = height > width;
+    const scale = isPortrait
+      ? Math.max(width / FRAME_WIDTH, height / FRAME_HEIGHT) * 1.15
+      : Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
+
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
     const offsetX = (width - drawWidth) / 2;
@@ -223,11 +210,13 @@ export default function KunafaExplodeCanvas() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+    window.addEventListener("orientationchange", onScroll, { passive: true });
     handleScroll();
 
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("orientationchange", onScroll);
       cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);
@@ -244,30 +233,25 @@ export default function KunafaExplodeCanvas() {
           >
             <div className="flex flex-col items-center max-w-xs sm:max-w-sm px-4 text-center">
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-5 flex items-center justify-center">
-                <ShipHelm size={22} className="text-[#DA7034]" />
+                <ShipHelm size={22} className="text-[#EFB80D]" />
               </div>
               <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#EFB80D] mb-2">
                 CAPTAIN KUNAFA
               </span>
               <h2 className="font-display text-xl sm:text-2xl font-semibold text-white/95 mb-4">
-                LOADING <SwashAccent color="terracotta">VOYAGE…</SwashAccent>
+                LOADING <SwashAccent color="gold">VOYAGE…</SwashAccent>
               </h2>
               <div className="w-full bg-white/10 h-[2px] rounded-full overflow-hidden mb-3">
                 <div
-                  className="h-full bg-gradient-to-r from-[#DA7034] to-[#EFB80D] transition-all duration-150"
+                  className="h-full bg-[#EFB80D] transition-all duration-150"
                   style={{
                     width: `${Math.round((loadedCount / TOTAL_FRAMES) * 100)}%`,
                   }}
                 />
               </div>
-              <div className="flex items-center justify-between w-full font-mono text-[10px] sm:text-[11px] text-white/50">
-                <span>
-                  FRAME [{String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}]
-                </span>
-                <span className="text-[#EFB80D]">
-                  {Math.round((loadedCount / TOTAL_FRAMES) * 100)}%
-                </span>
-              </div>
+              <span className="font-mono text-[10px] sm:text-xs text-[#EFB80D]">
+                {Math.round((loadedCount / TOTAL_FRAMES) * 100)}%
+              </span>
             </div>
           </motion.div>
         )}
@@ -278,7 +262,7 @@ export default function KunafaExplodeCanvas() {
         {/* Canvas behind everything */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         />
 
         {/* Seamless edge blends */}
@@ -298,9 +282,9 @@ export default function KunafaExplodeCanvas() {
                 key={idx}
                 className={`absolute inset-y-0 flex items-center px-4 sm:px-8 md:px-16 ${
                   act.align === "left"
-                    ? "left-0 w-full md:w-[50%] justify-start"
+                    ? "left-0 w-full md:w-[50%] justify-center md:justify-start"
                     : act.align === "right"
-                    ? "right-0 w-full md:w-[50%] justify-end"
+                    ? "right-0 w-full md:w-[50%] justify-center md:justify-end"
                     : "inset-x-0 justify-center"
                 }`}
                 style={{
@@ -309,12 +293,12 @@ export default function KunafaExplodeCanvas() {
                   transition: "none",
                 }}
               >
-                {/* Mobile backdrop container for crystal-clear readability */}
+                {/* Mobile-optimized typography container */}
                 <div
                   className={`w-full max-w-lg ${
                     act.align === "center"
                       ? "text-center mx-auto"
-                      : "text-left bg-[#030303]/60 md:bg-transparent border border-white/10 md:border-0 p-5 sm:p-6 md:p-0 rounded-[20px] backdrop-blur-md md:backdrop-blur-none"
+                      : "text-center md:text-left mx-auto md:mx-0 p-4 md:p-0"
                   }`}
                 >
                   {/* Headline */}
@@ -329,7 +313,7 @@ export default function KunafaExplodeCanvas() {
                   </h2>
 
                   {/* Body copy */}
-                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/80 leading-relaxed max-w-lg">
+                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/85 leading-relaxed max-w-lg mx-auto md:mx-0">
                     {act.body}
                   </p>
                 </div>
