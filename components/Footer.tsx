@@ -1,16 +1,8 @@
 "use client";
 
 import React from "react";
-import { MapPin, Shield, Phone, ArrowUp } from "lucide-react";
-import { ShipHelm, CompassRose } from "@/components/NauticalElements";
-
-const outlets = [
-  { city: "Barkas Branch", area: "Old City Flagship", code: "HYD-01", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00001" },
-  { city: "Malakpet Branch", area: "Chanchalguda Metro", code: "HYD-02", hours: "12:00 PM – 01:00 AM", phone: "+91 90000 00002" },
-  { city: "Tolichowki Branch", area: "Paramount Colony", code: "HYD-03", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00003" },
-  { city: "Aero City Branch", area: "Shamshabad Corridor", code: "HYD-04", hours: "10:00 AM – 02:30 AM", phone: "+91 90000 00004" },
-  { city: "Jubilee Hills", area: "Road No. 36 Flagship", code: "HYD-05", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00005" },
-];
+import { Shield, Phone, ArrowUp } from "lucide-react";
+import { ShipHelm } from "@/components/NauticalElements";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -22,53 +14,6 @@ export default function Footer() {
   return (
     <footer className="bg-[#030303] text-[#FFF8EC] border-t border-[#222222] pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Hyderabad Branches Grid - Solid #EFB80D Filled Cards */}
-        <div className="mb-12 sm:mb-16">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#000000] bg-[#EFB80D] px-3.5 py-1 rounded-full flex items-center gap-2 font-black">
-              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#000000]" />
-              <span>THE BRANCHES — HYDERABAD</span>
-            </div>
-            <span className="font-mono text-[9px] sm:text-[10px] text-white/50 uppercase font-bold">
-              17.3115° N, 78.4871° E · HYDERABAD
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-            {outlets.map((outlet, idx) => (
-              <div
-                key={idx}
-                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#EFB80D] text-[#000000] transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                    <span className="font-mono text-[10px] text-[#000000] font-black">
-                      {outlet.code}
-                    </span>
-                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#000000] text-[#EFB80D] font-black">
-                      ACTIVE
-                    </span>
-                  </div>
-                  <div className="font-display font-black text-sm text-[#000000] mb-0.5">
-                    {outlet.city}
-                  </div>
-                  <div className="font-sans text-xs text-[#000000]/80 font-bold">
-                    {outlet.area}
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-[#000000]/20 font-mono text-[9.5px] sm:text-[10px] text-[#000000] font-bold space-y-1">
-                  <div className="flex items-center gap-1 text-[#000000] font-black">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#000000]" />
-                    <span>{outlet.hours}</span>
-                  </div>
-                  <div className="text-[#000000]/85 font-bold">{outlet.phone}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Main Footer Row */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-white/10">
           {/* Brand Col (5 cols) */}
