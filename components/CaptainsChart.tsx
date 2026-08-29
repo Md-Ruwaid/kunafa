@@ -1,14 +1,10 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  MapPin,
-  Phone,
-  Clock,
-} from "lucide-react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Compass, MapPin, Clock, Phone, Navigation, Sparkles } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose, ShipHelm } from "@/components/NauticalElements";
+import { ShipHelm } from "@/components/NauticalElements";
 
 interface Branch {
   id: string;
@@ -35,67 +31,67 @@ interface Branch {
 const BRANCHES: Branch[] = [
   {
     id: "barkas",
-    name: "Barkas Branch",
+    name: "Barkas Flagship",
     shortName: "Barkas Flagship",
-    area: "Old City — Central Hearth & HQ",
+    area: "Old City — Central Hearth",
     code: "HYD-01",
-    address: "Main Road, Opp. Grand Mosque, Barkas, Hyderabad",
+    address: "Main Road, Opp. Al-Jubail Hotel, Barkas, Hyderabad",
     phone: "+91 90000 00001",
-    hours: "12:00 PM – 01:30 AM",
+    hours: "01:00 PM – 02:00 AM",
     x: 140,
     y: 200,
     mobileX: 75,
     mobileY: 50,
-    mobileLabelX: 102,
-    mobileLabelY: 53,
+    mobileLabelX: 105,
+    mobileLabelY: 48,
     mobileTextAnchor: "start",
-    highlight: "Origin Flagship · Est. 2021",
+    highlight: "The 2021 Founding Hearth",
     lat: "17.3115° N",
     lng: "78.4871° E",
     description:
-      "The founding hearth of Captain Kunafa. Where Saud bin Nasar Khulagi first introduced live copper roasting in Hyderabad. Famous for the original 48 dB acoustic crunch.",
+      "Where Captain Kunafa began in 2021. Live open woodfire-style copper hearths roasting our signature 18-hr mountain Akawi recipe fresh for every voyager.",
   },
   {
     id: "malakpet",
-    name: "Malakpet Branch",
+    name: "Malakpet Haven",
     shortName: "Malakpet Haven",
-    area: "South Hyderabad — Chanchalguda",
+    area: "Moosarambagh Corridor",
     code: "HYD-02",
-    address: "Near Metro Pillar 1142, Chanchalguda Road, Malakpet",
+    address: "Near Super Bazar, Main Road, Malakpet, Hyderabad",
     phone: "+91 90000 00002",
-    hours: "12:00 PM – 01:00 AM",
+    hours: "02:00 PM – 01:30 AM",
     x: 310,
     y: 120,
     mobileX: 285,
     mobileY: 145,
-    mobileLabelX: 258,
-    mobileLabelY: 148,
+    mobileLabelX: 255,
+    mobileLabelY: 143,
     mobileTextAnchor: "end",
-    highlight: "Live Seating & Takeaway",
+    highlight: "High-Volume Night Counter",
     lat: "17.3753° N",
     lng: "78.4983° E",
     description:
-      "Rapid-service live counter right on the Chanchalguda metro corridor. Serving sizzling Pistachio Crown and Classic Akawi platters fresh to south Hyderabad families.",
+      "A fast-paced evening dock serving steaming hot take-away platters, famous for double-pistachio loaded crispy crowns and instant rose-attar syrups.",
   },
   {
     id: "tolichowki",
-    name: "Tolichowki Branch",
+    name: "Tolichowki Port",
     shortName: "Tolichowki Port",
-    area: "West Hyderabad — Paramount Colony",
+    area: "Paramount Colony — Qutb Shahi Belt",
     code: "HYD-03",
-    address: "Paramount Colony Main Road, Tolichowki, Hyderabad",
+    address: "Paramount Colony Gate, Tolichowki, Hyderabad",
     phone: "+91 90000 00003",
-    hours: "12:00 PM – 01:30 AM",
+    hours: "01:00 PM – 02:00 AM",
     x: 480,
     y: 200,
     mobileX: 75,
     mobileY: 240,
-    mobileLabelX: 102,
-    mobileLabelY: 243,
+    mobileLabelX: 105,
+    mobileLabelY: 238,
     mobileTextAnchor: "start",
-    highlight: "Late-Night Family Hub",
-    lat: "17.4042° N",
-    lng: "78.4116° E",
+    highlight: "Late-Night Gathering Spot",
+    lat: "17.4014° N",
+    lng: "78.4111° E",
     description:
       "A bustling late-night dessert haven with multiple copper burners firing simultaneously. Renowned for Dark Choco Lava Kunafa and fresh buffalo ashta cream.",
   },
@@ -112,8 +108,8 @@ const BRANCHES: Branch[] = [
     y: 120,
     mobileX: 285,
     mobileY: 335,
-    mobileLabelX: 258,
-    mobileLabelY: 338,
+    mobileLabelX: 255,
+    mobileLabelY: 333,
     mobileTextAnchor: "end",
     highlight: "Airport Corridor Terminal",
     lat: "17.2403° N",
@@ -135,7 +131,7 @@ const BRANCHES: Branch[] = [
     mobileX: 180,
     mobileY: 430,
     mobileLabelX: 180,
-    mobileLabelY: 408,
+    mobileLabelY: 396,
     mobileTextAnchor: "middle",
     highlight: "Artisanal Tasting Lounge",
     lat: "17.4325° N",
@@ -257,89 +253,122 @@ export default function CaptainsChart() {
       animFrame = requestAnimationFrame(renderLoop);
     };
 
-    window.addEventListener("scroll", updateScrollMetrics, { passive: true });
-    window.addEventListener("resize", () => {
-      updatePathLength();
+    const onScroll = () => {
       updateScrollMetrics();
-    });
-    window.addEventListener("orientationchange", () => {
-      updatePathLength();
-      updateScrollMetrics();
-    });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updatePathLength);
+    window.addEventListener("orientationchange", updatePathLength);
 
     updateScrollMetrics();
-    animFrame = requestAnimationFrame(renderLoop);
+    renderLoop();
 
     return () => {
-      window.removeEventListener("scroll", updateScrollMetrics);
-      window.removeEventListener("resize", updateScrollMetrics);
-      window.removeEventListener("orientationchange", updateScrollMetrics);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updatePathLength);
+      window.removeEventListener("orientationchange", updatePathLength);
       cancelAnimationFrame(animFrame);
     };
   }, []);
 
-  const activeBranch = BRANCHES[activeBranchIndex];
-
   const handleJumpToBranch = useCallback((index: number) => {
+    setActiveBranchIndex(index);
     if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const scrollTop = window.scrollY + rect.top;
-    const totalScrollable = rect.height - window.innerHeight;
-    const targetProgress = index / (BRANCHES.length - 1);
 
-    const lenis = (window as unknown as { lenis?: { scrollTo: (y: number) => void } }).lenis;
+    const rect = containerRef.current.getBoundingClientRect();
+    const scrollY = window.scrollY || window.pageYOffset;
+    const containerTop = rect.top + scrollY;
+    const totalScrollable = containerRef.current.offsetHeight - window.innerHeight;
+
+    const branchProgressMap = [0.05, 0.25, 0.50, 0.75, 0.95];
+    const targetScrollY = containerTop + (branchProgressMap[index] || 0) * totalScrollable;
+
+    const lenis = (window as unknown as { lenis?: { scrollTo: (n: number) => void } }).lenis;
     if (lenis) {
-      lenis.scrollTo(scrollTop + targetProgress * totalScrollable);
+      lenis.scrollTo(targetScrollY);
     } else {
-      window.scrollTo({
-        top: scrollTop + targetProgress * totalScrollable,
-        behavior: "smooth",
-      });
+      window.scrollTo({ top: targetScrollY, behavior: "smooth" });
     }
   }, []);
+
+  const activeBranch = BRANCHES[activeBranchIndex];
 
   return (
     <div
       ref={containerRef}
-      id="locations"
-      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#050505] border-t border-[#222222]"
+      className="relative w-full h-[360vh] sm:h-[420vh] bg-[#050505] text-[#FFF8EC]"
     >
-      {/* Sticky Viewport */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 overflow-hidden bg-[#050505]">
-        {/* Ambient Chart Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
-        <div className="absolute top-12 right-12 opacity-5 pointer-events-none hidden xl:block text-[#EFB80D]">
-          <CompassRose size={260} />
+      {/* Sticky Fullscreen Chart Viewport */}
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center px-3 xs:px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-8 pt-10 sm:pt-0">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFB80D]/15 border border-[#EFB80D]/30 text-[#EFB80D] font-mono text-[9px] sm:text-xs uppercase tracking-widest font-black mb-2">
+            <Compass className="w-3.5 h-3.5 text-[#EFB80D]" />
+            <span>HYDERABAD VOYAGE MAP</span>
+          </div>
+
+          <h2 className="font-display text-xl xs:text-2xl sm:text-4xl font-semibold text-white leading-tight mb-1 sm:mb-2">
+            The Captain&apos;s <SwashAccent color="gold">Chart</SwashAccent>
+          </h2>
+
+          <p className="font-sans text-[11px] sm:text-sm text-white/80 line-clamp-1 sm:line-clamp-none">
+            Follow the golden maritime route across Hyderabad&apos;s 5 signature hearths.
+          </p>
         </div>
 
-        {/* 1. Section Header */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full pt-12 sm:pt-16">
-          <div className="text-center sm:text-left">
-            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              From Barkas to <SwashAccent color="gold">Jubilee Hills</SwashAccent>
-            </h2>
+        {/* Branch Quick Select Tabs */}
+        <div className="flex justify-center mb-4 sm:mb-6">
+          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#121212] border border-white/10 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl w-full max-w-2xl shadow-md">
+            {BRANCHES.map((branch, idx) => {
+              const isCurrent = idx === activeBranchIndex;
+
+              return (
+                <button
+                  key={branch.id}
+                  type="button"
+                  onClick={() => handleJumpToBranch(idx)}
+                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-3 px-1.5 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9.5px] sm:text-xs transition-all cursor-pointer truncate ${
+                    isCurrent
+                      ? "bg-[#EFB80D] text-[#000000] font-black shadow-sm scale-105"
+                      : "bg-[#1c1c1c] text-white hover:bg-white hover:text-black font-semibold border border-white/5"
+                  }`}
+                >
+                  <span className="sm:hidden">{branch.code.replace("HYD-", "")}</span>
+                  <span className="hidden sm:inline">
+                    {branch.code.replace("HYD-", "")}. {branch.shortName.split(" ")[0]}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* 2. Main Center Section: Symmetrical Vertical Mobile Chart + Symmetrical Horizontal Desktop Chart + Spotlight Card */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
-          
-          {/* Symmetrical Map Chart Container */}
-          <div className="lg:col-span-7 bg-[#111111] rounded-[20px] sm:rounded-[24px] p-3 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-xl">
+        {/* Interactive Nautical Map Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center">
+          {/* SVG Route Visualization */}
+          <div className="lg:col-span-7 bg-[#111111] rounded-[18px] sm:rounded-[24px] p-2.5 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-lg">
             
-            {/* MOBILE ONLY: Symmetrical Vertical Serpentine Voyage Animation (viewBox: 0 0 360 480) */}
-            <div className="block lg:hidden relative w-full h-[240px] xs:h-[260px] sm:h-[300px] select-none">
+            {/* MOBILE & TABLET: Vertical S-Curve Nautical Chart (viewBox: 0 0 360 480) */}
+            <div className="block lg:hidden relative w-full h-[270px] xs:h-[300px] sm:h-[340px] select-none">
               <svg
                 viewBox="0 0 360 480"
                 preserveAspectRatio="xMidYMid meet"
                 className="w-full h-full absolute inset-0"
               >
-                {/* Symmetrical Nautical Vertical Guide Lines */}
+                <defs>
+                  {/* Glowing text filter */}
+                  <filter id="goldTextGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="1" stdDeviation="3" floodColor="#EFB80D" floodOpacity="0.4" />
+                  </filter>
+                </defs>
+
+                {/* Symmetrical Guide Grid Lines */}
                 <line x1="75" y1="30" x2="75" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="180" y1="30" x2="180" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="285" y1="30" x2="285" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
 
-                {/* Symmetrical Ghost Path (Vertical) */}
+                {/* Symmetrical Ghost Route */}
                 <path
                   d={ROUTE_PATH_VERTICAL_D}
                   fill="none"
@@ -369,7 +398,7 @@ export default function CaptainsChart() {
                   </g>
                 </g>
 
-                {/* Mobile Symmetrical Branch Stops with Clear Side Labels */}
+                {/* Mobile Symmetrical Branch Stops with Prominent Highlighted Labels */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
 
@@ -379,11 +408,36 @@ export default function CaptainsChart() {
                       onClick={() => handleJumpToBranch(idx)}
                       className="cursor-pointer"
                     >
+                      {/* Active Highlight Badge Pill Behind Text */}
+                      {isCurrent && (
+                        <rect
+                          x={
+                            branch.mobileTextAnchor === "start"
+                              ? branch.mobileLabelX - 6
+                              : branch.mobileTextAnchor === "end"
+                              ? branch.mobileLabelX - 150
+                              : branch.mobileLabelX - 75
+                          }
+                          y={
+                            branch.mobileTextAnchor === "middle"
+                              ? branch.mobileLabelY - 16
+                              : branch.mobileLabelY - 14
+                          }
+                          width={branch.mobileTextAnchor === "middle" ? 150 : 156}
+                          height={36}
+                          rx={8}
+                          fill="#000000"
+                          fillOpacity="0.85"
+                          stroke="#EFB80D"
+                          strokeWidth="1.5"
+                        />
+                      )}
+
                       {/* Outer Ring */}
                       <circle
                         cx={branch.mobileX}
                         cy={branch.mobileY}
-                        r={isCurrent ? 15 : 10}
+                        r={isCurrent ? 16 : 10}
                         fill={isCurrent ? "#EFB80D" : "#333333"}
                         stroke="#FFFFFF"
                         strokeWidth={isCurrent ? "3" : "2"}
@@ -392,7 +446,7 @@ export default function CaptainsChart() {
                       <circle
                         cx={branch.mobileX}
                         cy={branch.mobileY}
-                        r={isCurrent ? 6 : 4}
+                        r={isCurrent ? 7 : 4}
                         fill={isCurrent ? "#000000" : "#EFB80D"}
                       />
 
@@ -401,10 +455,11 @@ export default function CaptainsChart() {
                         x={branch.mobileLabelX}
                         y={branch.mobileLabelY}
                         textAnchor={branch.mobileTextAnchor}
-                        fill="#FFFFFF"
+                        fill={isCurrent ? "#EFB80D" : "#FFFFFF"}
                         fontFamily="var(--font-fraunces), serif"
                         fontWeight={isCurrent ? "900" : "700"}
-                        fontSize={isCurrent ? "14.5" : "12.5"}
+                        fontSize={isCurrent ? "16.5" : "12.5"}
+                        filter={isCurrent ? "url(#goldTextGlow)" : undefined}
                       >
                         {branch.shortName}
                       </text>
@@ -414,14 +469,14 @@ export default function CaptainsChart() {
                         x={branch.mobileLabelX}
                         y={
                           branch.mobileTextAnchor === "middle"
-                            ? branch.mobileY + 22
+                            ? branch.mobileY + 24
                             : branch.mobileLabelY + 16
                         }
                         textAnchor={branch.mobileTextAnchor}
-                        fill={isCurrent ? "#EFB80D" : "#C4B5A5"}
+                        fill={isCurrent ? "#FFFFFF" : "#C4B5A5"}
                         fontFamily="var(--font-ibm-mono), monospace"
-                        fontSize="10"
-                        fontWeight="700"
+                        fontSize={isCurrent ? "11.5" : "10"}
+                        fontWeight={isCurrent ? "900" : "700"}
                       >
                         {branch.code}
                       </text>
@@ -438,6 +493,12 @@ export default function CaptainsChart() {
                 preserveAspectRatio="xMidYMid meet"
                 className="w-full h-full absolute inset-0"
               >
+                <defs>
+                  <filter id="desktopTextGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="1" stdDeviation="3" floodColor="#EFB80D" floodOpacity="0.4" />
+                  </filter>
+                </defs>
+
                 {/* Symmetrical Guide Grid */}
                 <line x1="40" y1="120" x2="920" y2="120" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="40" y1="160" x2="920" y2="160" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
@@ -473,7 +534,7 @@ export default function CaptainsChart() {
                   </g>
                 </g>
 
-                {/* Symmetrical Branch Markers with Solid Filled Gold & White Text */}
+                {/* Symmetrical Branch Markers with Highlighted Selection */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
 
@@ -483,10 +544,25 @@ export default function CaptainsChart() {
                       onClick={() => handleJumpToBranch(idx)}
                       className="cursor-pointer"
                     >
+                      {/* Active Background Highlight Pill */}
+                      {isCurrent && (
+                        <rect
+                          x={branch.x - 90}
+                          y={branch.y - 36}
+                          width={180}
+                          height={28}
+                          rx={7}
+                          fill="#000000"
+                          fillOpacity="0.85"
+                          stroke="#EFB80D"
+                          strokeWidth="1.5"
+                        />
+                      )}
+
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 15 : 10}
+                        r={isCurrent ? 16 : 10}
                         fill={isCurrent ? "#EFB80D" : "#444444"}
                         stroke="#FFFFFF"
                         strokeWidth={isCurrent ? "3" : "2"}
@@ -494,7 +570,7 @@ export default function CaptainsChart() {
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 6 : 4}
+                        r={isCurrent ? 7 : 4}
                         fill={isCurrent ? "#000000" : "#EFB80D"}
                       />
 
@@ -502,10 +578,11 @@ export default function CaptainsChart() {
                         x={branch.x}
                         y={branch.y - 18}
                         textAnchor="middle"
-                        fill="#FFFFFF"
+                        fill={isCurrent ? "#EFB80D" : "#FFFFFF"}
                         fontFamily="var(--font-fraunces), serif"
                         fontWeight={isCurrent ? "900" : "700"}
-                        fontSize={isCurrent ? "15" : "13"}
+                        fontSize={isCurrent ? "17" : "13"}
+                        filter={isCurrent ? "url(#desktopTextGlow)" : undefined}
                       >
                         {branch.name}
                       </text>
@@ -513,10 +590,10 @@ export default function CaptainsChart() {
                         x={branch.x}
                         y={branch.y + 24}
                         textAnchor="middle"
-                        fill={isCurrent ? "#EFB80D" : "#C4B5A5"}
+                        fill={isCurrent ? "#FFFFFF" : "#C4B5A5"}
                         fontFamily="var(--font-ibm-mono), monospace"
-                        fontSize="11"
-                        fontWeight="700"
+                        fontSize={isCurrent ? "12" : "11"}
+                        fontWeight={isCurrent ? "900" : "700"}
                       >
                         {branch.code}
                       </text>
@@ -538,67 +615,77 @@ export default function CaptainsChart() {
                 transition={{ duration: 0.15 }}
                 className="bg-[#121212] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-4 sm:p-6 relative overflow-hidden shadow-xl"
               >
-                <div className="flex items-baseline justify-between gap-2 mb-1">
-                  <h3 className="font-display font-bold text-lg sm:text-2xl text-white">
-                    {activeBranch.name}
-                  </h3>
-                  <span className="font-sans text-[10.5px] sm:text-xs text-[#EFB80D] font-bold">
-                    {activeBranch.area}
-                  </span>
+                {/* Header */}
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-mono text-xs font-black px-2 py-0.5 rounded-full bg-[#EFB80D] text-[#000000]">
+                        {activeBranch.code}
+                      </span>
+                      <span className="font-sans text-[11px] text-white/80 font-semibold">
+                        {activeBranch.area}
+                      </span>
+                    </div>
+                    <h3 className="font-display font-bold text-lg sm:text-2xl text-white">
+                      {activeBranch.name}
+                    </h3>
+                  </div>
+
+                  <div className="w-10 h-10 rounded-full bg-[#1c1c1c] border border-white/10 flex items-center justify-center shrink-0">
+                    <ShipHelm size={20} className="text-[#EFB80D]" />
+                  </div>
                 </div>
 
-                <div className="inline-block bg-white text-black font-mono text-[9.5px] sm:text-[11px] font-black px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md my-1.5 sm:my-2.5 shadow-sm">
-                  {activeBranch.highlight}
+                {/* Highlight Banner */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#EFB80D]/15 border border-[#EFB80D]/30 text-[#EFB80D] font-mono text-[10px] sm:text-xs font-bold mb-3">
+                  <Sparkles className="w-3 h-3 text-[#EFB80D]" />
+                  <span>{activeBranch.highlight}</span>
                 </div>
 
-                <p className="font-sans text-xs text-white/85 font-medium leading-relaxed mb-2.5 sm:mb-3 line-clamp-2 sm:line-clamp-none">
+                {/* Description */}
+                <p className="font-sans text-xs sm:text-sm text-white/90 leading-relaxed mb-4">
                   {activeBranch.description}
                 </p>
 
-                <div className="space-y-1 font-sans text-xs text-white/90 font-medium border-t border-white/10 pt-2.5 sm:pt-3 mb-3 sm:mb-4">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
-                    <span className="truncate text-white font-semibold text-[10.5px] sm:text-xs">
-                      {activeBranch.address}
-                    </span>
+                {/* Meta details */}
+                <div className="space-y-2 border-t border-white/10 pt-3 mb-4 font-sans text-xs text-white/80">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-3.5 h-3.5 text-[#EFB80D] shrink-0 mt-0.5" />
+                    <span>{activeBranch.address}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-[10px] sm:text-[11px] font-mono text-white/80">
-                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#EFB80D]" /> {activeBranch.hours}</span>
-                    <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5 text-[#EFB80D]" /> {activeBranch.phone}</span>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
+                    <span>{activeBranch.hours}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
+                    <span>{activeBranch.phone}</span>
                   </div>
                 </div>
 
-                <a
-                  href={`https://wa.me/${activeBranch.phone.replace(
-                    /\D/g,
-                    ""
-                  )}?text=Hi%20Captain%20Kunafa%20${encodeURIComponent(
-                    activeBranch.name
-                  )}!%20I'd%20like%20to%20order%20fresh%20kunafa.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs sm:text-sm font-black py-2.5 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] cursor-pointer shadow-md"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                  </svg>
-                  <span>Order from {activeBranch.name}</span>
-                </a>
+                {/* Actions */}
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={`https://maps.google.com/?q=${encodeURIComponent(activeBranch.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-xs py-2.5 rounded-xl transition-all cursor-pointer active:scale-95 shadow-sm"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-[#000000]" />
+                    <span>Navigate</span>
+                  </a>
+                  <a
+                    href={`https://wa.me/${activeBranch.phone.replace(/[^0-9]/g, "")}?text=Hi%20Captain%20Kunafa%20${encodeURIComponent(activeBranch.name)}!%20I'd%20like%20to%20order.`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#1c1c1c] hover:bg-white hover:text-black text-white font-sans font-bold text-xs py-2.5 rounded-xl border border-white/10 transition-all cursor-pointer active:scale-95"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call Branch</span>
+                  </a>
+                </div>
               </motion.div>
             </AnimatePresence>
-          </div>
-        </div>
-
-        {/* 3. Bottom Guide */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full pb-1 flex items-center justify-between font-mono text-[9px] sm:text-[11px] text-white/60">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#EFB80D]" />
-            <span className="truncate">BRANCH VOYAGE: BARKAS ➔ MALAKPET ➔ TOLICHOWKI ➔ AERO CITY ➔ JUBILEE HILLS</span>
-          </div>
-          <div className="text-white font-bold hidden sm:block">
-            {activeBranchIndex === BRANCHES.length - 1
-              ? "VOYAGE COMPLETED · SCROLL FOR PLATTERS MENU ↓"
-              : "SCROLL TO COMPLETE JOURNEY TO JUBILEE HILLS"}
           </div>
         </div>
       </div>
