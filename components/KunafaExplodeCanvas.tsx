@@ -10,14 +10,6 @@ const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
 
-// Official Captain Kunafa Platter Imagery to sit in the canvas animation frames
-const PRODUCT_IMAGES = [
-  "/platters/platter-original.png", // Act 0: The Captain's Original Akawi
-  "/platters/platter-pistachio.png", // Act 1: Aleppo Emerald Pistachio Crown
-  "/platters/platter-choco.png", // Act 2: Molten Akawi / Dark Choco Lava
-  "/platters/platter-biscoff.png", // Act 3: Lotus Biscoff Royale
-];
-
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
@@ -144,14 +136,13 @@ export default function KunafaExplodeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
-  const productImagesRef = useRef<HTMLImageElement[]>([]);
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing with subtle zoom-in, explosion sequence AND official product images
-  const drawFrame = useCallback((index: number, currentProgress = 0) => {
+  // Canvas drawing with subtle zoom-in and smooth center alignment
+  const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
     if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
@@ -192,86 +183,15 @@ export default function KunafaExplodeCanvas() {
       // Safe fallback
     }
 
-    // Render official Captain Kunafa platter pictures directly on the canvas animation frames
-    ACTS.forEach((act, actIdx) => {
-      const prodImg = productImagesRef.current[actIdx];
-      if (
-        !prodImg ||
-        !prodImg.complete ||
-        prodImg.naturalWidth === 0 ||
-        prodImg.naturalHeight === 0
-      ) {
-        return;
-      }
-
-      const actOpacity = getActOpacity(currentProgress, act.range);
-      if (actOpacity <= 0) return;
-
-      ctx.save();
-      ctx.globalAlpha = Math.min(1, actOpacity * 0.95);
-
-      const isMobile = width < 768;
-      const maxDim = isMobile
-        ? Math.min(width * 0.44, height * 0.35, 240)
-        : Math.min(width * 0.35, height * 0.48, 360);
-
-      let prodX = width * 0.5;
-      let prodY = height * 0.5;
-
-      if (act.align === "left") {
-        prodX = isMobile ? width * 0.5 : width * 0.74;
-        prodY = isMobile ? height * 0.68 : height * 0.5;
-      } else if (act.align === "right") {
-        prodX = isMobile ? width * 0.5 : width * 0.26;
-        prodY = isMobile ? height * 0.68 : height * 0.5;
-      } else {
-        prodX = width * 0.5;
-        prodY = isMobile ? height * 0.66 : height * 0.60;
-      }
-
-      // Draw subtle ambient gold aura behind the official platter
-      const glow = ctx.createRadialGradient(prodX, prodY, 10, prodX, prodY, maxDim * 0.65);
-      glow.addColorStop(0, "rgba(239, 184, 13, 0.25)");
-      glow.addColorStop(0.5, "rgba(239, 184, 13, 0.08)");
-      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = glow;
-      ctx.beginPath();
-      ctx.arc(prodX, prodY, maxDim * 0.65, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Draw the official platter image
-      try {
-        const aspect = prodImg.naturalHeight / (prodImg.naturalWidth || 1);
-        const pWidth = maxDim;
-        const pHeight = maxDim * aspect;
-        ctx.drawImage(prodImg, prodX - pWidth / 2, prodY - pHeight / 2, pWidth, pHeight);
-      } catch {
-        // Safe fallback
-      }
-
-      ctx.restore();
-    });
-
     ctx.restore();
   }, []);
 
-  // Preload all frames & official product imagery
+  // Preload all frames
   useEffect(() => {
     let mounted = true;
     const loadedImages: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     let count = 0;
     const pad = (n: number) => String(n).padStart(3, "0");
-
-    // Preload official product images locally
-    PRODUCT_IMAGES.forEach((url, idx) => {
-      const prodImg = new Image();
-      prodImg.onload = () => {
-        if (!mounted) return;
-        productImagesRef.current[idx] = prodImg;
-      };
-      prodImg.src = url;
-      productImagesRef.current[idx] = prodImg;
-    });
 
     // Preload explosion sequence frames
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
@@ -286,12 +206,12 @@ export default function KunafaExplodeCanvas() {
         setLoadedCount(count);
         if (i === 1) {
           imagesRef.current[0] = img;
-          drawFrame(0, 0);
+          drawFrame(0);
         }
         if (count >= TOTAL_FRAMES) {
           imagesRef.current = loadedImages;
           setIsLoaded(true);
-          drawFrame(0, 0);
+          drawFrame(0);
         }
       };
 
@@ -308,7 +228,7 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single scroll handler synchronized with frame and progress
+  // Single scroll handler
   useEffect(() => {
     let animFrame: number;
     let lastFrame = -1;
@@ -328,9 +248,9 @@ export default function KunafaExplodeCanvas() {
         TOTAL_FRAMES - 1,
         Math.floor(p * TOTAL_FRAMES)
       );
-      if (targetFrame !== lastFrame || Math.abs(p - progress) > 0.005) {
+      if (targetFrame !== lastFrame) {
         lastFrame = targetFrame;
-        drawFrame(targetFrame, p);
+        drawFrame(targetFrame);
       }
     };
 
@@ -350,7 +270,7 @@ export default function KunafaExplodeCanvas() {
       window.removeEventListener("orientationchange", onScroll);
       cancelAnimationFrame(animFrame);
     };
-  }, [drawFrame, progress]);
+  }, [drawFrame]);
 
   return (
     <div
@@ -401,7 +321,7 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything - Contained with subtle zoom and official product platters */}
+        {/* Canvas behind everything - Contained with subtle zoom */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
