@@ -1,148 +1,150 @@
-"use client";
+import React from "react";
+import Link from "next/link";
+import Wordmark from "@/components/Wordmark";
+import CtaPill from "@/components/CtaPill";
+import { MapPin, Compass, Shield } from "lucide-react";
 
-import React, { useState } from "react";
-import { Sparkles, ArrowRight, Check, Compass, Shield, Heart } from "lucide-react";
-import { audio } from "@/lib/audio";
-
-interface FooterProps {
-  onOpenOrderModal: () => void;
-}
-
-export default function Footer({ onOpenOrderModal }: FooterProps) {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleNewsletter = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    audio.playChime(600);
-    setSubscribed(true);
-  };
+export default function Footer() {
+  const outlets = [
+    { city: "Dubai", location: "Dubai Mall — Fashion Avenue", status: "Flagship" },
+    { city: "Dubai", location: "Alserkal Avenue — Warehouse 42", status: "Artisanal Lab" },
+    { city: "Riyadh", location: "Riyadh Front — Boulevard", status: "Open Service" },
+    { city: "Doha", location: "Doha Port — Mina District", status: "Harbour Outpost" },
+    { city: "Istanbul", location: "Galata Port — Bosphorus Pier", status: "Historic Haven" },
+  ];
 
   return (
-    <footer id="tasting" className="relative bg-[#030303] text-white border-t border-white/10 pt-20 pb-12 px-4 sm:px-8 overflow-hidden">
-      {/* Background glow */}
+    <footer className="bg-[#241509] text-[#FFF8EC] border-t border-[#E7DCC9]/15 pt-20 pb-12 px-4 sm:px-8 relative overflow-hidden">
+      {/* Background subtle glow */}
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#EFB80D]/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Top Callout Box */}
-        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-[#EFB80D]/20 mb-16 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="max-w-lg">
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Top Outlets & Callout Banner */}
+        <div className="bg-[#2B1B12] border border-[#EFB80D]/20 rounded-[20px] p-8 sm:p-12 mb-16 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+          <div className="max-w-xl">
             <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[#EFB80D] mb-3">
-              <Compass className="w-3.5 h-3.5" />
-              <span>THE CAPTAIN’S TABLE</span>
+              <Compass className="w-4 h-4" />
+              <span>THE CAPTAIN’S FLEET</span>
             </div>
-            <h3 className="font-display text-2xl sm:text-4xl font-semibold text-white/95 leading-tight mb-2">
-              Ready for the Real <span className="accent-italic">Alchemy</span>?
+            <h3 className="font-display text-2xl sm:text-4xl font-semibold text-[#FFF8EC] leading-tight mb-2">
+              Baked Fresh Across <span className="font-display italic font-semibold text-[#EFB80D]">5 Flagship Outposts</span>
             </h3>
-            <p className="font-sans text-sm text-white/60">
-              Limited to 100 copper platters per sunset service. Freshly baked, never reheated.
+            <p className="font-sans text-sm text-[#B3A697] leading-relaxed">
+              Every platter is fired in individual copper pans at 205°C and served within 2 minutes of caramelization.
             </p>
           </div>
 
-          <button
-            onClick={() => {
-              audio.playChime(700);
-              onOpenOrderModal();
-            }}
-            className="shrink-0 flex items-center gap-3 bg-[#EFB80D] hover:bg-[#ffc926] text-[#030303] font-sans font-bold text-sm uppercase tracking-wider px-8 py-4 rounded-full shadow-[0_0_30px_rgba(239,184,13,0.3)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
-          >
-            <span>RESERVE TODAY’S BATCH</span>
-            <Sparkles className="w-4 h-4" />
-          </button>
+          <div className="shrink-0">
+            <CtaPill href="/menu" size="lg">
+              ORDER FRESH PLATTER
+            </CtaPill>
+          </div>
         </div>
 
-        {/* 4 Column Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-16 border-b border-white/10">
-          {/* Brand Col */}
-          <div className="md:col-span-4">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-full bg-[#EFB80D]/10 border border-[#EFB80D]/30 flex items-center justify-center">
-                <span className="font-display font-bold text-base text-[#EFB80D]">C</span>
+        {/* 5 Outlets Grid */}
+        <div className="mb-16">
+          <div className="font-mono text-xs uppercase tracking-[0.2em] text-[#EFB80D] mb-6 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            <span>PORT LOCATIONS & OUTLETS</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {outlets.map((outlet, idx) => (
+              <div
+                key={idx}
+                className="p-5 rounded-[16px] bg-[#1a0f06] border border-[#E7DCC9]/10 hover:border-[#EFB80D]/40 transition-colors flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[11px] text-[#EFB80D] font-medium">
+                      0{idx + 1} / {outlet.city}
+                    </span>
+                    <span className="font-mono text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/20">
+                      {outlet.status}
+                    </span>
+                  </div>
+                  <div className="font-display font-medium text-sm text-[#FFF8EC] leading-snug">
+                    {outlet.location}
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-white/5 font-mono text-[10px] text-[#7A6A5B] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>Daily 12:00 — 01:00</span>
+                </div>
               </div>
-              <span className="font-display font-semibold text-lg text-white/95">
-                CAPTAIN <span className="accent-italic">KUNAFA</span>
-              </span>
-            </div>
-            <p className="font-sans text-xs sm:text-sm text-white/50 leading-relaxed mb-6">
-              Reinventing royal Levantine dessert craftsmanship through acoustic thermodynamics, 
-              single-estate botanicals, and zero-compromise ingredients.
+            ))}
+          </div>
+        </div>
+
+        {/* Footer Navigation & Info */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-16 border-b border-[#E7DCC9]/10">
+          <div className="md:col-span-5">
+            <Wordmark size="md" className="mb-4" />
+            <p className="font-sans text-sm text-[#B3A697] leading-relaxed max-w-sm mb-6">
+              Hand-spun golden kataifi encasing molten Akawi and Nablusi cheese, drenched in Damascus rose and orange blossom nectar.
             </p>
-            <div className="font-mono text-[11px] text-white/40 space-y-1">
+            <div className="font-mono text-[11px] text-[#7A6A5B] space-y-1">
+              <div>FLEET HEADQUARTERS: DUBAI, UAE</div>
               <div>ORIGIN: 31.9522° N, 35.2332° E</div>
-              <div>ATELIER DISPATCH: 17:00 — 23:00 GMT</div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="md:col-span-2">
-            <div className="font-mono text-xs uppercase tracking-wider text-white/40 mb-4">
-              VOYAGE
+          <div className="md:col-span-3">
+            <div className="font-mono text-xs uppercase tracking-wider text-[#EFB80D] mb-4">
+              VOYAGE ROUTES
             </div>
-            <ul className="space-y-2.5 font-mono text-xs text-white/70">
-              <li><a href="#voyage" className="hover:text-[#EFB80D] transition-colors">01 / Explosion</a></li>
-              <li><a href="#anatomy" className="hover:text-[#EFB80D] transition-colors">02 / Anatomy</a></li>
-              <li><a href="#alchemy" className="hover:text-[#EFB80D] transition-colors">03 / Lab Specs</a></li>
-              <li><a href="#tasting" className="hover:text-[#EFB80D] transition-colors">04 / Tasting Box</a></li>
+            <ul className="space-y-2.5 font-sans text-sm text-[#B3A697]">
+              <li>
+                <Link href="/" className="hover:text-[#EFB80D] transition-colors focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 rounded">
+                  Home Voyage
+                </Link>
+              </li>
+              <li>
+                <Link href="/menu" className="hover:text-[#EFB80D] transition-colors focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 rounded">
+                  Artisanal Menu
+                </Link>
+              </li>
+              <li>
+                <Link href="/franchise" className="hover:text-[#EFB80D] transition-colors focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 rounded">
+                  Franchise Fleet
+                </Link>
+              </li>
+              <li>
+                <Link href="/catering" className="hover:text-[#EFB80D] transition-colors focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 rounded">
+                  Private Catering
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Standards */}
-          <div className="md:col-span-2">
-            <div className="font-mono text-xs uppercase tracking-wider text-white/40 mb-4">
-              STANDARDS
-            </div>
-            <ul className="space-y-2.5 font-mono text-xs text-white/70">
-              <li className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-[#EFB80D]" /> Grass-Fed Ghee</li>
-              <li className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-[#EFB80D]" /> Mountain Akawi</li>
-              <li className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-[#EFB80D]" /> Damascus Attar</li>
-              <li className="flex items-center gap-1.5"><Shield className="w-3 h-3 text-[#EFB80D]" /> Aleppo G1 Crop</li>
-            </ul>
-          </div>
-
-          {/* Newsletter / Secret Dispatch */}
           <div className="md:col-span-4">
-            <div className="font-mono text-xs uppercase tracking-wider text-white/40 mb-4">
-              SECRET BATCH DISPATCH
+            <div className="font-mono text-xs uppercase tracking-wider text-[#EFB80D] mb-4">
+              CAPTAIN’S GUARANTEE
             </div>
-            <p className="font-sans text-xs text-white/50 mb-3">
-              Receive private notifications 15 minutes before seasonal Aleppo harvest platters go live.
-            </p>
-
-            {!subscribed ? (
-              <form onSubmit={handleNewsletter} className="flex gap-2">
-                <input
-                  type="email"
-                  required
-                  placeholder="Enter captain email..."
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-[#EFB80D] grow font-mono"
-                />
-                <button
-                  type="submit"
-                  className="bg-[#EFB80D] hover:bg-[#ffc926] text-[#030303] px-4 py-2.5 rounded-xl font-mono text-xs font-bold transition-all cursor-pointer shrink-0"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </form>
-            ) : (
-              <div className="p-3 rounded-xl bg-[#EFB80D]/10 border border-[#EFB80D]/30 flex items-center gap-2 font-mono text-xs text-[#EFB80D]">
-                <Check className="w-4 h-4" />
-                <span>VOYAGER SUBSCRIBED</span>
+            <div className="space-y-3 font-sans text-xs text-[#B3A697]">
+              <div className="flex items-start gap-2">
+                <Shield className="w-4 h-4 text-[#EFB80D] shrink-0 mt-0.5" />
+                <span>100% Grass-Fed Clarified Ghee with zero palm oil.</span>
               </div>
-            )}
+              <div className="flex items-start gap-2">
+                <Shield className="w-4 h-4 text-[#EFB80D] shrink-0 mt-0.5" />
+                <span>Cold-washed 18-hour desalinated mountain Akawi curd.</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <Shield className="w-4 h-4 text-[#EFB80D] shrink-0 mt-0.5" />
+                <span>Hand-crushed first-crop Aleppo emerald pistachios.</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-white/40">
+        {/* Copyright */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-[#7A6A5B]">
           <div>
-            © {new Date().getFullYear()} CAPTAIN KUNAFA ATELIER. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} CAPTAIN KUNAFA. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-6">
-            <span>TERMS OF VOYAGE</span>
-            <span>PRIVACY PROTOCOL</span>
+            <span>DECK ESPRESSO THEME</span>
             <span className="text-[#EFB80D]">EST. 2024</span>
           </div>
         </div>
