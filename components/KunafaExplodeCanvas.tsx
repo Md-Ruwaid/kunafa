@@ -1,14 +1,99 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Sparkles } from "lucide-react";
-import CtaPill from "@/components/CtaPill";
+import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
+
+// Text acts — driven by scroll progress (0 → 1)
+const ACTS = [
+  {
+    range: [0, 0.22] as [number, number],
+    align: "center" as const,
+    label: null,
+    headline: (
+      <>
+        The Royal Alchemy of{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Captain</span>{" "}
+        Kunafa
+      </>
+    ),
+    body: "Hand-spun golden kataifi encasing molten artisanal Akawi cheese, drenched in orange blossom nectar.",
+  },
+  {
+    range: [0.25, 0.50] as [number, number],
+    align: "left" as const,
+    label: "01 / KATAIFI TENSION",
+    labelColor: "#DA7034",
+    headline: (
+      <>
+        Deconstructed{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Crisp</span>{" "}
+        &amp; Tension
+      </>
+    ),
+    body: "Individual strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C to deliver a resonant 48 dB audible crunch.",
+    metric: "ROAST METRIC: 205°C COPPER SEAR",
+  },
+  {
+    range: [0.53, 0.78] as [number, number],
+    align: "right" as const,
+    label: "02 / ZERO-GRAVITY CORE",
+    labelColor: "#EFB80D",
+    headline: (
+      <>
+        The Molten{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Akawi</span>{" "}
+        Heart
+      </>
+    ),
+    body: "18-hour desalinated mountain Akawi curd unfurls with raw first-harvest Aleppo emerald pistachios and Damascus rosewater.",
+    metric: "CHEESE BLEND: 70% AKAWI / 30% NABLUSI",
+  },
+  {
+    range: [0.82, 1.0] as [number, number],
+    align: "center" as const,
+    label: "FINALE",
+    labelColor: "#EFB80D",
+    headline: (
+      <>
+        Reassembled to{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
+      </>
+    ),
+    body: "The golden disc unites into an unparalleled symphony of crunch, molten warmth, and floral sweetness.",
+    metric: null,
+  },
+];
+
+function getActOpacity(progress: number, range: [number, number]): number {
+  const [start, end] = range;
+  const fadeIn = 0.05;
+  const fadeOut = 0.05;
+  if (progress < start) return 0;
+  if (progress > end) return 0;
+  if (progress < start + fadeIn) return (progress - start) / fadeIn;
+  if (progress > end - fadeOut) return (end - progress) / fadeOut;
+  return 1;
+}
+
+function getActX(
+  progress: number,
+  range: [number, number],
+  align: "left" | "right" | "center"
+): number {
+  if (align === "center") return 0;
+  const [start] = range;
+  const fadeIn = 0.05;
+  if (progress < start + fadeIn) {
+    const t = (progress - start) / fadeIn;
+    return align === "left" ? -30 * (1 - t) : 30 * (1 - t);
+  }
+  return 0;
+}
 
 export default function KunafaExplodeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,15 +102,9 @@ export default function KunafaExplodeCanvas() {
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [currentFrame, setCurrentFrame] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  // Framer Motion Scroll progress
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  // Canvas drawing routine with High-DPI support and contain-fit scaling
+  // Canvas drawing
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
@@ -34,7 +113,7 @@ export default function KunafaExplodeCanvas() {
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    const dpr = typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1;
+    const dpr = window.devicePixelRatio || 1;
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
@@ -45,12 +124,9 @@ export default function KunafaExplodeCanvas() {
 
     ctx.save();
     ctx.scale(dpr, dpr);
-
-    // Exact #030303 background clear
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    // Contain fit calculation for 16:9
     const scale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
@@ -59,28 +135,27 @@ export default function KunafaExplodeCanvas() {
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
-
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
     ctx.restore();
   }, []);
 
-  // Preload frames
+  // Preload all frames
   useEffect(() => {
     let mounted = true;
-    const loadedImages: HTMLImageElement[] = [];
+    const loadedImages: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     let count = 0;
-
     const pad = (n: number) => String(n).padStart(3, "0");
 
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
+      const idx = i - 1;
       img.src = `/kunafa-frames/ezgif-frame-${pad(i)}.webp`;
 
       img.onload = () => {
         if (!mounted) return;
+        loadedImages[idx] = img;
         count++;
         setLoadedCount(count);
-        // Draw frame 0 as soon as it arrives
         if (i === 1) {
           imagesRef.current[0] = img;
           drawFrame(0);
@@ -93,23 +168,20 @@ export default function KunafaExplodeCanvas() {
       };
 
       img.onerror = () => {
-        // Fallback to png
         img.src = `/kunafa-frames/ezgif-frame-${pad(i)}.png`;
       };
 
-      loadedImages[i - 1] = img;
+      loadedImages[idx] = img;
     }
 
     imagesRef.current = loadedImages;
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [drawFrame]);
 
-  // Robust, Direct Window Scroll Listener
+  // Single scroll handler drives both canvas AND text
   useEffect(() => {
     let animFrame: number;
+    let lastFrame = -1;
 
     const handleScroll = () => {
       if (!containerRef.current) return;
@@ -119,14 +191,12 @@ export default function KunafaExplodeCanvas() {
       if (totalScrollable <= 0) return;
 
       const scrolled = -rect.top;
-      const progress = Math.max(0, Math.min(1, scrolled / totalScrollable));
-      const targetFrame = Math.min(
-        TOTAL_FRAMES - 1,
-        Math.floor(progress * TOTAL_FRAMES)
-      );
+      const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      setProgress(p);
 
-      if (targetFrame !== currentFrame) {
-        setCurrentFrame(targetFrame);
+      const targetFrame = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES));
+      if (targetFrame !== lastFrame) {
+        lastFrame = targetFrame;
         drawFrame(targetFrame);
       }
     };
@@ -138,7 +208,6 @@ export default function KunafaExplodeCanvas() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
-
     handleScroll();
 
     return () => {
@@ -146,20 +215,7 @@ export default function KunafaExplodeCanvas() {
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(animFrame);
     };
-  }, [drawFrame, currentFrame]);
-
-  // Framer Motion Opacity mappings
-  const act1Opacity = useTransform(scrollYProgress, [0, 0.16, 0.23], [1, 0.9, 0]);
-  const act1Y = useTransform(scrollYProgress, [0, 0.22], [0, -30]);
-
-  const act2Opacity = useTransform(scrollYProgress, [0.22, 0.30, 0.42, 0.49], [0, 1, 1, 0]);
-  const act2X = useTransform(scrollYProgress, [0.22, 0.30, 0.49], [-40, 0, -30]);
-
-  const act3Opacity = useTransform(scrollYProgress, [0.50, 0.58, 0.70, 0.77], [0, 1, 1, 0]);
-  const act3X = useTransform(scrollYProgress, [0.50, 0.58, 0.77], [40, 0, 30]);
-
-  const act4Opacity = useTransform(scrollYProgress, [0.80, 0.88, 1], [0, 1, 1]);
-  const act4Y = useTransform(scrollYProgress, [0.80, 0.90], [40, 0]);
+  }, [drawFrame]);
 
   return (
     <div ref={containerRef} className="relative w-full h-[400vh] bg-[#030303]">
@@ -169,7 +225,7 @@ export default function KunafaExplodeCanvas() {
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.5 } }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] text-white select-none"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] select-none"
           >
             <div className="flex flex-col items-center max-w-sm px-6 text-center">
               <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-6" />
@@ -186,7 +242,7 @@ export default function KunafaExplodeCanvas() {
                 />
               </div>
               <div className="flex items-center justify-between w-full font-mono text-[11px] text-white/50">
-                <span>FRAME [{String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}]</span>
+                <span>FRAME {String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}</span>
                 <span className="text-[#EFB80D]">{Math.round((loadedCount / TOTAL_FRAMES) * 100)}%</span>
               </div>
             </div>
@@ -194,113 +250,88 @@ export default function KunafaExplodeCanvas() {
         )}
       </AnimatePresence>
 
-      {/* Sticky Canvas Viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center bg-[#030303]">
+      {/* Sticky viewport */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
+        {/* Canvas behind everything */}
         <canvas
           ref={canvasRef}
-          className="w-full h-full object-contain pointer-events-none block"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
         />
 
-        {/* Ambient Top & Bottom Blends */}
-        <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#030303] to-transparent pointer-events-none z-10" />
-        <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#030303] to-transparent pointer-events-none z-10" />
+        {/* Seamless edge blends */}
+        <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#030303] to-transparent pointer-events-none z-10" />
+        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#030303] to-transparent pointer-events-none z-10" />
 
-        {/* 4 Story Acts */}
-        {/* Act 1: 0% Scroll */}
-        <motion.div
-          style={{ opacity: act1Opacity, y: act1Y }}
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 z-20 pointer-events-none"
-        >
-          <div className="max-w-3xl flex flex-col items-center">
-            <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/25 px-4 py-1.5 rounded-full mb-6">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>THE ROYAL LEVANTINE VOYAGE</span>
-            </div>
+        {/* Text Overlay Layer — z-20, sits IN FRONT of canvas */}
+        <div className="absolute inset-0 z-20 pointer-events-none flex items-center">
+          {ACTS.map((act, idx) => {
+            const opacity = getActOpacity(progress, act.range);
+            const translateX = getActX(progress, act.range, act.align);
 
-            <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-semibold text-[#FFF8EC] leading-[1.1] mb-6">
-              The Royal Alchemy of <SwashAccent>Captain</SwashAccent> Kunafa
-            </h1>
+            if (opacity === 0) return null;
 
-            <p className="font-sans text-base sm:text-lg text-white/60 max-w-xl mb-8 leading-relaxed">
-              Hand-spun golden kataifi encasing molten artisanal Akawi cheese, drenched in orange blossom nectar.
-            </p>
+            return (
+              <div
+                key={idx}
+                className={`absolute inset-y-0 flex items-center px-6 sm:px-10 md:px-16 ${
+                  act.align === "left"
+                    ? "left-0 w-full md:w-[48%] justify-start"
+                    : act.align === "right"
+                    ? "right-0 w-full md:w-[48%] justify-end"
+                    : "inset-x-0 justify-center"
+                }`}
+                style={{
+                  opacity,
+                  transform: `translateX(${translateX}px)`,
+                  transition: "none",
+                }}
+              >
+                <div
+                  className={`max-w-md w-full ${
+                    act.align === "center" ? "text-center mx-auto" : "text-left"
+                  }`}
+                >
+                  {/* Label pill */}
+                  {act.label && (
+                    <div
+                      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] mb-3"
+                      style={{ color: (act as {labelColor?: string}).labelColor ?? "#EFB80D" }}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ background: (act as {labelColor?: string}).labelColor ?? "#EFB80D" }}
+                      />
+                      {act.label}
+                    </div>
+                  )}
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 pointer-events-auto">
-              <CtaPill href="/menu" size="lg">
-                EXPLORE MENU
-              </CtaPill>
-            </div>
-          </div>
-        </motion.div>
+                  {/* Headline */}
+                  <h2
+                    className={`font-display font-semibold leading-[1.1] text-[#FFF8EC] mb-4 ${
+                      act.align === "center"
+                        ? "text-4xl sm:text-6xl md:text-7xl"
+                        : "text-3xl sm:text-4xl md:text-5xl"
+                    }`}
+                  >
+                    {act.headline}
+                  </h2>
 
-        {/* Act 2: 30% Scroll (Left aligned) */}
-        <motion.div
-          style={{ opacity: act2Opacity, x: act2X }}
-          className="absolute inset-y-0 left-0 w-full md:w-1/2 flex flex-col justify-center px-6 sm:px-12 md:pl-20 z-20 pointer-events-none"
-        >
-          <div className="max-w-lg bg-[#241509]/85 border border-[#E7DCC9]/15 p-8 rounded-[20px] shadow-2xl backdrop-blur-xl">
-            <div className="font-mono text-xs uppercase tracking-[0.2em] text-[#DA7034] mb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034]" />
-              <span>01 / KATAIFI TENSION</span>
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[#FFF8EC] mb-4">
-              Deconstructed <SwashAccent>Crisp</SwashAccent> & Tension
-            </h2>
-            <p className="font-sans text-sm text-white/65 leading-relaxed mb-4">
-              Individual strands of clarified-butter pastry lift away under acoustic heat. 
-              Copper-pan roasted at precisely 205°C to deliver a resonant 48 dB audible crunch.
-            </p>
-            <div className="font-mono text-xs text-[#EFB80D]">
-              ROAST METRIC: 205°C COPPER SEAR
-            </div>
-          </div>
-        </motion.div>
+                  {/* Body copy */}
+                  <p className="font-sans text-sm sm:text-base text-white/70 leading-relaxed mb-4 max-w-sm">
+                    {act.body}
+                  </p>
 
-        {/* Act 3: 60% Scroll (Right aligned) */}
-        <motion.div
-          style={{ opacity: act3Opacity, x: act3X }}
-          className="absolute inset-y-0 right-0 w-full md:w-1/2 flex flex-col justify-center items-end px-6 sm:px-12 md:pr-20 z-20 pointer-events-none"
-        >
-          <div className="max-w-lg bg-[#241509]/85 border border-[#E7DCC9]/15 p-8 rounded-[20px] shadow-2xl backdrop-blur-xl text-left">
-            <div className="font-mono text-xs uppercase tracking-[0.2em] text-[#EFB80D] mb-2 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
-              <span>02 / ZERO-GRAVITY CORE</span>
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-semibold text-[#FFF8EC] mb-4">
-              The Molten <SwashAccent>Akawi</SwashAccent> Heart
-            </h2>
-            <p className="font-sans text-sm text-white/65 leading-relaxed mb-4">
-              Suspended in microgravity, 18-hour desalinated mountain Akawi curd unfurls with 
-              raw first-harvest Aleppo emerald pistachios and Damascus rosewater.
-            </p>
-            <div className="font-mono text-xs text-[#EFB80D]">
-              CHEESE BLEND: 70% AKAWI / 30% NABLUSI
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Act 4: 90% Scroll (Centered Finale) */}
-        <motion.div
-          style={{ opacity: act4Opacity, y: act4Y }}
-          className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 sm:px-6 z-20 pointer-events-none"
-        >
-          <div className="max-w-2xl bg-[#241509]/90 border border-[#EFB80D]/30 p-8 sm:p-12 rounded-[20px] shadow-[0_0_50px_rgba(239,184,13,0.15)] backdrop-blur-2xl">
-            <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] mb-3">
-              FINALE & SYNTHESIS
-            </div>
-            <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#FFF8EC] mb-4">
-              Reassembled to <SwashAccent>Perfection</SwashAccent>
-            </h2>
-            <p className="font-sans text-sm sm:text-base text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
-              The golden disc unites into an unparalleled symphony of crunch, molten warmth, and floral sweetness.
-            </p>
-            <div className="flex items-center justify-center pointer-events-auto">
-              <CtaPill href="/menu" size="lg">
-                ORDER FRESH PLATTER
-              </CtaPill>
-            </div>
-          </div>
-        </motion.div>
+                  {/* Metric tag */}
+                  {"metric" in act && act.metric && (
+                    <div className="font-mono text-xs text-[#EFB80D] tracking-wider">
+                      {act.metric}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

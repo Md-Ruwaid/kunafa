@@ -7,17 +7,25 @@ import ShipsLog from "@/components/ShipsLog";
 export default function HomePage() {
   return (
     <main className="relative min-h-screen bg-[#030303]">
-      {/* 1. Core Sticky Kunafa Explode Canvas (400vh) */}
-      <KunafaExplodeCanvas />
+      {/* 1. Scrollytelling hero — 400vh canvas with text overlays */}
+      <section id="story">
+        <KunafaExplodeCanvas />
+      </section>
 
-      {/* 2. The Captain's Chart (Animated SVG Route across 5 Outposts) */}
-      <CaptainsChart />
+      {/* 2. Craft — Captain's Chart (SVG animated route) */}
+      <section id="craft">
+        <CaptainsChart />
+      </section>
 
-      {/* 3. Menu Best Sellers Preview */}
-      <MenuPreview />
+      {/* 3. Menu — Brand showcase (no ordering) */}
+      <section id="menu">
+        <MenuPreview />
+      </section>
 
-      {/* 4. Ship's Log Reviews */}
-      <ShipsLog />
+      {/* 4. Reviews */}
+      <section id="franchise">
+        <ShipsLog />
+      </section>
     </main>
   );
 }
