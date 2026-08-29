@@ -10,6 +10,14 @@ const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
 
+// Official Captain Kunafa Platter Imagery to sit in the canvas animation frames
+const PRODUCT_IMAGES = [
+  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png", // Act 0: The Captain's Original Akawi
+  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png", // Act 1: Aleppo Emerald Pistachio Crown
+  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png", // Act 2: Molten Akawi / Dark Choco Lava
+  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png", // Act 3: Lotus Biscoff Royale
+];
+
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
@@ -136,13 +144,14 @@ export default function KunafaExplodeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const productImagesRef = useRef<HTMLImageElement[]>([]);
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing with subtle zoom-in and smooth center alignment
-  const drawFrame = useCallback((index: number) => {
+  // Canvas drawing with subtle zoom-in, explosion sequence AND official product images
+  const drawFrame = useCallback((index: number, currentProgress = 0) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
     if (!canvas || !img || !img.complete) return;
@@ -177,16 +186,76 @@ export default function KunafaExplodeCanvas() {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+    // Render official Captain Kunafa platter pictures directly on the canvas animation frames
+    ACTS.forEach((act, actIdx) => {
+      const prodImg = productImagesRef.current[actIdx];
+      if (!prodImg || !prodImg.complete) return;
+
+      const actOpacity = getActOpacity(currentProgress, act.range);
+      if (actOpacity <= 0) return;
+
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, actOpacity * 0.95);
+
+      const isMobile = width < 768;
+      const maxDim = isMobile ? Math.min(width * 0.44, height * 0.35, 240) : Math.min(width * 0.35, height * 0.48, 360);
+
+      let prodX = width * 0.5;
+      let prodY = height * 0.5;
+
+      if (act.align === "left") {
+        prodX = isMobile ? width * 0.5 : width * 0.74;
+        prodY = isMobile ? height * 0.68 : height * 0.5;
+      } else if (act.align === "right") {
+        prodX = isMobile ? width * 0.5 : width * 0.26;
+        prodY = isMobile ? height * 0.68 : height * 0.5;
+      } else {
+        prodX = width * 0.5;
+        prodY = isMobile ? height * 0.66 : height * 0.60;
+      }
+
+      // Draw subtle ambient gold aura behind the official platter
+      const glow = ctx.createRadialGradient(prodX, prodY, 10, prodX, prodY, maxDim * 0.65);
+      glow.addColorStop(0, "rgba(239, 184, 13, 0.25)");
+      glow.addColorStop(0.5, "rgba(239, 184, 13, 0.08)");
+      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(prodX, prodY, maxDim * 0.65, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw the official platter image
+      const aspect = prodImg.naturalHeight / (prodImg.naturalWidth || 1);
+      const pWidth = maxDim;
+      const pHeight = maxDim * aspect;
+      ctx.drawImage(prodImg, prodX - pWidth / 2, prodY - pHeight / 2, pWidth, pHeight);
+      ctx.restore();
+    });
+
     ctx.restore();
   }, []);
 
-  // Preload all frames
+  // Preload all frames & official product imagery
   useEffect(() => {
     let mounted = true;
     const loadedImages: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     let count = 0;
     const pad = (n: number) => String(n).padStart(3, "0");
 
+    // Preload official product images
+    PRODUCT_IMAGES.forEach((url, idx) => {
+      const prodImg = new Image();
+      prodImg.crossOrigin = "anonymous";
+      prodImg.src = url;
+      prodImg.onload = () => {
+        if (!mounted) return;
+        productImagesRef.current[idx] = prodImg;
+      };
+      productImagesRef.current[idx] = prodImg;
+    });
+
+    // Preload explosion sequence frames
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
       const idx = i - 1;
@@ -199,12 +268,12 @@ export default function KunafaExplodeCanvas() {
         setLoadedCount(count);
         if (i === 1) {
           imagesRef.current[0] = img;
-          drawFrame(0);
+          drawFrame(0, 0);
         }
         if (count >= TOTAL_FRAMES) {
           imagesRef.current = loadedImages;
           setIsLoaded(true);
-          drawFrame(0);
+          drawFrame(0, 0);
         }
       };
 
@@ -221,7 +290,7 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single scroll handler
+  // Single scroll handler synchronized with frame and progress
   useEffect(() => {
     let animFrame: number;
     let lastFrame = -1;
@@ -241,9 +310,9 @@ export default function KunafaExplodeCanvas() {
         TOTAL_FRAMES - 1,
         Math.floor(p * TOTAL_FRAMES)
       );
-      if (targetFrame !== lastFrame) {
+      if (targetFrame !== lastFrame || Math.abs(p - progress) > 0.005) {
         lastFrame = targetFrame;
-        drawFrame(targetFrame);
+        drawFrame(targetFrame, p);
       }
     };
 
@@ -263,36 +332,47 @@ export default function KunafaExplodeCanvas() {
       window.removeEventListener("orientationchange", onScroll);
       cancelAnimationFrame(animFrame);
     };
-  }, [drawFrame]);
+  }, [drawFrame, progress]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[550vh] sm:h-[600vh] bg-[#030303]">
-      {/* Preloader */}
+    <div
+      ref={containerRef}
+      className="relative w-full h-[550vh] sm:h-[600vh] bg-[#030303]"
+    >
+      {/* Preloader / Initial Loading indicator */}
       <AnimatePresence>
         {!isLoaded && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.5 } }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] select-none p-4"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] text-[#FFF8EC]"
           >
-            <div className="flex flex-col items-center max-w-xs sm:max-w-sm px-4 text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-5 flex items-center justify-center">
-                <ShipHelm size={22} className="text-[#EFB80D]" />
+            <div className="relative mb-6">
+              <div className="w-16 h-16 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center">
+                <ShipHelm size={32} className="text-[#EFB80D]" />
               </div>
-              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#EFB80D] mb-2">
-                CAPTAIN KUNAFA
+            </div>
+
+            <div className="font-display font-bold text-xl tracking-wider mb-2">
+              CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
+            </div>
+
+            <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#C4B5A5] mb-6">
+              HEATING COPPER HEARTHS
+            </div>
+
+            <div className="w-48 h-1 bg-[#111111] rounded-full overflow-hidden mb-3 border border-white/5">
+              <div
+                className="h-full bg-[#EFB80D] transition-all duration-150 ease-out"
+                style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[10px] sm:text-xs text-white/50">
+                LOADING EXPERIENCE
               </span>
-              <h2 className="font-display text-xl sm:text-2xl font-semibold text-white/95 mb-4">
-                LOADING <SwashAccent color="gold">VOYAGE…</SwashAccent>
-              </h2>
-              <div className="w-full bg-white/10 h-[2px] rounded-full overflow-hidden mb-3">
-                <div
-                  className="h-full bg-[#EFB80D] transition-all duration-150"
-                  style={{
-                    width: `${Math.round((loadedCount / TOTAL_FRAMES) * 100)}%`,
-                  }}
-                />
-              </div>
               <span className="font-mono text-[10px] sm:text-xs text-[#EFB80D]">
                 {Math.round((loadedCount / TOTAL_FRAMES) * 100)}%
               </span>
@@ -303,7 +383,7 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything - Contained with subtle zoom */}
+        {/* Canvas behind everything - Contained with subtle zoom and official product platters */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
