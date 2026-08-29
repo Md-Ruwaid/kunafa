@@ -104,7 +104,7 @@ const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
 
 export default function CaptainsChart() {
   const [activeBranchIndex, setActiveBranchIndex] = useState(0);
-  const [mapMode, setMapMode] = useState<"google" | "nautical">("google");
+  const [mapMode, setMapMode] = useState<"nautical" | "google">("nautical");
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
