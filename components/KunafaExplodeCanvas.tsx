@@ -2,10 +2,9 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowDown, ChevronRight, Layers, Volume2, VolumeX } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import CtaPill from "@/components/CtaPill";
 import SwashAccent from "@/components/SwashAccent";
-import { audio } from "@/lib/audio";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
@@ -19,8 +18,6 @@ export default function KunafaExplodeCanvas() {
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [isMuted, setIsMuted] = useState(true);
 
   // Framer Motion Scroll progress
   const { scrollYProgress } = useScroll({
@@ -110,7 +107,7 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Robust, Direct Window Scroll + Framer Motion Synced Listener
+  // Robust, Direct Window Scroll Listener
   useEffect(() => {
     let animFrame: number;
 
@@ -128,12 +125,8 @@ export default function KunafaExplodeCanvas() {
         Math.floor(progress * TOTAL_FRAMES)
       );
 
-      const percent = Math.round(progress * 100);
-      setScrollPercentage(percent);
-
       if (targetFrame !== currentFrame) {
         setCurrentFrame(targetFrame);
-        audio.playFrameTick(targetFrame);
         drawFrame(targetFrame);
       }
     };
@@ -146,7 +139,6 @@ export default function KunafaExplodeCanvas() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
 
-    // Initial render call
     handleScroll();
 
     return () => {
@@ -168,11 +160,6 @@ export default function KunafaExplodeCanvas() {
 
   const act4Opacity = useTransform(scrollYProgress, [0.80, 0.88, 1], [0, 1, 1]);
   const act4Y = useTransform(scrollYProgress, [0.80, 0.90], [40, 0]);
-
-  const toggleSound = () => {
-    const unmuted = audio.toggleMute();
-    setIsMuted(!unmuted);
-  };
 
   return (
     <div ref={containerRef} className="relative w-full h-[400vh] bg-[#030303]">
@@ -218,38 +205,6 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#030303] to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#030303] to-transparent pointer-events-none z-10" />
 
-        {/* Telemetry HUD */}
-        <div className="absolute top-20 sm:top-24 right-4 sm:right-8 z-30 flex items-center gap-3 font-mono text-[11px] text-white/60 bg-[#241509]/80 border border-[#E7DCC9]/15 px-4 py-1.5 rounded-full backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-[#EFB80D] animate-ping" />
-          <span className="text-[#EFB80D]">LIVE</span>
-          <span>FRAME {String(currentFrame + 1).padStart(3, "0")} / {TOTAL_FRAMES}</span>
-          <span className="text-white/40">|</span>
-          <span>{scrollPercentage}%</span>
-        </div>
-
-        {/* Bottom Sound & Hint */}
-        <div className="absolute bottom-6 inset-x-6 z-30 flex items-center justify-between pointer-events-none">
-          <div className="font-mono text-[11px] tracking-widest uppercase text-white/60 bg-[#241509]/80 border border-[#E7DCC9]/15 px-3.5 py-1.5 rounded-full backdrop-blur-md pointer-events-auto">
-            <span className="text-[#EFB80D] font-semibold">STAGE: </span>
-            {scrollPercentage < 25
-              ? "01 ROYAL ORIGIN"
-              : scrollPercentage < 55
-              ? "02 KATAIFI EXPANSION"
-              : scrollPercentage < 80
-              ? "03 MOLTEN DISASSEMBLY"
-              : "04 GOLDEN REASSEMBLY"}
-          </div>
-
-          <button
-            type="button"
-            onClick={toggleSound}
-            className="pointer-events-auto flex items-center gap-2 font-mono text-[11px] text-white/70 hover:text-[#EFB80D] bg-[#241509]/80 border border-[#E7DCC9]/15 px-3.5 py-1.5 rounded-full backdrop-blur-md cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
-          >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5 text-white/40" /> : <Volume2 className="w-3.5 h-3.5 text-[#EFB80D]" />}
-            <span className="hidden sm:inline">{isMuted ? "SOUND: OFF" : "SOUND: ON"}</span>
-          </button>
-        </div>
-
         {/* 4 Story Acts */}
         {/* Act 1: 0% Scroll */}
         <motion.div
@@ -274,14 +229,6 @@ export default function KunafaExplodeCanvas() {
               <CtaPill href="/menu" size="lg">
                 EXPLORE MENU
               </CtaPill>
-              <button
-                type="button"
-                onClick={() => window.scrollBy({ top: window.innerHeight * 0.9, behavior: "smooth" })}
-                className="flex items-center gap-2 text-white/80 hover:text-[#EFB80D] font-sans text-sm px-6 py-4 rounded-full border border-white/15 hover:border-[#EFB80D]/40 bg-white/5 backdrop-blur-sm transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
-              >
-                <span>Scroll to Detonate</span>
-                <ArrowDown className="w-4 h-4" />
-              </button>
             </div>
           </div>
         </motion.div>
@@ -347,12 +294,9 @@ export default function KunafaExplodeCanvas() {
             <p className="font-sans text-sm sm:text-base text-white/70 max-w-lg mx-auto mb-8 leading-relaxed">
               The golden disc unites into an unparalleled symphony of crunch, molten warmth, and floral sweetness.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto">
+            <div className="flex items-center justify-center pointer-events-auto">
               <CtaPill href="/menu" size="lg">
                 ORDER FRESH PLATTER
-              </CtaPill>
-              <CtaPill href="/franchise" variant="secondary" size="lg">
-                JOIN THE FLEET
               </CtaPill>
             </div>
           </div>

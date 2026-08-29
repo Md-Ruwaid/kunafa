@@ -5,7 +5,6 @@ import { Sparkles, ShoppingBag, Check, Flame, Award, Droplets } from "lucide-rea
 import SwashAccent from "@/components/SwashAccent";
 import CtaPill from "@/components/CtaPill";
 import confetti from "canvas-confetti";
-import { audio } from "@/lib/audio";
 
 interface MenuItem {
   id: string;
@@ -105,6 +104,10 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState<"All" | "Classic" | "Fusion" | "Best Sellers">("All");
   const [orderedItem, setOrderedItem] = useState<MenuItem | null>(null);
 
+  const handleCategoryChange = (cat: "All" | "Classic" | "Fusion" | "Best Sellers") => {
+    setActiveCategory(cat);
+  };
+
   const categories: ("All" | "Classic" | "Fusion" | "Best Sellers")[] = [
     "All",
     "Classic",
@@ -119,7 +122,6 @@ export default function MenuPage() {
   });
 
   const handleQuickOrder = (item: MenuItem) => {
-    audio.playChime(750, 0.2);
     confetti({
       particleCount: 100,
       spread: 60,
@@ -156,10 +158,7 @@ export default function MenuPage() {
               <button
                 key={cat}
                 type="button"
-                onClick={() => {
-                  audio.playChime(500);
-                  setActiveCategory(cat);
-                }}
+                onClick={() => handleCategoryChange(cat)}
                 className={`font-sans text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 ${
                   isActive
                     ? "bg-[#EFB80D] text-[#2B1B12] font-bold shadow-[0_0_20px_rgba(239,184,13,0.35)] scale-105"
