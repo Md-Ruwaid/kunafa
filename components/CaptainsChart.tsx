@@ -9,7 +9,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose } from "@/components/NauticalElements";
+import { CompassRose, ShipHelm } from "@/components/NauticalElements";
 
 interface Branch {
   id: string;
@@ -53,7 +53,7 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00002",
     hours: "12:00 PM – 01:00 AM",
     x: 310,
-    y: 140,
+    y: 130,
     highlight: "Live Seating & Takeaway",
     lat: "17.3753° N",
     lng: "78.4983° E",
@@ -85,7 +85,7 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00004",
     hours: "10:00 AM – 02:30 AM",
     x: 650,
-    y: 110,
+    y: 100,
     highlight: "Airport Corridor Terminal",
     lat: "17.2403° N",
     lng: "78.4294° E",
@@ -110,7 +110,7 @@ const BRANCHES: Branch[] = [
   },
 ];
 
-const ROUTE_PATH_D = "M 140 220 C 210 160, 240 140, 310 140 C 380 140, 410 240, 480 240 C 550 240, 580 110, 650 110 C 720 110, 750 180, 820 180";
+const ROUTE_PATH_D = "M 140 220 C 210 150, 240 130, 310 130 C 380 130, 410 240, 480 240 C 550 240, 580 100, 650 100 C 720 100, 750 180, 820 180";
 
 export default function CaptainsChart() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -242,16 +242,16 @@ export default function CaptainsChart() {
           <CompassRose size={260} />
         </div>
 
-        {/* 1. Header & Stepper Navigation Table with White Accents */}
-        <div className="relative z-10 max-w-7xl mx-auto w-full pt-14 sm:pt-16">
-          <div className="text-center sm:text-left mb-3">
-            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+        {/* 1. Header & Stepper Navigation Bar */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full pt-12 sm:pt-16">
+          <div className="text-center sm:text-left mb-2.5 sm:mb-3">
+            <h2 className="font-display text-xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
               From Barkas to <SwashAccent color="gold">Jubilee Hills</SwashAccent>
             </h2>
           </div>
 
           {/* Stepper Navigation Tabs: Crisp White & Gold Balance */}
-          <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5 bg-[#121212] border border-white/10 p-1.5 rounded-xl sm:rounded-2xl">
+          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#121212] border border-white/10 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl">
             {BRANCHES.map((branch, idx) => {
               const isCurrent = idx === activeBranchIndex;
 
@@ -260,7 +260,7 @@ export default function CaptainsChart() {
                   key={branch.id}
                   type="button"
                   onClick={() => handleJumpToBranch(idx)}
-                  className={`flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-2 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[10px] sm:text-xs transition-all cursor-pointer truncate ${
+                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-3 px-1.5 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9.5px] sm:text-xs transition-all cursor-pointer truncate ${
                     isCurrent
                       ? "bg-[#EFB80D] text-[#000000] font-black scale-[1.02] shadow-sm"
                       : "bg-[#1c1c1c] text-white hover:bg-white hover:text-black font-semibold border border-white/5"
@@ -277,13 +277,14 @@ export default function CaptainsChart() {
           </div>
         </div>
 
-        {/* 2. Main Center Section: Flat SVG Chart + Balanced Spotlight Card */}
+        {/* 2. Main Center Section: Enlarged SVG Chart Animation on Mobile + Spotlight Card */}
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
-          {/* Map Chart Container */}
-          <div className="lg:col-span-7 bg-[#111111] rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10">
-            <div className="relative w-full h-[160px] sm:h-[230px] lg:h-[280px] select-none">
+          {/* Large, Prominent Map Chart Container */}
+          <div className="lg:col-span-7 bg-[#111111] rounded-[18px] sm:rounded-[24px] p-2.5 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-lg">
+            <div className="relative w-full h-[200px] xs:h-[220px] sm:h-[260px] lg:h-[300px] select-none">
               <svg
                 viewBox="0 0 960 320"
+                preserveAspectRatio="xMidYMid meet"
                 className="w-full h-full absolute inset-0"
               >
                 {/* Guide Grid */}
@@ -306,14 +307,14 @@ export default function CaptainsChart() {
                   d={ROUTE_PATH_D}
                   fill="none"
                   stroke="#EFB80D"
-                  strokeWidth="5"
+                  strokeWidth="6"
                   strokeLinecap="round"
                 />
 
                 {/* Sailing Vessel Group in Crisp Solid Gold with White Accent */}
                 <g ref={shipGroupRef}>
-                  <circle r="14" fill="#EFB80D" stroke="#FFFFFF" strokeWidth="2.5" />
-                  <g transform="scale(0.7) translate(-12, -12)">
+                  <circle r="16" fill="#EFB80D" stroke="#FFFFFF" strokeWidth="3" />
+                  <g transform="scale(0.8) translate(-12, -12)">
                     <path
                       d="M12 2L15 8H9L12 2ZM4 13L12 11L20 13L17 19H7L4 13Z"
                       fill="#000000"
@@ -334,36 +335,36 @@ export default function CaptainsChart() {
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 12 : 8}
+                        r={isCurrent ? 15 : 10}
                         fill={isCurrent ? "#EFB80D" : "#444444"}
                         stroke="#FFFFFF"
-                        strokeWidth={isCurrent ? "2.5" : "1.5"}
+                        strokeWidth={isCurrent ? "3" : "2"}
                       />
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 5 : 3}
+                        r={isCurrent ? 6 : 4}
                         fill={isCurrent ? "#000000" : "#EFB80D"}
                       />
 
                       <text
                         x={branch.x}
-                        y={branch.y - 16}
+                        y={branch.y - 18}
                         textAnchor="middle"
                         fill="#FFFFFF"
                         fontFamily="var(--font-fraunces), serif"
                         fontWeight={isCurrent ? "900" : "700"}
-                        fontSize={isCurrent ? "14" : "12"}
+                        fontSize={isCurrent ? "15" : "13"}
                       >
                         {branch.name}
                       </text>
                       <text
                         x={branch.x}
-                        y={branch.y + 22}
+                        y={branch.y + 24}
                         textAnchor="middle"
-                        fill={isCurrent ? "#EFB80D" : "#BBBBBB"}
+                        fill={isCurrent ? "#EFB80D" : "#CCCCCC"}
                         fontFamily="var(--font-ibm-mono), monospace"
-                        fontSize="9"
+                        fontSize="11"
                         fontWeight="700"
                       >
                         {branch.code}
@@ -375,7 +376,7 @@ export default function CaptainsChart() {
             </div>
           </div>
 
-          {/* Active Branch Spotlight Card with White Details & Balanced Contrast */}
+          {/* Active Branch Spotlight Card */}
           <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
@@ -384,29 +385,29 @@ export default function CaptainsChart() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.15 }}
-                className="bg-[#121212] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-5 sm:p-6 relative overflow-hidden shadow-xl"
+                className="bg-[#121212] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-4 sm:p-6 relative overflow-hidden shadow-xl"
               >
-                <div className="flex items-baseline gap-2 mb-1">
-                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+                <div className="flex items-baseline justify-between gap-2 mb-1">
+                  <h3 className="font-display font-bold text-lg sm:text-2xl text-white">
                     {activeBranch.name}
                   </h3>
-                  <span className="font-sans text-[11px] sm:text-xs text-[#EFB80D] font-bold">
+                  <span className="font-sans text-[10.5px] sm:text-xs text-[#EFB80D] font-bold">
                     {activeBranch.area}
                   </span>
                 </div>
 
-                <div className="inline-block bg-white text-black font-mono text-[10px] sm:text-[11px] font-black px-3 py-1 rounded-md my-2.5 shadow-sm">
+                <div className="inline-block bg-white text-black font-mono text-[9.5px] sm:text-[11px] font-black px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md my-1.5 sm:my-2.5 shadow-sm">
                   {activeBranch.highlight}
                 </div>
 
-                <p className="font-sans text-xs text-white/85 font-medium leading-relaxed mb-3 line-clamp-2 sm:line-clamp-none">
+                <p className="font-sans text-xs text-white/85 font-medium leading-relaxed mb-2.5 sm:mb-3 line-clamp-2 sm:line-clamp-none">
                   {activeBranch.description}
                 </p>
 
-                <div className="space-y-1.5 font-sans text-xs text-white/90 font-medium border-t border-white/10 pt-3 mb-4">
+                <div className="space-y-1 font-sans text-xs text-white/90 font-medium border-t border-white/10 pt-2.5 sm:pt-3 mb-3 sm:mb-4">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
-                    <span className="truncate text-white font-semibold text-[11px] sm:text-xs">
+                    <span className="truncate text-white font-semibold text-[10.5px] sm:text-xs">
                       {activeBranch.address}
                     </span>
                   </div>
@@ -425,7 +426,7 @@ export default function CaptainsChart() {
                   )}!%20I'd%20like%20to%20order%20fresh%20kunafa.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs sm:text-sm font-black py-3 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] cursor-pointer shadow-md"
+                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs sm:text-sm font-black py-2.5 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] cursor-pointer shadow-md"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
