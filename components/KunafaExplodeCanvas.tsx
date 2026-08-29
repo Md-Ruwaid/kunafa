@@ -320,6 +320,9 @@ export default function KunafaExplodeCanvas() {
           })}
         </div>
 
+        {/* Transparent bottom fade gradient into next section */}
+        <div className="absolute inset-x-0 bottom-0 h-32 sm:h-48 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10" />
+
         {/* Mobile scroll hint */}
         <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
           <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-white/60 bg-[#030303] px-3 py-1 rounded-full border border-white/10">
