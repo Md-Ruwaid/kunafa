@@ -1,11 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Sparkles, MoveHorizontal } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import { ShipHelm } from "@/components/NauticalElements";
+import CircularGallery, { GalleryItem } from "@/components/CircularGallery";
 
 type Category = "All" | "Best Sellers" | "Classic" | "Fusion";
+
+const GALLERY_ITEMS: GalleryItem[] = [
+  {
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
+    text: "The Captain's Original Akawi",
+  },
+  {
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
+    text: "Aleppo Emerald Pistachio Crown",
+  },
+  {
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png",
+    text: "Lotus Biscoff Royale",
+  },
+  {
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png",
+    text: "Dark Choco & Hazelnut Lava",
+  },
+];
 
 const MENU_ITEMS = [
   {
@@ -17,7 +37,7 @@ const MENU_ITEMS = [
       "Clarified A2 ghee kataifi encasing molten 18-hr desalinated Akawi cheese, bathed in Damascus rose and orange blossom attar.",
     price: "₹180",
     bestSeller: true,
-    image: "/kunafa-frames/ezgif-frame-001.webp",
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
   },
   {
     id: "aleppo-pistachio",
@@ -28,7 +48,7 @@ const MENU_ITEMS = [
       "Double-loaded with raw first-harvest green Aleppo pistachios, crushed cardamom nectar, and rich buffalo clotted ashta cream.",
     price: "₹220",
     bestSeller: true,
-    image: "/kunafa-frames/ezgif-frame-050.webp",
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
   },
   {
     id: "choco-kunafa",
@@ -39,7 +59,18 @@ const MENU_ITEMS = [
       "72% dark chocolate molten core enveloped by toasted kataifi strands and roasted hazelnut praline drizzle. Hyderabad's favourite dessert crossover.",
     price: "₹240",
     bestSeller: true,
-    image: "/kunafa-frames/ezgif-frame-075.webp",
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png",
+  },
+  {
+    id: "lotus-biscoff",
+    name: "Lotus Biscoff Royale",
+    category: "Fusion" as Category,
+    tag: "CHEF'S SPECIAL",
+    description:
+      "Warm spiced Belgian speculoos cream baked into the crispy pastry nest, filled with sweet cream cheese and topped with crunchy Biscoff crumble.",
+    price: "₹250",
+    bestSeller: true,
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png",
   },
   {
     id: "salted-caramel",
@@ -50,18 +81,7 @@ const MENU_ITEMS = [
       "Smoked sea-salt caramel drizzle infused into roasted kataifi nests, layered with molten Nablusi curd and crushed pecan crunch.",
     price: "₹230",
     bestSeller: false,
-    image: "/kunafa-frames/ezgif-frame-100.webp",
-  },
-  {
-    id: "lotus-biscoff",
-    name: "Lotus Biscoff Royale",
-    category: "Fusion" as Category,
-    tag: "CHEF'S SPECIAL",
-    description:
-      "Warm spiced Belgian speculoos cream baked into the crispy pastry nest, filled with sweet cream cheese and topped with crunchy Biscoff crumble.",
-    price: "₹250",
-    bestSeller: false,
-    image: "/kunafa-frames/ezgif-frame-030.webp",
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
   },
   {
     id: "mini-cups",
@@ -72,7 +92,7 @@ const MENU_ITEMS = [
       "Four individual mini copper-pan nests featuring Classic Akawi, Pistachio, Choco, and Biscoff. Ideal for family gifting and tasting.",
     price: "₹340",
     bestSeller: true,
-    image: "/kunafa-frames/ezgif-frame-080.webp",
+    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
   },
 ];
 
@@ -88,10 +108,15 @@ export default function MenuPreview() {
   });
 
   return (
-    <section id="menu" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#222222] relative">
+    <section id="menu" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#222222] relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+        
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#EFB80D]/15 border border-[#EFB80D]/30 text-[#EFB80D] font-mono text-[10px] sm:text-xs uppercase tracking-widest font-black mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#EFB80D]" />
+            <span>3D ROTATING SHOWCASE</span>
+          </div>
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
             Handcrafted with <SwashAccent color="gold">Uncompromising Precision</SwashAccent>
           </h2>
@@ -99,6 +124,32 @@ export default function MenuPreview() {
           <p className="font-sans text-xs sm:text-base text-white/70">
             Every portion is baked fresh upon order in traditional shallow copper pans. Zero frozen ingredients. Zero microwave reheating.
           </p>
+        </div>
+
+        {/* 3D WebGL CircularGallery Showcase from React Bits */}
+        <div className="relative w-full mb-16 sm:mb-20">
+          <div className="relative h-[380px] xs:h-[430px] sm:h-[500px] lg:h-[540px] w-full rounded-[24px] sm:rounded-[32px] bg-[#0c0c0c] border border-white/10 shadow-2xl overflow-hidden">
+            <CircularGallery
+              items={GALLERY_ITEMS}
+              bend={2.5}
+              textColor="#FFFFFF"
+              borderRadius={0.06}
+              scrollSpeed={2.2}
+              scrollEase={0.03}
+            />
+
+            {/* Subtle Gradient Overlays for Depth */}
+            <div className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#0c0c0c] to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#0c0c0c] to-transparent pointer-events-none z-10" />
+
+            {/* Interactive Drag Hint Pill */}
+            <div className="absolute bottom-4 inset-x-0 flex justify-center pointer-events-none z-20">
+              <div className="flex items-center gap-2 font-mono text-[9.5px] sm:text-xs uppercase tracking-widest text-black bg-white font-black px-4 py-1.5 rounded-full shadow-lg">
+                <MoveHorizontal className="w-3.5 h-3.5 text-black" />
+                <span>DRAG OR SCROLL TO ROTATE 3D GALLERY</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Category Tabs: Crisp White & Gold Balance */}
@@ -119,20 +170,21 @@ export default function MenuPreview() {
           ))}
         </div>
 
-        {/* Menu Grid */}
+        {/* Menu Grid with Official Photos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 mb-14 sm:mb-16">
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="bg-[#111111] hover:bg-[#161616] rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 transition-all duration-200 border border-white/10 flex flex-col justify-between"
+              className="bg-[#111111] hover:bg-[#161616] rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 transition-all duration-200 border border-white/10 flex flex-col justify-between group"
             >
               <div>
-                {/* Photo Container */}
-                <div className="relative w-full h-40 sm:h-48 rounded-[16px] sm:rounded-[18px] overflow-hidden bg-[#030303] mb-4 sm:mb-5">
+                {/* Photo Container with Official High-Res Images */}
+                <div className="relative w-full h-44 sm:h-52 rounded-[16px] sm:rounded-[18px] overflow-hidden bg-[#080808] mb-4 sm:mb-5 flex items-center justify-center p-2">
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                    className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
                   />
                   <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3">
                     <span
