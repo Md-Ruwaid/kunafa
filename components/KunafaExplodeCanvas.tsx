@@ -3,70 +3,78 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
+import { CompassRose, ShipHelm, CaptainSeal } from "@/components/NauticalElements";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
 
-// Text acts — driven by scroll progress (0 → 1)
+// Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
     range: [0, 0.22] as [number, number],
     align: "center" as const,
+    badge: "ROYAL LEVANTINE ATELIER",
     label: null,
     headline: (
       <>
         Hyderabad's Most{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Talked-About</span>{" "}
+        <span className="font-display italic font-semibold text-[#DA7034]">Talked-About</span>{" "}
         Kunafa
       </>
     ),
-    body: "Hand-pressed on copper. Fresh every single order. Five outposts across the city — one obsession.",
+    body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
+    coords: "17.3115° N, 78.4871° E · BARKAS HQ",
   },
   {
     range: [0.25, 0.50] as [number, number],
     align: "left" as const,
-    label: "01 / THE KATAIFI",
+    badge: null,
+    label: "ACT I · THE KATAIFI TENSION",
     labelColor: "#DA7034",
     headline: (
       <>
-        Golden{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Crisp</span>{" "}
-        That Echoes
+        Deconstructed{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Golden Crisp</span>{" "}
+        &amp; Heat
       </>
     ),
-    body: "Individual strands of clarified ghee pastry roasted in copper at 205°C. The snap is audible across the room — 48 dB and rising.",
-    metric: "ROAST: 205°C COPPER PAN · 48 dB CRUNCH",
+    body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
+    metric: "ROAST: 205°C COPPER SEAR · 48 dB ACOUSTIC CRUNCH",
+    coords: null,
   },
   {
     range: [0.53, 0.78] as [number, number],
     align: "right" as const,
-    label: "02 / THE FILLING",
+    badge: null,
+    label: "ACT II · THE MOLTEN CORE",
     labelColor: "#EFB80D",
     headline: (
       <>
         The Molten{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Akawi</span>{" "}
+        <span className="font-display italic font-semibold text-[#DA7034]">Akawi &amp; Nablusi</span>{" "}
         Heart
       </>
     ),
-    body: "Authentic Akawi and Nablusi cheese, soaked and desalinated for 18 hours, then packed into every tray. No shortcuts. No substitutes.",
-    metric: "BLEND: 70% AKAWI / 30% NABLUSI",
+    body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
+    metric: "CHEESE BLEND: 70% AKAWI / 30% NABLUSI · 45CM PULL",
+    coords: null,
   },
   {
     range: [0.82, 1.0] as [number, number],
     align: "center" as const,
-    label: "CAPTAIN'S PROMISE",
-    labelColor: "#EFB80D",
+    badge: null,
+    label: "ACT III · THE CAPTAIN'S PROMISE",
+    labelColor: "#DA7034",
     headline: (
       <>
-        Fresh-Pressed.{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Every Order.</span>{" "}
-        Always.
+        Reassembled to{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
       </>
     ),
-    body: "Since 2021, we've served over 50,000 trays across Hyderabad. The recipe hasn't changed once.",
-    metric: null,
+    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to 5 outposts — fresh-pressed, every time.",
+    metric: "SERVED FRESH ACROSS 5 OUTPOSTS IN HYDERABAD",
+    coords: "HYDERABAD · EST. 2021",
   },
 ];
 
@@ -176,7 +184,9 @@ export default function KunafaExplodeCanvas() {
     }
 
     imagesRef.current = loadedImages;
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [drawFrame]);
 
   // Single scroll handler drives both canvas AND text
@@ -195,7 +205,10 @@ export default function KunafaExplodeCanvas() {
       const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
       setProgress(p);
 
-      const targetFrame = Math.min(TOTAL_FRAMES - 1, Math.floor(p * TOTAL_FRAMES));
+      const targetFrame = Math.min(
+        TOTAL_FRAMES - 1,
+        Math.floor(p * TOTAL_FRAMES)
+      );
       if (targetFrame !== lastFrame) {
         lastFrame = targetFrame;
         drawFrame(targetFrame);
@@ -229,22 +242,30 @@ export default function KunafaExplodeCanvas() {
             className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] select-none"
           >
             <div className="flex flex-col items-center max-w-sm px-6 text-center">
-              <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-6" />
+              <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-6 flex items-center justify-center">
+                <ShipHelm size={24} className="text-[#DA7034]" />
+              </div>
               <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#EFB80D] mb-2">
                 CAPTAIN KUNAFA
               </span>
               <h2 className="font-display text-2xl font-semibold text-white/95 mb-4">
-                LOADING <SwashAccent>VOYAGE…</SwashAccent>
+                LOADING <SwashAccent color="terracotta">VOYAGE…</SwashAccent>
               </h2>
               <div className="w-full bg-white/10 h-[2px] rounded-full overflow-hidden mb-3">
                 <div
-                  className="h-full bg-[#EFB80D] transition-all duration-150"
-                  style={{ width: `${Math.round((loadedCount / TOTAL_FRAMES) * 100)}%` }}
+                  className="h-full bg-gradient-to-r from-[#DA7034] to-[#EFB80D] transition-all duration-150"
+                  style={{
+                    width: `${Math.round((loadedCount / TOTAL_FRAMES) * 100)}%`,
+                  }}
                 />
               </div>
               <div className="flex items-center justify-between w-full font-mono text-[11px] text-white/50">
-                <span>FRAME {String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}</span>
-                <span className="text-[#EFB80D]">{Math.round((loadedCount / TOTAL_FRAMES) * 100)}%</span>
+                <span>
+                  FRAME [{String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}]
+                </span>
+                <span className="text-[#EFB80D]">
+                  {Math.round((loadedCount / TOTAL_FRAMES) * 100)}%
+                </span>
               </div>
             </div>
           </motion.div>
@@ -260,8 +281,14 @@ export default function KunafaExplodeCanvas() {
         />
 
         {/* Seamless edge blends */}
-        <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#030303] to-transparent pointer-events-none z-10" />
-        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#030303] to-transparent pointer-events-none z-10" />
+        <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
+        <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
+
+        {/* Nautical HUD Marker in top right */}
+        <div className="absolute top-20 right-4 sm:right-8 z-30 pointer-events-none hidden sm:flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#EFB80D]/70 bg-[#2B1B12]/80 border border-[#EFB80D]/20 px-3 py-1 rounded-full backdrop-blur-md">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034] animate-ping" />
+          <span>SCROLL TO EXPLODE VOYAGE</span>
+        </div>
 
         {/* Text Overlay Layer — z-20, sits IN FRONT of canvas */}
         <div className="absolute inset-0 z-20 pointer-events-none flex items-center">
@@ -288,19 +315,37 @@ export default function KunafaExplodeCanvas() {
                 }}
               >
                 <div
-                  className={`max-w-md w-full ${
-                    act.align === "center" ? "text-center mx-auto" : "text-left"
+                  className={`max-w-xl w-full ${
+                    act.align === "center"
+                      ? "text-center mx-auto"
+                      : "text-left"
                   }`}
                 >
+                  {/* Badge */}
+                  {act.badge && (
+                    <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-4 py-1.5 rounded-full mb-5 backdrop-blur-md">
+                      <ShipHelm size={14} className="text-[#DA7034]" />
+                      <span>{act.badge}</span>
+                    </div>
+                  )}
+
                   {/* Label pill */}
                   {act.label && (
                     <div
-                      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] mb-3"
-                      style={{ color: (act as {labelColor?: string}).labelColor ?? "#EFB80D" }}
+                      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] mb-3 px-3 py-1 rounded-full bg-[#2B1B12]/80 border border-white/10 backdrop-blur-md"
+                      style={{
+                        color:
+                          (act as { labelColor?: string }).labelColor ??
+                          "#EFB80D",
+                      }}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full"
-                        style={{ background: (act as {labelColor?: string}).labelColor ?? "#EFB80D" }}
+                        style={{
+                          background:
+                            (act as { labelColor?: string }).labelColor ??
+                            "#EFB80D",
+                        }}
                       />
                       {act.label}
                     </div>
@@ -318,14 +363,20 @@ export default function KunafaExplodeCanvas() {
                   </h2>
 
                   {/* Body copy */}
-                  <p className="font-sans text-sm sm:text-base text-white/70 leading-relaxed mb-4 max-w-sm">
+                  <p className="font-sans text-sm sm:text-base text-white/75 leading-relaxed mb-4 max-w-lg">
                     {act.body}
                   </p>
 
-                  {/* Metric tag */}
+                  {/* Metric tag or Coords */}
                   {"metric" in act && act.metric && (
-                    <div className="font-mono text-xs text-[#EFB80D] tracking-wider">
+                    <div className="font-mono text-xs text-[#EFB80D] tracking-wider bg-[#2B1B12]/70 inline-block px-3 py-1 rounded-md border border-[#EFB80D]/20">
                       {act.metric}
+                    </div>
+                  )}
+
+                  {act.coords && (
+                    <div className="font-mono text-[11px] text-[#DA7034] tracking-widest mt-2 uppercase">
+                      {act.coords}
                     </div>
                   )}
                 </div>

@@ -1,71 +1,90 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, MessageCircle, Flame, Star, Award } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
+import { ShipHelm } from "@/components/NauticalElements";
 
-type Category = "All" | "Classic" | "Fusion" | "Best Sellers";
+type Category = "All" | "Best Sellers" | "Classic" | "Fusion";
 
 const MENU_ITEMS = [
   {
-    id: "classic-original",
-    name: "Captain's Original",
+    id: "captain-original",
+    name: "The Captain's Original",
     category: "Classic" as Category,
-    tag: "SIGNATURE",
-    tagBg: "bg-[#EFB80D]",
-    description: "The one that started it all. Clarified ghee kataifi, molten Akawi cheese, orange blossom nectar. Pressed to 48 dB acoustic crunch.",
+    tag: "ROYAL SIGNATURE",
+    tagColor: "bg-[#EFB80D] text-[#2B1B12]",
+    description:
+      "Clarified A2 ghee kataifi encasing molten 18-hr desalinated Akawi cheese, bathed in Damascus rose and orange blossom attar.",
     price: "₹180",
+    specs: "48 dB Acoustic Snap · 45cm Molten Pull",
     bestSeller: true,
+    image: "/kunafa-frames/ezgif-frame-001.webp",
   },
   {
-    id: "pistachio-crown",
-    name: "Pistachio Crown",
+    id: "aleppo-pistachio",
+    name: "Aleppo Emerald Crown",
     category: "Classic" as Category,
     tag: "BEST SELLER",
-    tagBg: "bg-[#EFB80D]",
-    description: "Double-loaded with crushed raw pistachios, cardamom nectar, and buffalo cream. Requests outpace supply every weekend.",
+    tagColor: "bg-[#DA7034] text-white",
+    description:
+      "Double-loaded with raw first-harvest green Aleppo pistachios, crushed cardamom nectar, and rich buffalo clotted ashta cream.",
     price: "₹220",
+    specs: "First-Crop G1 Pistachio · Ashta Foam",
     bestSeller: true,
+    image: "/kunafa-frames/ezgif-frame-050.webp",
   },
   {
     id: "choco-kunafa",
-    name: "Choco Kunafa",
+    name: "Dark Choco & Hazelnut Lava",
     category: "Fusion" as Category,
-    tag: "CROWD FAVOURITE",
-    tagBg: "bg-[#DA7034]",
-    description: "Dark chocolate molten filling inside crisp kataifi, finished with cocoa dust and date caramel drizzle. Hyderabad's answer to a lava cake.",
+    tag: "CROWD OBSESSION",
+    tagColor: "bg-[#2B1B12] text-[#EFB80D]",
+    description:
+      "72% dark chocolate molten core enveloped by toasted kataifi strands and roasted hazelnut praline drizzle. Hyderabad's favourite dessert crossover.",
     price: "₹240",
+    specs: "72% Single-Origin Cocoa · Nut Praline",
     bestSeller: true,
+    image: "/kunafa-frames/ezgif-frame-075.webp",
   },
   {
     id: "salted-caramel",
-    name: "Salted Caramel Kunafa",
+    name: "Toasted Salted Caramel",
     category: "Fusion" as Category,
     tag: "SEASONAL",
-    tagBg: "bg-[#DA7034]",
-    description: "Smoked sea-salt caramel ribboned through molten Nablusi curd, pecan praline crunch on top.",
+    tagColor: "bg-[#DA7034] text-white",
+    description:
+      "Smoked sea-salt caramel drizzle infused into roasted kataifi nests, layered with molten Nablusi curd and crushed pecan crunch.",
     price: "₹230",
+    specs: "Smoked Maldon Salt · Caramel Nectar",
     bestSeller: false,
+    image: "/kunafa-frames/ezgif-frame-100.webp",
   },
   {
-    id: "biscoff-kunafa",
-    name: "Biscoff Bliss",
+    id: "lotus-biscoff",
+    name: "Lotus Biscoff Royale",
     category: "Fusion" as Category,
-    tag: "NEW",
-    tagBg: "bg-[#2B1B12]",
-    description: "Lotus Biscoff spread baked into the kataifi nest, cream cheese core, crushed Biscoff crumble finish.",
+    tag: "CHEF'S SPECIAL",
+    tagColor: "bg-[#EFB80D] text-[#2B1B12]",
+    description:
+      "Warm spiced Belgian speculoos cream baked into the crispy pastry nest, filled with sweet cream cheese and topped with crunchy Biscoff crumble.",
     price: "₹250",
+    specs: "Belgian Speculoos · Cream Curd",
     bestSeller: false,
+    image: "/kunafa-frames/ezgif-frame-030.webp",
   },
   {
     id: "mini-cups",
-    name: "Mini Captain Cups (4 pcs)",
+    name: "Captain's Mini Platter (4 pcs)",
     category: "Classic" as Category,
-    tag: "SHAREABLE",
-    tagBg: "bg-[#EFB80D]",
-    description: "Individual portion cups — perfect for gifting or group orders. Classic Akawi filling with rose water glaze.",
-    price: "₹160",
-    bestSeller: false,
+    tag: "SHARING BOX",
+    tagColor: "bg-[#2B1B12] text-[#FFF8EC]",
+    description:
+      "Four individual mini copper-pan nests featuring Classic Akawi, Pistachio, Choco, and Biscoff. Ideal for family gifting and tasting.",
+    price: "₹340",
+    specs: "4 Flavour Sampler · Gift Box",
+    bestSeller: true,
+    image: "/kunafa-frames/ezgif-frame-080.webp",
   },
 ];
 
@@ -74,37 +93,42 @@ const CATEGORIES: Category[] = ["All", "Best Sellers", "Classic", "Fusion"];
 export default function MenuPreview() {
   const [activeCategory, setActiveCategory] = useState<Category>("All");
 
-  const filtered = MENU_ITEMS.filter(item => {
+  const filtered = MENU_ITEMS.filter((item) => {
     if (activeCategory === "All") return true;
     if (activeCategory === "Best Sellers") return item.bestSeller;
     return item.category === activeCategory;
   });
 
   return (
-    <section className="py-28 px-4 sm:px-8 bg-white text-[#2B1B12] border-t border-[#E7DCC9]">
+    <section id="menu" className="py-28 px-4 sm:px-8 bg-white text-[#2B1B12] border-t border-[#E7DCC9] relative">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-4 py-1.5 rounded-full mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>THE PLATTERS</span>
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-4 py-1.5 rounded-full mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-[#EFB80D]" />
+            <span>THE COPPER HEARTH PLATTERS</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#2B1B12] leading-tight">
-            Fresh from the <SwashAccent>Copper Pan</SwashAccent>
+
+          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#2B1B12] leading-tight mb-4">
+            Handcrafted with <SwashAccent color="terracotta">Uncompromising Precision</SwashAccent>
           </h2>
+
+          <p className="font-sans text-base text-[#7A6A5B]">
+            Every portion is baked fresh upon order in traditional shallow copper pans. Zero frozen ingredients. Zero microwave reheating.
+          </p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {CATEGORIES.map(cat => (
+        {/* Category Tabs */}
+        <div className="flex flex-wrap justify-center gap-2.5 mb-14">
+          {CATEGORIES.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
               className={`font-sans text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] ${
                 activeCategory === cat
-                  ? "bg-[#EFB80D] text-[#2B1B12] font-bold shadow-[0_0_15px_rgba(239,184,13,0.3)] scale-105"
-                  : "bg-[#FFF8EC] text-[#7A6A5B] border border-[#E7DCC9] hover:border-[#EFB80D]/50"
+                  ? "bg-[#DA7034] text-white font-bold shadow-[0_4px_20px_rgba(218,112,52,0.35)] scale-105"
+                  : "bg-[#FFF8EC] text-[#7A6A5B] border border-[#E7DCC9] hover:border-[#DA7034]/50 hover:text-[#2B1B12]"
               }`}
             >
               {cat}
@@ -112,62 +136,87 @@ export default function MenuPreview() {
           ))}
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {filtered.map(item => (
+        {/* Menu Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 mb-16">
+          {filtered.map((item) => (
             <div
               key={item.id}
-              className="group bg-[#FFF8EC] hover:bg-white border border-[#E7DCC9] hover:border-[#EFB80D]/50 rounded-[20px] p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="group bg-[#FFF8EC] hover:bg-white border border-[#E7DCC9] hover:border-[#DA7034]/50 rounded-[24px] p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between"
             >
-              {/* Image placeholder — shows first frame still */}
-              <div className="relative w-full h-44 rounded-[16px] overflow-hidden bg-[#030303] mb-5">
-                <img
-                  src="/kunafa-frames/ezgif-frame-050.webp"
-                  alt={item.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                />
-                <div className={`absolute top-3 left-3 ${item.tagBg} text-white font-mono text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider`}>
-                  {item.tag}
+              <div>
+                {/* Photo Preview Container */}
+                <div className="relative w-full h-48 rounded-[18px] overflow-hidden bg-[#030303] mb-5">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <span
+                      className={`font-mono text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm ${item.tagColor}`}
+                    >
+                      {item.tag}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-3 right-3 bg-white/95 text-[#2B1B12] font-display font-bold text-base px-3.5 py-1 rounded-full shadow-md backdrop-blur-sm border border-[#E7DCC9]">
+                    {item.price}
+                  </div>
                 </div>
-                <div className="absolute bottom-3 right-3 bg-white/90 text-[#2B1B12] font-display font-semibold text-sm px-3 py-1 rounded-full backdrop-blur-sm">
-                  {item.price}
-                </div>
+
+                <h3 className="font-display font-bold text-xl text-[#2B1B12] group-hover:text-[#DA7034] transition-colors leading-snug mb-2">
+                  {item.name}
+                </h3>
+
+                <p className="font-sans text-xs text-[#7A6A5B] leading-relaxed mb-4">
+                  {item.description}
+                </p>
               </div>
 
-              <h3 className="font-display font-semibold text-lg text-[#2B1B12] group-hover:text-[#DA7034] transition-colors leading-snug mb-2">
-                {item.name}
-              </h3>
-              <p className="font-sans text-xs text-[#7A6A5B] leading-relaxed">
-                {item.description}
-              </p>
-
-              {item.bestSeller && (
-                <div className="mt-3 pt-3 border-t border-[#E7DCC9] font-mono text-[10px] text-[#EFB80D] flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" /> HIGH DEMAND — SELLS OUT DAILY
+              <div>
+                <div className="pt-3 border-t border-[#E7DCC9] font-mono text-[10.5px] text-[#DA7034] font-medium mb-4 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034]" />
+                  <span>{item.specs}</span>
                 </div>
-              )}
+
+                <a
+                  href={`https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20${encodeURIComponent(item.name)}%20(${item.price}).`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#2B1B12] hover:bg-[#DA7034] text-white font-sans text-xs font-semibold py-3 rounded-full transition-colors cursor-pointer shadow-sm"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 text-[#EFB80D]" />
+                  <span>Quick WhatsApp Order</span>
+                </a>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* WhatsApp order strip */}
-        <div className="p-6 sm:p-8 rounded-[20px] bg-[#FFF8EC] border border-[#25D366]/30 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <div className="font-display font-semibold text-lg text-[#2B1B12] mb-1">
-              Ready to Order? We're one tap away.
+        {/* Brand Promise Callout Strip */}
+        <div className="p-7 sm:p-10 rounded-[24px] bg-[#2B1B12] text-[#FFF8EC] border-2 border-[#EFB80D]/30 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-60 h-60 bg-[#DA7034]/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="flex items-center gap-5 relative z-10">
+            <div className="w-14 h-14 rounded-full bg-[#EFB80D]/10 border-2 border-[#EFB80D] flex items-center justify-center text-[#EFB80D] shrink-0">
+              <ShipHelm size={28} className="text-[#DA7034]" />
             </div>
-            <div className="font-sans text-sm text-[#7A6A5B]">
-              WhatsApp your nearest outlet directly — they'll confirm availability and prep time.
+            <div>
+              <div className="font-display font-bold text-xl sm:text-2xl text-white mb-1">
+                Ordering for an Office, Gathering, or Celebration?
+              </div>
+              <div className="font-sans text-xs sm:text-sm text-[#B3A697]">
+                We pack fresh party platters in insulated copper thermal cases for immediate delivery across Hyderabad.
+              </div>
             </div>
           </div>
+
           <a
-            href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20place%20an%20order."
+            href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20bulk%20platters%20for%20a%20gathering."
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 flex items-center gap-2.5 bg-[#25D366] hover:bg-[#20b858] text-white font-semibold font-sans px-7 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(37,211,102,0.25)] focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+            className="shrink-0 flex items-center gap-2.5 bg-[#EFB80D] hover:bg-[#ffc926] text-[#2B1B12] font-sans font-bold text-xs px-8 py-4 rounded-full transition-all hover:scale-105 shadow-md relative z-10"
           >
-            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            Order on WhatsApp
+            <span>Order Bulk Platters</span>
           </a>
         </div>
       </div>

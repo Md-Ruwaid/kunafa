@@ -1,106 +1,212 @@
-import React from "react";
-import { Star, Anchor } from "lucide-react";
-import SwashAccent from "@/components/SwashAccent";
+"use client";
 
-const reviews = [
+import React, { useState } from "react";
+import { Star, Anchor, CheckCircle2, MessageSquarePlus, ExternalLink } from "lucide-react";
+import SwashAccent from "@/components/SwashAccent";
+import { ShipHelm } from "@/components/NauticalElements";
+
+const REVIEWS = [
   {
+    id: "rev-1",
     author: "Mohammed Irfan",
-    location: "Barkas Flagship",
+    branch: "Barkas Flagship",
     rating: 5,
-    date: "Aug 2026",
-    quote: "The crunch literally echoes in the room. Every strand of kataifi is individually golden. I've been to the original in Jordan — Captain Kunafa holds up.",
-    title: "Best Kunafa in Hyderabad, Period.",
+    date: "2 days ago",
+    verified: true,
+    tag: "Original Classic",
+    title: "Best Kunafa in Hyderabad, hands down.",
+    quote:
+      "The crunch literally echoes in the room. Every strand of kataifi is individually golden and buttery. I have tried kunafa across Jordan and Dubai — Captain Kunafa in Barkas matches the authentic Levantine standard.",
   },
   {
-    author: "Priya Reddy",
-    location: "Jubilee Hills Outpost",
+    id: "rev-2",
+    author: "Dr. Priya Reddy",
+    branch: "Jubilee Hills Outpost",
     rating: 5,
-    date: "Jul 2026",
-    quote: "Ordered the Choco Kunafa for a birthday — everyone went back for seconds. The chocolate filling is rich but the cheese still comes through. Genius combo.",
-    title: "Choco Kunafa is Unreal",
+    date: "1 week ago",
+    verified: true,
+    tag: "Choco Lava & Classic",
+    title: "The Dark Choco & Classic combo is unreal",
+    quote:
+      "Ordered for my birthday dinner at Road 36. The live cheese pull was the star of the evening. The orange blossom syrup isn't overly sweet, which is rare for Indian dessert shops.",
   },
   {
+    id: "rev-3",
     author: "Faisal Al-Hassan",
-    location: "Malakpet Outpost",
+    branch: "Malakpet Haven",
     rating: 5,
-    date: "Jul 2026",
-    quote: "The Pistachio Crown is worth every rupee. Pistachios are fresh, not the dried-out grocery ones. The orange blossom syrup isn't overpowering. Perfectly balanced.",
-    title: "Pistachio Crown = ₹220 Well Spent",
+    date: "2 weeks ago",
+    verified: true,
+    tag: "Pistachio Crown",
+    title: "Pistachio Crown is worth every rupee",
+    quote:
+      "The Aleppo emerald pistachios are fresh and generous, not dry commercial powder. The 205°C copper sear gives it that authentic 48 dB acoustic snap. Our family's go-to dessert spot every Friday night.",
   },
   {
-    author: "Sneha Nair",
-    location: "Tolichowki Outpost",
+    id: "rev-4",
+    author: "Sneha & Varun Nair",
+    branch: "Live Wedding Catering",
     rating: 5,
-    date: "Jun 2026",
-    quote: "Watched them press the tray live — the butter smell, the sizzle, the snap when you cut into it. We got four different flavours for the office and every single one was gone in 10 minutes.",
-    title: "Office Catering Was a Massive Hit",
+    date: "3 weeks ago",
+    verified: true,
+    tag: "Weddings (120 Pax)",
+    title: "Live station at our reception was a showstopper",
+    quote:
+      "Booked the First Officer catering package for our reception in Gandipet. The chefs arrived 45 minutes early, set up the copper burners, and pressed every portion hot in front of our guests. Zero hassle, 100% praised.",
   },
   {
+    id: "rev-5",
     author: "Rahul Sharma",
-    location: "Aero City Outpost",
+    branch: "Aero City Anchor",
     rating: 5,
-    date: "Jun 2026",
-    quote: "Stopped by before a flight thinking I'd grab one quick piece. Ended up getting a full tray to take home. The Biscoff one is dangerously good.",
-    title: "Perfect Pre-Flight Stop",
+    date: "1 month ago",
+    verified: true,
+    tag: "Biscoff Royale",
+    title: "Mandatory stop on the way to the airport",
+    quote:
+      "Open late till 2 AM. Grabbed the Lotus Biscoff platter before an early morning flight. The packaging kept it warm and crunchy. Highly recommend to anyone traveling through Shamshabad.",
   },
   {
-    author: "Ayesha Siddiqui",
-    location: "Barkas Flagship",
+    id: "rev-6",
+    author: "Syed Bilal Quadri",
+    branch: "Tolichowki Outpost",
     rating: 5,
-    date: "May 2026",
-    quote: "Used Captain Kunafa for my daughter's mehendi — live station with 2 copper pans. Guests are still talking about it a month later. Completely handled all the setup.",
-    title: "Wedding Event Was Flawless",
+    date: "1 month ago",
+    verified: true,
+    tag: "Captain's Mini Box",
+    title: "Fresh pressed every single time",
+    quote:
+      "No microwave reheating or pre-cooked trays. You stand there, watch the butter sizzle in the copper pan, and get handed a piping hot tray with melting cheese. Saud and team have nailed it.",
   },
 ];
 
 export default function ShipsLog() {
+  const [filter, setFilter] = useState("All");
+
+  const filteredReviews = REVIEWS.filter((r) => {
+    if (filter === "All") return true;
+    if (filter === "Catering") return r.branch.includes("Catering");
+    return r.branch.includes(filter);
+  });
+
   return (
-    <section className="py-28 px-4 sm:px-8 bg-[#FFF8EC] text-[#2B1B12] border-t border-[#E7DCC9] relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-4 py-1.5 rounded-full mb-4">
-            <Anchor className="w-4 h-4" />
-            <span>THE SHIP'S LOG</span>
+    <section id="reviews" className="py-28 px-4 sm:px-8 bg-[#FFF8EC] text-[#2B1B12] border-t border-[#E7DCC9] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-4 py-1.5 rounded-full mb-4">
+            <Anchor className="w-3.5 h-3.5 text-[#EFB80D]" />
+            <span>THE SHIP'S LOGBOOK</span>
           </div>
+
           <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#2B1B12] leading-tight mb-4">
-            Real Reviews from <SwashAccent>Real Voyagers</SwashAccent>
+            Dispatches from Our <SwashAccent color="terracotta">Hyderabad Voyagers</SwashAccent>
           </h2>
-          <p className="font-sans text-sm sm:text-base text-[#7A6A5B]">
-            Verified Google reviews from customers across all 5 Hyderabad outposts.
+
+          <p className="font-sans text-base text-[#7A6A5B]">
+            Verified customer experiences from copper-pan tables across Barkas, Jubilee Hills, Tolichowki, Malakpet, and Aero City.
           </p>
 
-          {/* Aggregate badge */}
-          <div className="inline-flex items-center gap-3 mt-6 px-6 py-3 bg-white border border-[#E7DCC9] rounded-full">
-            <div className="flex gap-0.5 text-[#EFB80D]">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+          {/* Live Google Aggregate Rating Badge */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-4 mt-8 px-7 py-3.5 bg-white border-2 border-[#E7DCC9] rounded-full shadow-sm">
+            <div className="flex items-center gap-1.5 text-[#EFB80D]">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-current" />
+              ))}
             </div>
-            <span className="font-display font-semibold text-[#2B1B12]">4.8</span>
-            <span className="font-mono text-xs text-[#7A6A5B]">/ 5 · 500+ Google reviews</span>
+            <div className="font-display font-bold text-lg text-[#2B1B12]">
+              4.8 <span className="text-xs font-mono font-normal text-[#7A6A5B]">/ 5.0</span>
+            </div>
+            <div className="h-4 w-px bg-[#E7DCC9]" />
+            <span className="font-mono text-xs text-[#7A6A5B]">
+              <strong className="text-[#2B1B12]">520+</strong> Google Reviews
+            </span>
+            <div className="h-4 w-px bg-[#E7DCC9] hidden sm:block" />
+            <a
+              href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-mono text-xs text-[#DA7034] hover:underline font-semibold"
+            >
+              <span>Verify on Google Maps</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {reviews.map((rev, idx) => (
+        {/* Filter Pills */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Catering"].map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setFilter(tab)}
+              className={`font-mono text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all cursor-pointer ${
+                filter === tab
+                  ? "bg-[#DA7034] text-white font-bold shadow-sm"
+                  : "bg-white text-[#7A6A5B] border border-[#E7DCC9] hover:border-[#DA7034]/50"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Reviews Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {filteredReviews.map((rev) => (
             <div
-              key={idx}
-              className="bg-white border border-[#E7DCC9] rounded-[20px] p-6 flex flex-col justify-between hover:border-[#EFB80D]/40 hover:shadow-md transition-all"
+              key={rev.id}
+              className="bg-white border border-[#E7DCC9] rounded-[24px] p-6 sm:p-7 flex flex-col justify-between hover:border-[#DA7034]/50 hover:shadow-lg transition-all"
             >
               <div>
-                <div className="flex items-center gap-1 text-[#EFB80D] mb-3">
-                  {[...Array(rev.rating)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex gap-1 text-[#EFB80D]">
+                    {[...Array(rev.rating)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                    ))}
+                  </div>
+                  <span className="font-mono text-[10px] uppercase font-bold text-[#DA7034] bg-[#DA7034]/10 px-2.5 py-1 rounded-full">
+                    {rev.tag}
+                  </span>
                 </div>
-                <h3 className="font-display font-semibold text-base text-[#2B1B12] mb-2">"{rev.title}"</h3>
-                <p className="font-sans text-xs text-[#7A6A5B] leading-relaxed mb-4">{rev.quote}</p>
+
+                <h3 className="font-display font-bold text-lg text-[#2B1B12] mb-3 leading-snug">
+                  "{rev.title}"
+                </h3>
+
+                <p className="font-sans text-xs sm:text-sm text-[#7A6A5B] leading-relaxed mb-6">
+                  {rev.quote}
+                </p>
               </div>
-              <div className="pt-3 border-t border-[#E7DCC9] flex items-center justify-between font-mono text-[11px]">
+
+              <div className="pt-4 border-t border-[#E7DCC9] flex items-center justify-between font-mono text-[11px]">
                 <div>
-                  <div className="text-[#2B1B12] font-medium">{rev.author}</div>
-                  <div className="text-[#B3A697]">{rev.location}</div>
+                  <div className="text-[#2B1B12] font-bold flex items-center gap-1.5">
+                    <span>{rev.author}</span>
+                    {rev.verified && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline shrink-0" />
+                    )}
+                  </div>
+                  <div className="text-[#DA7034] text-[10px] font-semibold">{rev.branch}</div>
                 </div>
-                <span className="text-[#EFB80D]/80">{rev.date}</span>
+                <span className="text-[#7A6A5B]">{rev.date}</span>
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Callout: Write a review or Share experience */}
+        <div className="text-center">
+          <a
+            href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-[#DA7034] text-[#DA7034] hover:bg-[#DA7034] hover:text-white font-sans text-xs font-bold uppercase tracking-wider transition-all shadow-sm"
+          >
+            <MessageSquarePlus className="w-4 h-4" />
+            <span>Leave a Review on Google</span>
+          </a>
         </div>
       </div>
     </section>

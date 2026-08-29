@@ -15,29 +15,52 @@ const fraunces = Fraunces({
 const workSans = Work_Sans({
   variable: "--font-work-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#030303",
+  themeColor: "#FFF8EC",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  title: "Captain Kunafa | The Golden Voyage of Artisanal Kunafa",
+  title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
   description:
-    "An artisanal journey through exploding layers of crisp golden kataifi, molten Akawi cheese, and Aleppo pistachios. Handcrafted royal Kunafa across 5 flagship outposts.",
-  keywords: ["Kunafa", "Captain Kunafa", "Artisanal Dessert", "Kataifi", "Middle Eastern Pastry"],
-  authors: [{ name: "Captain Kunafa" }],
+    "Hand-pressed on live copper pans with authentic Akawi cheese, cold-pressed ghee, and Aleppo pistachios. Visit our 5 Hyderabad outposts in Barkas, Jubilee Hills, Malakpet, Tolichowki & Aero City. Founded by Saud bin Nasar Khulagi.",
+  keywords: [
+    "Captain Kunafa",
+    "Kunafa Hyderabad",
+    "Best Kunafa Barkas",
+    "Kunafa Jubilee Hills",
+    "Middle Eastern Dessert Hyderabad",
+    "Saud bin Nasar Khulagi",
+    "Kunafa Catering Hyderabad",
+    "Kunafa Franchise India",
+    "Live Kunafa Counter",
+    "Akawi Cheese Kunafa",
+  ],
+  authors: [{ name: "Saud bin Nasar Khulagi" }, { name: "Captain Kunafa" }],
+  openGraph: {
+    title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
+    description:
+      "Handcrafted on live copper pans across 5 outposts in Hyderabad. Fresh-pressed every single order with 48 dB acoustic crunch.",
+    url: "https://captainkunafa.com",
+    siteName: "Captain Kunafa",
+    locale: "en_IN",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://captainkunafa.com",
+  },
 };
 
 export default function RootLayout({
@@ -48,9 +71,50 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable} dark`}
+      className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable}`}
     >
-      <body className="bg-[#030303] text-white/90 font-sans selection:bg-[#EFB80D]/30 selection:text-[#EFB80D] min-h-screen flex flex-col">
+      <head>
+        {/* Structured Data: LocalBusiness / Restaurant schema for local SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Restaurant",
+              name: "Captain Kunafa",
+              image: "https://captainkunafa.com/og-image.jpg",
+              "@id": "https://captainkunafa.com",
+              url: "https://captainkunafa.com",
+              telephone: "+919000000001",
+              priceRange: "₹₹",
+              servesCuisine: ["Middle Eastern", "Dessert", "Levantine"],
+              founder: {
+                "@type": "Person",
+                name: "Saud bin Nasar Khulagi",
+              },
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: "Barkas, Old City",
+                addressLocality: "Hyderabad",
+                addressRegion: "Telangana",
+                postalCode: "500005",
+                addressCountry: "IN",
+              },
+              geo: {
+                "@type": "GeoCoordinates",
+                latitude: 17.3115,
+                longitude: 78.4871,
+              },
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "4.8",
+                reviewCount: "520",
+              },
+            }),
+          }}
+        />
+      </head>
+      <body className="bg-[#FFF8EC] text-[#2B1B12] font-sans selection:bg-[#EFB80D]/30 selection:text-[#DA7034] min-h-screen flex flex-col antialiased">
         <Navbar />
         <div className="grow">{children}</div>
         <Footer />
