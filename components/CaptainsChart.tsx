@@ -317,32 +317,7 @@ export default function CaptainsChart() {
           </p>
         </div>
 
-        {/* Branch Quick Select Tabs */}
-        <div className="flex justify-center mb-4 sm:mb-6">
-          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#121212] border border-white/10 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl w-full max-w-2xl shadow-md">
-            {BRANCHES.map((branch, idx) => {
-              const isCurrent = idx === activeBranchIndex;
 
-              return (
-                <button
-                  key={branch.id}
-                  type="button"
-                  onClick={() => handleJumpToBranch(idx)}
-                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-3 px-1.5 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9.5px] sm:text-xs transition-all cursor-pointer truncate ${
-                    isCurrent
-                      ? "bg-[#EFB80D] text-[#000000] font-black shadow-sm scale-105"
-                      : "bg-[#1c1c1c] text-white hover:bg-white hover:text-black font-semibold border border-white/5"
-                  }`}
-                >
-                  <span className="sm:hidden">{branch.code.replace("HYD-", "")}</span>
-                  <span className="hidden sm:inline">
-                    {branch.code.replace("HYD-", "")}. {branch.shortName.split(" ")[0]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Interactive Nautical Map Container */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center">

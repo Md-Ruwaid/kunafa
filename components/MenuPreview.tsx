@@ -50,8 +50,8 @@ export default function MenuPreview() {
               items={GALLERY_ITEMS}
               bend={2.5}
               borderRadius={0.06}
-              scrollSpeed={3.5}
-              scrollEase={0.06}
+              scrollSpeed={2.5}
+              scrollEase={0.10}
             />
 
             {/* Subtle Gradient Overlays for Depth */}
