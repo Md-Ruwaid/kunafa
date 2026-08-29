@@ -100,8 +100,8 @@ export default function ShipsLog() {
             Verified customer experiences from copper-pan tables across Barkas, Jubilee Hills, Tolichowki, Malakpet, and Aero City.
           </p>
 
-          {/* Live Google Aggregate Rating Badge in Flat Solid Gold & Black */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 py-2.5 sm:px-7 sm:py-3.5 bg-[#111111] border-2 border-[#EFB80D] rounded-full">
+          {/* Live Google Aggregate Rating Badge with White Text and Gold Stars */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 py-2.5 sm:px-7 sm:py-3.5 bg-[#111111] border border-white/20 rounded-full shadow-md">
             <div className="flex items-center gap-1 bg-[#EFB80D] px-2.5 py-1 rounded-full text-[#000000] font-black">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-3.5 h-3.5 fill-current" />
@@ -110,16 +110,16 @@ export default function ShipsLog() {
             <div className="font-display font-bold text-base sm:text-lg text-white">
               4.8 <span className="text-[10px] sm:text-xs font-mono font-bold text-[#EFB80D]">/ 5.0</span>
             </div>
-            <div className="h-4 w-px bg-[#333333]" />
+            <div className="h-4 w-px bg-white/20" />
             <span className="font-mono text-[11px] sm:text-xs text-white">
               <strong className="text-[#EFB80D] font-bold">520+</strong> Google Reviews
             </span>
-            <div className="h-4 w-px bg-[#333333] hidden sm:block" />
+            <div className="h-4 w-px bg-white/20 hidden sm:block" />
             <a
               href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-mono text-[11px] sm:text-xs text-[#EFB80D] hover:underline font-bold"
+              className="inline-flex items-center gap-1 font-mono text-[11px] sm:text-xs text-white hover:text-[#EFB80D] font-bold"
             >
               <span>Google Maps</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -127,7 +127,7 @@ export default function ShipsLog() {
           </div>
         </div>
 
-        {/* Filter Pills in Pure Solid Fills */}
+        {/* Filter Pills in White & Gold Balance */}
         <div className="flex justify-center gap-2 mb-10 sm:mb-12 overflow-x-auto pb-2 px-1">
           {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Aero City"].map((tab) => (
             <button
@@ -136,8 +136,8 @@ export default function ShipsLog() {
               onClick={() => setFilter(tab)}
               className={`font-mono text-[10px] sm:text-xs uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all cursor-pointer shrink-0 ${
                 filter === tab
-                  ? "bg-[#EFB80D] text-[#000000] font-black scale-105"
-                  : "bg-[#222222] text-[#EFB80D] font-bold hover:bg-[#2c2c2c]"
+                  ? "bg-[#EFB80D] text-[#000000] font-black scale-105 shadow-sm"
+                  : "bg-[#1c1c1c] text-white hover:bg-white hover:text-black font-semibold border border-white/10"
               }`}
             >
               {tab}
@@ -150,7 +150,7 @@ export default function ShipsLog() {
           {filteredReviews.map((rev) => (
             <div
               key={rev.id}
-              className="bg-[#111111] border border-[#222222] hover:border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 flex flex-col justify-between transition-all"
+              className="bg-[#111111] border border-white/10 hover:border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 flex flex-col justify-between transition-all shadow-md"
             >
               <div>
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -159,7 +159,7 @@ export default function ShipsLog() {
                       <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
                     ))}
                   </div>
-                  <span className="font-mono text-[9px] sm:text-[10px] uppercase font-black text-[#000000] bg-[#EFB80D] px-2.5 py-1 rounded-full">
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase font-black text-black bg-white px-2.5 py-1 rounded-full shadow-sm">
                     {rev.tag}
                   </span>
                 </div>
@@ -168,12 +168,12 @@ export default function ShipsLog() {
                   "{rev.title}"
                 </h3>
 
-                <p className="font-sans text-xs sm:text-sm text-white/75 leading-relaxed mb-4 sm:mb-6">
+                <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed mb-4 sm:mb-6">
                   {rev.quote}
                 </p>
               </div>
 
-              <div className="pt-3.5 sm:pt-4 border-t border-[#222222] flex items-center justify-between font-mono text-[10px] sm:text-[11px]">
+              <div className="pt-3.5 sm:pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[10px] sm:text-[11px]">
                 <div>
                   <div className="text-white font-bold flex items-center gap-1.5">
                     <span>{rev.author}</span>
@@ -183,19 +183,19 @@ export default function ShipsLog() {
                   </div>
                   <div className="text-[#EFB80D] text-[9px] sm:text-[10px] font-bold">{rev.branch}</div>
                 </div>
-                <span className="text-white/50">{rev.date}</span>
+                <span className="text-white/60">{rev.date}</span>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Leave a review button in Solid Gold */}
+        {/* Leave a review button in Solid Gold / White */}
         <div className="text-center">
           <a
             href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#000000] font-sans text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-full transition-all active:scale-95 hover:scale-105"
+            className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-full transition-all active:scale-95 hover:scale-105 shadow-md"
           >
             <MessageSquarePlus className="w-4 h-4 text-[#000000]" />
             <span>Leave a Review on Google</span>

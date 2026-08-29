@@ -19,28 +19,28 @@ export default function Footer() {
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0 shadow-md">
                 <ShipHelm size={22} className="text-[#000000] sm:w-[24px] sm:h-[24px]" />
               </div>
               <span className="font-display font-bold text-lg sm:text-xl text-white">
                 CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
               </span>
             </div>
-            <p className="font-sans text-xs sm:text-sm text-white/75 leading-relaxed max-w-sm mb-5 sm:mb-6">
+            <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed max-w-sm mb-5 sm:mb-6 font-medium">
               Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across our city branches.
             </p>
-            <div className="font-mono text-[11px] sm:text-xs text-[#EFB80D] font-bold space-y-1">
-              <div>CENTRAL HEARTH &amp; HQ: BARKAS, HYDERABAD · 500005</div>
-              <div>HOTLINE: +91 90000 00001</div>
+            <div className="font-mono text-[11px] sm:text-xs text-white font-bold space-y-1">
+              <div>CENTRAL HEARTH &amp; HQ: <span className="text-[#EFB80D]">BARKAS, HYDERABAD · 500005</span></div>
+              <div>HOTLINE: <span className="text-[#EFB80D]">+91 90000 00001</span></div>
             </div>
           </div>
 
           {/* Quick Nav (3 cols) */}
           <div className="md:col-span-3">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-white font-bold mb-3 sm:mb-4">
               VOYAGE NAVIGATION
             </div>
-            <ul className="space-y-2 font-sans text-xs text-white/80">
+            <ul className="space-y-2 font-sans text-xs text-white/80 font-medium">
               {[
                 { label: "The Scrollytelling Story", href: "#story" },
                 { label: "Saud's Levantine Chronicle", href: "#about" },
@@ -51,7 +51,7 @@ export default function Footer() {
                 <li key={idx}>
                   <a
                     href={link.href}
-                    className="hover:text-[#EFB80D] transition-colors py-0.5 inline-block"
+                    className="hover:text-[#EFB80D] hover:underline transition-colors py-0.5 inline-block"
                   >
                     {link.label}
                   </a>
@@ -62,10 +62,10 @@ export default function Footer() {
 
           {/* Quality Standards & Inquiries (4 cols) */}
           <div className="md:col-span-4">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-white font-bold mb-3 sm:mb-4">
               THE CAPTAIN'S GUARANTEE
             </div>
-            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/80 mb-5 sm:mb-6">
+            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/85 mb-5 sm:mb-6 font-medium">
               <div className="flex items-start gap-2 sm:gap-2.5">
                 <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D] shrink-0 mt-0.5" />
                 <span>100% Grass-Fed Clarified A2 Ghee — zero palm oil.</span>
@@ -85,7 +85,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#000000] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 hover:scale-105"
+                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 hover:scale-105 shadow-md"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Direct WhatsApp Desk</span>

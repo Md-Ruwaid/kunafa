@@ -101,7 +101,7 @@ export default function MenuPreview() {
           </p>
         </div>
 
-        {/* Category Tabs: Pure Solid Fills with NO GLOW */}
+        {/* Category Tabs: Crisp White & Gold Balance */}
         <div className="flex justify-center gap-2.5 mb-10 sm:mb-14 overflow-x-auto pb-2 px-1">
           {CATEGORIES.map((cat) => (
             <button
@@ -110,8 +110,8 @@ export default function MenuPreview() {
               onClick={() => setActiveCategory(cat)}
               className={`font-sans text-xs uppercase tracking-wider px-6 sm:px-8 py-3 rounded-full transition-all duration-150 cursor-pointer shrink-0 ${
                 activeCategory === cat
-                  ? "bg-[#EFB80D] text-[#000000] font-black scale-105"
-                  : "bg-[#222222] text-[#EFB80D] font-bold hover:bg-[#2c2c2c]"
+                  ? "bg-[#EFB80D] text-[#000000] font-black scale-105 shadow-sm"
+                  : "bg-[#1a1a1a] text-white hover:bg-white hover:text-black font-semibold border border-white/10"
               }`}
             >
               {cat}
@@ -124,7 +124,7 @@ export default function MenuPreview() {
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="bg-[#111111] hover:bg-[#161616] rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 transition-all duration-200 border border-[#222222] flex flex-col justify-between"
+              className="bg-[#111111] hover:bg-[#161616] rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 transition-all duration-200 border border-white/10 flex flex-col justify-between"
             >
               <div>
                 {/* Photo Container */}
@@ -136,12 +136,12 @@ export default function MenuPreview() {
                   />
                   <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3">
                     <span
-                      className="font-mono text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider bg-[#EFB80D] text-[#000000]"
+                      className="font-mono text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider bg-white text-black shadow-sm"
                     >
                       {item.tag}
                     </span>
                   </div>
-                  <div className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 bg-[#EFB80D] text-[#000000] font-display font-black text-sm sm:text-base px-3.5 py-1 rounded-full">
+                  <div className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 bg-[#EFB80D] text-[#000000] font-display font-black text-sm sm:text-base px-3.5 py-1 rounded-full shadow-sm">
                     {item.price}
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export default function MenuPreview() {
                   {item.name}
                 </h3>
 
-                <p className="font-sans text-xs text-white/75 leading-relaxed mb-4">
+                <p className="font-sans text-xs text-white/80 leading-relaxed mb-4">
                   {item.description}
                 </p>
               </div>
@@ -160,7 +160,7 @@ export default function MenuPreview() {
                   href={`https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20${encodeURIComponent(item.name)}%20(${item.price}).`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#000000] font-sans text-xs font-black py-3.5 rounded-full transition-all cursor-pointer active:scale-95"
+                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs font-black py-3.5 rounded-full transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <MessageCircle className="w-4 h-4 text-[#000000]" />
                   <span>Quick WhatsApp Order</span>
@@ -170,17 +170,17 @@ export default function MenuPreview() {
           ))}
         </div>
 
-        {/* Gathering / Bulk Platter Banner - Solid #EFB80D Filled Card */}
-        <div className="p-6 sm:p-10 rounded-[20px] sm:rounded-[24px] bg-[#EFB80D] text-[#000000] flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden text-center sm:text-left">
+        {/* Gathering / Bulk Platter Banner with Balanced Contrast */}
+        <div className="p-6 sm:p-10 rounded-[20px] sm:rounded-[24px] bg-[#121212] border-2 border-[#EFB80D] text-white flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden text-center sm:text-left shadow-xl">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 relative z-10">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#000000] text-[#EFB80D] flex items-center justify-center shrink-0">
-              <ShipHelm size={26} className="text-[#EFB80D]" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0 shadow-md">
+              <ShipHelm size={26} className="text-[#000000]" />
             </div>
             <div>
-              <div className="font-display font-black text-lg sm:text-2xl text-[#000000] mb-1">
+              <div className="font-display font-bold text-lg sm:text-2xl text-white mb-1">
                 Ordering for an Office, Gathering, or Celebration?
               </div>
-              <div className="font-sans text-xs sm:text-sm text-[#000000]/85 font-semibold">
+              <div className="font-sans text-xs sm:text-sm text-white/80 font-medium">
                 We pack fresh party platters in insulated copper thermal cases for immediate delivery across Hyderabad.
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function MenuPreview() {
             href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20bulk%20platters%20for%20a%20gathering."
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] text-[#EFB80D] font-sans font-black text-xs px-8 py-3.5 rounded-full transition-all hover:scale-105 relative z-10"
+            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-xs px-8 py-3.5 rounded-full transition-all hover:scale-105 relative z-10 shadow-md"
           >
             <span>Order Bulk Platters</span>
           </a>
