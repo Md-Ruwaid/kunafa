@@ -41,13 +41,13 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #030303;
-    color-scheme: dark;
+    background-color: #FFF8EC;
+    color-scheme: light;
   }
 
   body {
-    background-color: #030303;
-    color: rgba(255, 255, 255, 0.9);
+    background-color: #FFF8EC;
+    color: #2B1B12;
     font-family: var(--font-work-sans), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

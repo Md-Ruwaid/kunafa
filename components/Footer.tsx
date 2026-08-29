@@ -1,6 +1,5 @@
 import React from "react";
 import { MapPin, Anchor, Shield } from "lucide-react";
-import SwashAccent from "@/components/SwashAccent";
 
 const outlets = [
   { city: "Dubai", label: "Dubai Mall — Fashion Avenue", code: "DXB-01", status: "Flagship" },
@@ -12,7 +11,7 @@ const outlets = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#241509] text-[#FFF8EC] border-t border-[#E7DCC9]/15 pt-20 pb-12 px-4 sm:px-8 relative overflow-hidden">
+    <footer className="bg-[#2B1B12] text-[#FFF8EC] border-t border-[#E7DCC9]/15 pt-20 pb-12 px-4 sm:px-8 relative overflow-hidden">
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#EFB80D]/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">

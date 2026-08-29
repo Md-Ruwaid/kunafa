@@ -6,7 +6,7 @@ import ShipsLog from "@/components/ShipsLog";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-[#030303]">
+    <main className="relative min-h-screen bg-[#FFF8EC]">
       {/* 1. Scrollytelling hero — 400vh canvas with text overlays */}
       <section id="story">
         <KunafaExplodeCanvas />
