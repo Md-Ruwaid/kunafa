@@ -95,7 +95,7 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing with clean containment scaling so the whole animation fits perfectly without cropping
+  // Canvas drawing with subtle zoom-in and smooth center alignment
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
@@ -119,8 +119,9 @@ export default function KunafaExplodeCanvas() {
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    // Perfectly fitted scaling: shows 100% of the animation on all screen sizes with zero clipping
-    const scale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
+    // Subtle zoom-in (1.14x) so the kunafa is prominent and delicious while preserving full explosion visibility
+    const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
+    const scale = baseScale * 1.14;
 
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
@@ -219,7 +220,7 @@ export default function KunafaExplodeCanvas() {
   }, [drawFrame]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[400vh] bg-[#030303]">
+    <div ref={containerRef} className="relative w-full h-[550vh] sm:h-[600vh] bg-[#030303]">
       {/* Preloader */}
       <AnimatePresence>
         {!isLoaded && (
@@ -256,7 +257,7 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything - Contained and sharp */}
+        {/* Canvas behind everything - Contained with subtle zoom */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
