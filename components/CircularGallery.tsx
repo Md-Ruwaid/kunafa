@@ -392,10 +392,10 @@ class App {
   onTouchMove(e: TouchEvent | MouseEvent) {
     if (!this.isDown) return;
     const x = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const isMobile = this.screen ? this.screen.width < 768 : false;
+    const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
-    // High drag sensitivity on mobile (tuned to 0.08 for effortless swipe control)
-    const dragSensitivity = isMobile ? this.scrollSpeed * 0.08 : this.scrollSpeed * 0.045;
+    // Lower sensitivity for desktop mouse control, higher sensitivity for mobile touch control
+    const dragSensitivity = isMobile ? this.scrollSpeed * 0.13 : this.scrollSpeed * 0.018;
     const distance = (this.start - x) * dragSensitivity;
 
     const now = performance.now();
@@ -411,10 +411,11 @@ class App {
     if (!this.isDown) return;
     this.isDown = false;
 
-    // Add flick momentum on release for silky inertia
-    if (Math.abs(this.touchVelocity) > 0.15) {
-      const isMobile = this.screen ? this.screen.width < 768 : false;
-      const momentumMultiplier = isMobile ? 35 : 20;
+    const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
+
+    // Add flick momentum on release tuned specifically for mobile vs desktop
+    if (Math.abs(this.touchVelocity) > 0.1) {
+      const momentumMultiplier = isMobile ? 50 : 8;
       this.scroll.target += this.touchVelocity * this.scrollSpeed * momentumMultiplier;
     }
 
@@ -423,8 +424,9 @@ class App {
 
   onWheel(e: WheelEvent) {
     const delta = e.deltaY || (e as unknown as { wheelDelta?: number }).wheelDelta || e.detail;
-    if (Math.abs(delta) > 5) {
-      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.25;
+    if (Math.abs(delta) > 3) {
+      // Lowered wheel sensitivity for smooth and controlled desktop scrolling
+      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.08;
       this.onCheckDebounce();
     }
   }

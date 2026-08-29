@@ -3,14 +3,10 @@ import KunafaExplodeCanvas from "@/components/KunafaExplodeCanvas";
 import AboutSection from "@/components/AboutSection";
 import CaptainsChart from "@/components/CaptainsChart";
 import MenuPreview from "@/components/MenuPreview";
-import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function HomePage() {
   return (
     <main className="relative min-h-screen bg-[#050505]">
-      {/* Floating WhatsApp Quick Action */}
-      <WhatsAppButton />
-
       {/* 1. Scrollytelling Voyage Canvas */}
       <section id="story" className="relative">
         <KunafaExplodeCanvas />
