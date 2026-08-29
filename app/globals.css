@@ -153,3 +153,50 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #EFB80D;
 }
+
+/* Leaflet Dark Theme & Custom Pin Overrides */
+.leaflet-container {
+  background: #0a0a0a !important;
+  font-family: var(--font-ibm-mono), monospace !important;
+}
+
+.leaflet-div-icon.captain-map-pin,
+.leaflet-div-icon.captain-map-ship {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-control-zoom a {
+  background: #141414 !important;
+  color: #EFB80D !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #EFB80D !important;
+  color: #000000 !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(10, 10, 10, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  color: #888888 !important;
+  font-size: 9.5px !important;
+  border-radius: 6px !important;
+  margin: 4px !important;
+  padding: 2px 6px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #EFB80D !important;
+  text-decoration: none !important;
+}
+

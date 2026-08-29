@@ -226,7 +226,14 @@ export default function KunafaExplodeCanvas() {
       };
 
       img.onerror = () => {
-        img.src = `/kunafa-frames/ezgif-frame-${pad(i)}.png`;
+        if (!mounted) return;
+        count++;
+        setLoadedCount(count);
+        if (count >= TOTAL_FRAMES) {
+          imagesRef.current = loadedImages;
+          setIsLoaded(true);
+          drawFrame(0);
+        }
       };
 
       loadedImages[idx] = img;
