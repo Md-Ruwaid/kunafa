@@ -6,7 +6,6 @@ import {
   MapPin,
   Phone,
   Clock,
-  CheckCircle,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import { CompassRose, ShipHelm } from "@/components/NauticalElements";
@@ -242,38 +241,12 @@ export default function CaptainsChart() {
           <CompassRose size={260} />
         </div>
 
-        {/* 1. Header & Stepper Navigation Bar */}
+        {/* 1. Section Header */}
         <div className="relative z-10 max-w-7xl mx-auto w-full pt-12 sm:pt-16">
-          <div className="text-center sm:text-left mb-2.5 sm:mb-3">
-            <h2 className="font-display text-xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          <div className="text-center sm:text-left">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
               From Barkas to <SwashAccent color="gold">Jubilee Hills</SwashAccent>
             </h2>
-          </div>
-
-          {/* Stepper Navigation Tabs: Crisp White & Gold Balance */}
-          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#121212] border border-white/10 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl">
-            {BRANCHES.map((branch, idx) => {
-              const isCurrent = idx === activeBranchIndex;
-
-              return (
-                <button
-                  key={branch.id}
-                  type="button"
-                  onClick={() => handleJumpToBranch(idx)}
-                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-3 px-1.5 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9.5px] sm:text-xs transition-all cursor-pointer truncate ${
-                    isCurrent
-                      ? "bg-[#EFB80D] text-[#000000] font-black scale-[1.02] shadow-sm"
-                      : "bg-[#1c1c1c] text-white hover:bg-white hover:text-black font-semibold border border-white/5"
-                  }`}
-                >
-                  <span className="sm:hidden">0{idx + 1}</span>
-                  <span className="hidden sm:inline">0{idx + 1}. {branch.name.split(" ")[0]}</span>
-                  {isCurrent && (
-                    <CheckCircle className="w-3.5 h-3.5 text-[#000000] hidden sm:inline shrink-0" />
-                  )}
-                </button>
-              );
-            })}
           </div>
         </div>
 
