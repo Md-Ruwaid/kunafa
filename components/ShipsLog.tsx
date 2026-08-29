@@ -89,58 +89,58 @@ export default function ShipsLog() {
   });
 
   return (
-    <section id="reviews" className="py-28 px-4 sm:px-8 bg-[#FFF8EC] text-[#2B1B12] border-t border-[#E7DCC9] relative overflow-hidden">
+    <section id="reviews" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#FFF8EC] text-[#2B1B12] border-t border-[#E7DCC9] relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-4 py-1.5 rounded-full mb-4">
-            <Anchor className="w-3.5 h-3.5 text-[#EFB80D]" />
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 font-semibold">
+            <Anchor className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#EFB80D]" />
             <span>THE SHIP'S LOGBOOK</span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#2B1B12] leading-tight mb-4">
+          <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-[#2B1B12] leading-tight mb-3 sm:mb-4">
             Dispatches from Our <SwashAccent color="terracotta">Hyderabad Voyagers</SwashAccent>
           </h2>
 
-          <p className="font-sans text-base text-[#7A6A5B]">
+          <p className="font-sans text-xs sm:text-base text-[#7A6A5B]">
             Verified customer experiences from copper-pan tables across Barkas, Jubilee Hills, Tolichowki, Malakpet, and Aero City.
           </p>
 
-          {/* Live Google Aggregate Rating Badge */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-4 mt-8 px-7 py-3.5 bg-white border-2 border-[#E7DCC9] rounded-full shadow-sm">
-            <div className="flex items-center gap-1.5 text-[#EFB80D]">
+          {/* Live Google Aggregate Rating Badge: Mobile Friendly */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 py-2.5 sm:px-7 sm:py-3.5 bg-white border-2 border-[#E7DCC9] rounded-full shadow-sm">
+            <div className="flex items-center gap-1 text-[#EFB80D]">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current" />
+                <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
               ))}
             </div>
-            <div className="font-display font-bold text-lg text-[#2B1B12]">
-              4.8 <span className="text-xs font-mono font-normal text-[#7A6A5B]">/ 5.0</span>
+            <div className="font-display font-bold text-base sm:text-lg text-[#2B1B12]">
+              4.8 <span className="text-[10px] sm:text-xs font-mono font-normal text-[#7A6A5B]">/ 5.0</span>
             </div>
-            <div className="h-4 w-px bg-[#E7DCC9]" />
-            <span className="font-mono text-xs text-[#7A6A5B]">
-              <strong className="text-[#2B1B12]">520+</strong> Google Reviews
+            <div className="h-3.5 w-px bg-[#E7DCC9]" />
+            <span className="font-mono text-[11px] sm:text-xs text-[#7A6A5B]">
+              <strong className="text-[#2B1B12]">520+</strong> Reviews
             </span>
-            <div className="h-4 w-px bg-[#E7DCC9] hidden sm:block" />
+            <div className="h-3.5 w-px bg-[#E7DCC9] hidden sm:block" />
             <a
               href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-mono text-xs text-[#DA7034] hover:underline font-semibold"
+              className="inline-flex items-center gap-1 font-mono text-[11px] sm:text-xs text-[#DA7034] hover:underline font-semibold"
             >
-              <span>Verify on Google Maps</span>
+              <span>Google Maps</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
+        <div className="flex justify-center gap-1.5 sm:gap-2 mb-10 sm:mb-12 overflow-x-auto pb-2 px-1">
           {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Aero City"].map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setFilter(tab)}
-              className={`font-mono text-xs uppercase tracking-wider px-5 py-2.5 rounded-full transition-all cursor-pointer ${
+              className={`font-mono text-[10px] sm:text-xs uppercase tracking-wider px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full transition-all cursor-pointer shrink-0 ${
                 filter === tab
                   ? "bg-[#DA7034] text-white font-bold shadow-sm"
                   : "bg-white text-[#7A6A5B] border border-[#E7DCC9] hover:border-[#DA7034]/50"
@@ -152,42 +152,42 @@ export default function ShipsLog() {
         </div>
 
         {/* Reviews Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
           {filteredReviews.map((rev) => (
             <div
               key={rev.id}
-              className="bg-white border border-[#E7DCC9] rounded-[24px] p-6 sm:p-7 flex flex-col justify-between hover:border-[#DA7034]/50 hover:shadow-lg transition-all"
+              className="bg-white border border-[#E7DCC9] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 flex flex-col justify-between hover:border-[#DA7034]/50 hover:shadow-lg transition-all"
             >
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="flex gap-1 text-[#EFB80D]">
                     {[...Array(rev.rating)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                      <Star key={i} className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                     ))}
                   </div>
-                  <span className="font-mono text-[10px] uppercase font-bold text-[#DA7034] bg-[#DA7034]/10 px-2.5 py-1 rounded-full">
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase font-bold text-[#DA7034] bg-[#DA7034]/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
                     {rev.tag}
                   </span>
                 </div>
 
-                <h3 className="font-display font-bold text-lg text-[#2B1B12] mb-3 leading-snug">
+                <h3 className="font-display font-bold text-base sm:text-lg text-[#2B1B12] mb-2 sm:mb-3 leading-snug">
                   "{rev.title}"
                 </h3>
 
-                <p className="font-sans text-xs sm:text-sm text-[#7A6A5B] leading-relaxed mb-6">
+                <p className="font-sans text-xs sm:text-sm text-[#7A6A5B] leading-relaxed mb-4 sm:mb-6">
                   {rev.quote}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-[#E7DCC9] flex items-center justify-between font-mono text-[11px]">
+              <div className="pt-3.5 sm:pt-4 border-t border-[#E7DCC9] flex items-center justify-between font-mono text-[10px] sm:text-[11px]">
                 <div>
                   <div className="text-[#2B1B12] font-bold flex items-center gap-1.5">
                     <span>{rev.author}</span>
                     {rev.verified && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 inline shrink-0" />
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600 inline shrink-0" />
                     )}
                   </div>
-                  <div className="text-[#DA7034] text-[10px] font-semibold">{rev.branch}</div>
+                  <div className="text-[#DA7034] text-[9px] sm:text-[10px] font-semibold">{rev.branch}</div>
                 </div>
                 <span className="text-[#7A6A5B]">{rev.date}</span>
               </div>
@@ -195,13 +195,13 @@ export default function ShipsLog() {
           ))}
         </div>
 
-        {/* Callout: Write a review or Share experience */}
+        {/* Leave a review button */}
         <div className="text-center">
           <a
             href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full border-2 border-[#DA7034] text-[#DA7034] hover:bg-[#DA7034] hover:text-white font-sans text-xs font-bold uppercase tracking-wider transition-all shadow-sm"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full border-2 border-[#DA7034] text-[#DA7034] hover:bg-[#DA7034] hover:text-white font-sans text-xs font-bold uppercase tracking-wider transition-all shadow-sm active:scale-95"
           >
             <MessageSquarePlus className="w-4 h-4" />
             <span>Leave a Review on Google</span>

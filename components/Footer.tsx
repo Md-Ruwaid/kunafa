@@ -14,41 +14,43 @@ const outlets = [
 
 export default function Footer() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const lenis = (window as unknown as { lenis?: { scrollTo: (n: number) => void } }).lenis;
+    if (lenis) lenis.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
-    <footer className="bg-[#2B1B12] text-[#FFF8EC] border-t-2 border-[#EFB80D]/30 pt-20 pb-12 px-4 sm:px-8 relative overflow-hidden">
-      {/* Subtle compass rose watermark */}
-      <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none">
+    <footer className="bg-[#2B1B12] text-[#FFF8EC] border-t-2 border-[#EFB80D]/30 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
+      {/* Compass rose watermark */}
+      <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none hidden sm:block">
         <CompassRose size={350} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* 5 Hyderabad Outposts Grid */}
-        <div className="mb-16">
-          <div className="flex items-center justify-between mb-6">
-            <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-[#DA7034]" />
+        <div className="mb-12 sm:mb-16">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#EFB80D] flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034]" />
               <span>THE 5 PORTS OF CALL — HYDERABAD</span>
             </div>
-            <span className="font-mono text-[10px] text-[#B3A697] uppercase">
-              17.3115° N, 78.4871° E
+            <span className="font-mono text-[9px] sm:text-[10px] text-[#B3A697] uppercase">
+              17.3115° N, 78.4871° E · HYDERABAD
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
             {outlets.map((outlet, idx) => (
               <div
                 key={idx}
-                className="p-5 rounded-[18px] bg-[#1a0f06] border border-[#EFB80D]/20 hover:border-[#DA7034] transition-colors flex flex-col justify-between"
+                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#1a0f06] border border-[#EFB80D]/20 hover:border-[#DA7034] transition-colors flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                     <span className="font-mono text-[10px] text-[#DA7034] font-bold">
                       {outlet.code}
                     </span>
-                    <span className="font-mono text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/20">
+                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/20">
                       ACTIVE
                     </span>
                   </div>
@@ -60,7 +62,7 @@ export default function Footer() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/5 font-mono text-[10px] text-[#7A6A5B] space-y-1">
+                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/5 font-mono text-[9.5px] sm:text-[10px] text-[#7A6A5B] space-y-1">
                   <div className="flex items-center gap-1 text-emerald-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     <span>{outlet.hours}</span>
@@ -73,21 +75,21 @@ export default function Footer() {
         </div>
 
         {/* Main Footer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-16 border-b border-[#E7DCC9]/15">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-[#E7DCC9]/15">
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-[#FFF8EC] border-2 border-[#EFB80D] flex items-center justify-center">
-                <ShipHelm size={22} className="text-[#DA7034]" />
+            <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF8EC] border-2 border-[#EFB80D] flex items-center justify-center shrink-0">
+                <ShipHelm size={20} className="text-[#DA7034] sm:w-[22px] sm:h-[22px]" />
               </div>
-              <span className="font-display font-bold text-xl text-white">
+              <span className="font-display font-bold text-lg sm:text-xl text-white">
                 CAPTAIN <span className="italic text-[#DA7034]">KUNAFA</span>
               </span>
             </div>
-            <p className="font-sans text-sm text-[#B3A697] leading-relaxed max-w-sm mb-6">
+            <p className="font-sans text-xs sm:text-sm text-[#B3A697] leading-relaxed max-w-sm mb-5 sm:mb-6">
               Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across 5 city outposts.
             </p>
-            <div className="font-mono text-xs text-[#DA7034] space-y-1">
+            <div className="font-mono text-[11px] sm:text-xs text-[#DA7034] space-y-1">
               <div>CENTRAL HEARTH &amp; HQ: BARKAS, HYDERABAD · 500005</div>
               <div>HOTLINE: +91 90000 00001</div>
             </div>
@@ -95,7 +97,7 @@ export default function Footer() {
 
           {/* Quick Nav (3 cols) */}
           <div className="md:col-span-3">
-            <div className="font-mono text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-4">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               VOYAGE NAVIGATION
             </div>
             <ul className="space-y-2 font-sans text-xs text-[#B3A697]">
@@ -109,7 +111,7 @@ export default function Footer() {
                 <li key={idx}>
                   <a
                     href={link.href}
-                    className="hover:text-[#DA7034] transition-colors"
+                    className="hover:text-[#DA7034] transition-colors py-0.5 inline-block"
                   >
                     {link.label}
                   </a>
@@ -120,20 +122,20 @@ export default function Footer() {
 
           {/* Quality Standards & Inquiries (4 cols) */}
           <div className="md:col-span-4">
-            <div className="font-mono text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-4">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               THE CAPTAIN'S GUARANTEE
             </div>
-            <div className="space-y-3 font-sans text-xs text-[#B3A697] mb-6">
-              <div className="flex items-start gap-2.5">
-                <Shield className="w-4 h-4 text-[#DA7034] shrink-0 mt-0.5" />
+            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-[#B3A697] mb-5 sm:mb-6">
+              <div className="flex items-start gap-2 sm:gap-2.5">
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
                 <span>100% Grass-Fed Clarified A2 Ghee — zero palm oil.</span>
               </div>
-              <div className="flex items-start gap-2.5">
-                <Shield className="w-4 h-4 text-[#DA7034] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 sm:gap-2.5">
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
                 <span>18-hour cold desalinated mountain Akawi &amp; Nablusi curd.</span>
               </div>
-              <div className="flex items-start gap-2.5">
-                <Shield className="w-4 h-4 text-[#DA7034] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 sm:gap-2.5">
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
                 <span>Raw first-harvest Aleppo emerald green pistachios.</span>
               </div>
             </div>
@@ -143,7 +145,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20b858] text-white font-sans text-xs font-semibold px-4 py-2 rounded-full transition-all"
+                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20b858] text-white font-sans text-xs font-semibold px-4 py-2.5 rounded-full transition-all active:scale-95"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Direct WhatsApp Desk</span>
@@ -153,7 +155,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright & Back to Top */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-[#7A6A5B]">
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10px] sm:text-xs text-[#7A6A5B] text-center sm:text-left">
           <div>
             © {new Date().getFullYear()} CAPTAIN KUNAFA. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
           </div>

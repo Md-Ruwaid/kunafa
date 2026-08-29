@@ -99,7 +99,7 @@ function getActX(
   const fadeIn = 0.05;
   if (progress < start + fadeIn) {
     const t = (progress - start) / fadeIn;
-    return align === "left" ? -30 * (1 - t) : 30 * (1 - t);
+    return align === "left" ? -20 * (1 - t) : 20 * (1 - t);
   }
   return 0;
 }
@@ -113,7 +113,7 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing
+  // Canvas drawing with mobile performance & containment
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
@@ -122,7 +122,8 @@ export default function KunafaExplodeCanvas() {
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
+    // Cap DPR at 2 for mobile GPU battery/memory efficiency
+    const dpr = Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
@@ -189,7 +190,7 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single scroll handler drives both canvas AND text
+  // Single scroll handler
   useEffect(() => {
     let animFrame: number;
     let lastFrame = -1;
@@ -239,16 +240,16 @@ export default function KunafaExplodeCanvas() {
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.5 } }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] select-none"
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] select-none p-4"
           >
-            <div className="flex flex-col items-center max-w-sm px-6 text-center">
-              <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-6 flex items-center justify-center">
-                <ShipHelm size={24} className="text-[#DA7034]" />
+            <div className="flex flex-col items-center max-w-xs sm:max-w-sm px-4 text-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-[#EFB80D] animate-spin mb-5 flex items-center justify-center">
+                <ShipHelm size={22} className="text-[#DA7034]" />
               </div>
-              <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#EFB80D] mb-2">
+              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#EFB80D] mb-2">
                 CAPTAIN KUNAFA
               </span>
-              <h2 className="font-display text-2xl font-semibold text-white/95 mb-4">
+              <h2 className="font-display text-xl sm:text-2xl font-semibold text-white/95 mb-4">
                 LOADING <SwashAccent color="terracotta">VOYAGE…</SwashAccent>
               </h2>
               <div className="w-full bg-white/10 h-[2px] rounded-full overflow-hidden mb-3">
@@ -259,7 +260,7 @@ export default function KunafaExplodeCanvas() {
                   }}
                 />
               </div>
-              <div className="flex items-center justify-between w-full font-mono text-[11px] text-white/50">
+              <div className="flex items-center justify-between w-full font-mono text-[10px] sm:text-[11px] text-white/50">
                 <span>
                   FRAME [{String(loadedCount).padStart(3, "0")} / {TOTAL_FRAMES}]
                 </span>
@@ -281,14 +282,8 @@ export default function KunafaExplodeCanvas() {
         />
 
         {/* Seamless edge blends */}
-        <div className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
-        <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
-
-        {/* Nautical HUD Marker in top right */}
-        <div className="absolute top-20 right-4 sm:right-8 z-30 pointer-events-none hidden sm:flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#EFB80D]/70 bg-[#2B1B12]/80 border border-[#EFB80D]/20 px-3 py-1 rounded-full backdrop-blur-md">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034] animate-ping" />
-          <span>SCROLL TO EXPLODE VOYAGE</span>
-        </div>
+        <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
+        <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
         {/* Text Overlay Layer — z-20, sits IN FRONT of canvas */}
         <div className="absolute inset-0 z-20 pointer-events-none flex items-center">
@@ -301,11 +296,11 @@ export default function KunafaExplodeCanvas() {
             return (
               <div
                 key={idx}
-                className={`absolute inset-y-0 flex items-center px-6 sm:px-10 md:px-16 ${
+                className={`absolute inset-y-0 flex items-center px-4 sm:px-8 md:px-16 ${
                   act.align === "left"
-                    ? "left-0 w-full md:w-[48%] justify-start"
+                    ? "left-0 w-full md:w-[50%] justify-start"
                     : act.align === "right"
-                    ? "right-0 w-full md:w-[48%] justify-end"
+                    ? "right-0 w-full md:w-[50%] justify-end"
                     : "inset-x-0 justify-center"
                 }`}
                 style={{
@@ -314,17 +309,18 @@ export default function KunafaExplodeCanvas() {
                   transition: "none",
                 }}
               >
+                {/* Mobile backdrop container for crystal-clear readability */}
                 <div
-                  className={`max-w-xl w-full ${
+                  className={`w-full max-w-lg ${
                     act.align === "center"
                       ? "text-center mx-auto"
-                      : "text-left"
+                      : "text-left bg-[#030303]/60 md:bg-transparent border border-white/10 md:border-0 p-5 sm:p-6 md:p-0 rounded-[20px] backdrop-blur-md md:backdrop-blur-none"
                   }`}
                 >
                   {/* Badge */}
                   {act.badge && (
-                    <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-4 py-1.5 rounded-full mb-5 backdrop-blur-md">
-                      <ShipHelm size={14} className="text-[#DA7034]" />
+                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-3.5 py-1.5 rounded-full mb-3 sm:mb-5 backdrop-blur-md">
+                      <ShipHelm size={13} className="text-[#DA7034]" />
                       <span>{act.badge}</span>
                     </div>
                   )}
@@ -332,7 +328,7 @@ export default function KunafaExplodeCanvas() {
                   {/* Label pill */}
                   {act.label && (
                     <div
-                      className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] mb-3 px-3 py-1 rounded-full bg-[#2B1B12]/80 border border-white/10 backdrop-blur-md"
+                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3 py-1 rounded-full bg-[#2B1B12]/85 border border-white/10 backdrop-blur-md"
                       style={{
                         color:
                           (act as { labelColor?: string }).labelColor ??
@@ -353,29 +349,29 @@ export default function KunafaExplodeCanvas() {
 
                   {/* Headline */}
                   <h2
-                    className={`font-display font-semibold leading-[1.1] text-[#FFF8EC] mb-4 ${
+                    className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 sm:mb-4 ${
                       act.align === "center"
-                        ? "text-4xl sm:text-6xl md:text-7xl"
-                        : "text-3xl sm:text-4xl md:text-5xl"
+                        ? "text-3xl sm:text-5xl md:text-7xl"
+                        : "text-2xl sm:text-4xl md:text-5xl"
                     }`}
                   >
                     {act.headline}
                   </h2>
 
                   {/* Body copy */}
-                  <p className="font-sans text-sm sm:text-base text-white/75 leading-relaxed mb-4 max-w-lg">
+                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/80 leading-relaxed mb-3.5 sm:mb-4 max-w-lg">
                     {act.body}
                   </p>
 
                   {/* Metric tag or Coords */}
                   {"metric" in act && act.metric && (
-                    <div className="font-mono text-xs text-[#EFB80D] tracking-wider bg-[#2B1B12]/70 inline-block px-3 py-1 rounded-md border border-[#EFB80D]/20">
+                    <div className="font-mono text-[10px] sm:text-xs text-[#EFB80D] tracking-wider bg-[#2B1B12]/80 inline-block px-3 py-1 rounded-md border border-[#EFB80D]/20">
                       {act.metric}
                     </div>
                   )}
 
                   {act.coords && (
-                    <div className="font-mono text-[11px] text-[#DA7034] tracking-widest mt-2 uppercase">
+                    <div className="font-mono text-[10px] sm:text-[11px] text-[#DA7034] tracking-widest mt-2 uppercase">
                       {act.coords}
                     </div>
                   )}
@@ -383,6 +379,14 @@ export default function KunafaExplodeCanvas() {
               </div>
             );
           })}
+        </div>
+
+        {/* Mobile scroll hint */}
+        <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
+          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-white/60 bg-[#030303]/70 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034] animate-pulse" />
+            <span>SCROLL TO SAIL</span>
+          </div>
         </div>
       </div>
     </div>

@@ -100,32 +100,32 @@ export default function MenuPreview() {
   });
 
   return (
-    <section id="menu" className="py-28 px-4 sm:px-8 bg-white text-[#2B1B12] border-t border-[#E7DCC9] relative">
+    <section id="menu" className="py-20 sm:py-28 px-4 sm:px-8 bg-white text-[#2B1B12] border-t border-[#E7DCC9] relative">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-4 py-1.5 rounded-full mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-[#EFB80D]" />
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#DA7034] bg-[#DA7034]/10 border border-[#DA7034]/25 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 font-semibold">
+            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#EFB80D]" />
             <span>THE COPPER HEARTH PLATTERS</span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-5xl font-semibold text-[#2B1B12] leading-tight mb-4">
+          <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-[#2B1B12] leading-tight mb-3 sm:mb-4">
             Handcrafted with <SwashAccent color="terracotta">Uncompromising Precision</SwashAccent>
           </h2>
 
-          <p className="font-sans text-base text-[#7A6A5B]">
+          <p className="font-sans text-xs sm:text-base text-[#7A6A5B]">
             Every portion is baked fresh upon order in traditional shallow copper pans. Zero frozen ingredients. Zero microwave reheating.
           </p>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-2.5 mb-14">
+        {/* Category Tabs: Mobile Friendly */}
+        <div className="flex justify-center gap-2 mb-10 sm:mb-14 overflow-x-auto pb-2 px-1">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
-              className={`font-sans text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] ${
+              className={`font-sans text-[11px] sm:text-xs uppercase tracking-wider px-4 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-200 cursor-pointer shrink-0 focus-visible:outline-2 focus-visible:outline-[#EFB80D] ${
                 activeCategory === cat
                   ? "bg-[#DA7034] text-white font-bold shadow-[0_4px_20px_rgba(218,112,52,0.35)] scale-105"
                   : "bg-[#FFF8EC] text-[#7A6A5B] border border-[#E7DCC9] hover:border-[#DA7034]/50 hover:text-[#2B1B12]"
@@ -137,52 +137,52 @@ export default function MenuPreview() {
         </div>
 
         {/* Menu Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7 mb-14 sm:mb-16">
           {filtered.map((item) => (
             <div
               key={item.id}
-              className="group bg-[#FFF8EC] hover:bg-white border border-[#E7DCC9] hover:border-[#DA7034]/50 rounded-[24px] p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between"
+              className="group bg-[#FFF8EC] hover:bg-white border border-[#E7DCC9] hover:border-[#DA7034]/50 rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between"
             >
               <div>
-                {/* Photo Preview Container */}
-                <div className="relative w-full h-48 rounded-[18px] overflow-hidden bg-[#030303] mb-5">
+                {/* Photo Container */}
+                <div className="relative w-full h-40 sm:h-48 rounded-[16px] sm:rounded-[18px] overflow-hidden bg-[#030303] mb-4 sm:mb-5">
                   <img
                     src={item.image}
                     alt={item.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                   />
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3">
                     <span
-                      className={`font-mono text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm ${item.tagColor}`}
+                      className={`font-mono text-[8.5px] sm:text-[9px] font-bold px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-wider shadow-sm ${item.tagColor}`}
                     >
                       {item.tag}
                     </span>
                   </div>
-                  <div className="absolute bottom-3 right-3 bg-white/95 text-[#2B1B12] font-display font-bold text-base px-3.5 py-1 rounded-full shadow-md backdrop-blur-sm border border-[#E7DCC9]">
+                  <div className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 bg-white/95 text-[#2B1B12] font-display font-bold text-sm sm:text-base px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full shadow-md backdrop-blur-sm border border-[#E7DCC9]">
                     {item.price}
                   </div>
                 </div>
 
-                <h3 className="font-display font-bold text-xl text-[#2B1B12] group-hover:text-[#DA7034] transition-colors leading-snug mb-2">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-[#2B1B12] group-hover:text-[#DA7034] transition-colors leading-snug mb-1.5 sm:mb-2">
                   {item.name}
                 </h3>
 
-                <p className="font-sans text-xs text-[#7A6A5B] leading-relaxed mb-4">
+                <p className="font-sans text-xs text-[#7A6A5B] leading-relaxed mb-3 sm:mb-4">
                   {item.description}
                 </p>
               </div>
 
               <div>
-                <div className="pt-3 border-t border-[#E7DCC9] font-mono text-[10.5px] text-[#DA7034] font-medium mb-4 flex items-center gap-1.5">
+                <div className="pt-2.5 sm:pt-3 border-t border-[#E7DCC9] font-mono text-[10px] sm:text-[10.5px] text-[#DA7034] font-medium mb-3 sm:mb-4 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034]" />
-                  <span>{item.specs}</span>
+                  <span className="truncate">{item.specs}</span>
                 </div>
 
                 <a
                   href={`https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20${encodeURIComponent(item.name)}%20(${item.price}).`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#2B1B12] hover:bg-[#DA7034] text-white font-sans text-xs font-semibold py-3 rounded-full transition-colors cursor-pointer shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 bg-[#2B1B12] hover:bg-[#DA7034] text-white font-sans text-xs font-semibold py-3 rounded-full transition-colors cursor-pointer shadow-sm active:scale-95"
                 >
                   <MessageCircle className="w-3.5 h-3.5 text-[#EFB80D]" />
                   <span>Quick WhatsApp Order</span>
@@ -193,15 +193,15 @@ export default function MenuPreview() {
         </div>
 
         {/* Brand Promise Callout Strip */}
-        <div className="p-7 sm:p-10 rounded-[24px] bg-[#2B1B12] text-[#FFF8EC] border-2 border-[#EFB80D]/30 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+        <div className="p-6 sm:p-10 rounded-[20px] sm:rounded-[24px] bg-[#2B1B12] text-[#FFF8EC] border-2 border-[#EFB80D]/30 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 shadow-2xl relative overflow-hidden text-center sm:text-left">
           <div className="absolute top-0 right-0 w-60 h-60 bg-[#DA7034]/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex items-center gap-5 relative z-10">
-            <div className="w-14 h-14 rounded-full bg-[#EFB80D]/10 border-2 border-[#EFB80D] flex items-center justify-center text-[#EFB80D] shrink-0">
-              <ShipHelm size={28} className="text-[#DA7034]" />
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 relative z-10">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#EFB80D]/10 border-2 border-[#EFB80D] flex items-center justify-center text-[#EFB80D] shrink-0">
+              <ShipHelm size={24} className="text-[#DA7034] sm:w-7 sm:h-7" />
             </div>
             <div>
-              <div className="font-display font-bold text-xl sm:text-2xl text-white mb-1">
+              <div className="font-display font-bold text-lg sm:text-2xl text-white mb-1">
                 Ordering for an Office, Gathering, or Celebration?
               </div>
               <div className="font-sans text-xs sm:text-sm text-[#B3A697]">
@@ -214,7 +214,7 @@ export default function MenuPreview() {
             href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20bulk%20platters%20for%20a%20gathering."
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 flex items-center gap-2.5 bg-[#EFB80D] hover:bg-[#ffc926] text-[#2B1B12] font-sans font-bold text-xs px-8 py-4 rounded-full transition-all hover:scale-105 shadow-md relative z-10"
+            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#2B1B12] font-sans font-bold text-xs px-7 py-3.5 rounded-full transition-all hover:scale-105 shadow-md relative z-10"
           >
             <span>Order Bulk Platters</span>
           </a>
