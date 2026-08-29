@@ -19,7 +19,7 @@ const ACTS = [
     headline: (
       <>
         Hyderabad's Most{" "}
-        <span className="font-display italic font-semibold text-[#DA7034]">Talked-About</span>{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Talked-About</span>{" "}
         Kunafa
       </>
     ),
@@ -31,7 +31,7 @@ const ACTS = [
     align: "left" as const,
     badge: null,
     label: "ACT I · THE KATAIFI TENSION",
-    labelColor: "#DA7034",
+    labelColor: "#EFB80D",
     headline: (
       <>
         Deconstructed{" "}
@@ -52,7 +52,7 @@ const ACTS = [
     headline: (
       <>
         The Molten{" "}
-        <span className="font-display italic font-semibold text-[#DA7034]">Akawi &amp; Nablusi</span>{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Akawi &amp; Nablusi</span>{" "}
         Heart
       </>
     ),
@@ -65,15 +65,15 @@ const ACTS = [
     align: "center" as const,
     badge: null,
     label: "ACT III · THE CAPTAIN'S PROMISE",
-    labelColor: "#DA7034",
+    labelColor: "#EFB80D",
     headline: (
       <>
         Reassembled to{" "}
         <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
       </>
     ),
-    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to 5 branches — fresh-pressed, every time.",
-    metric: "SERVED FRESH ACROSS 5 BRANCHES IN HYDERABAD",
+    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to our branches — fresh-pressed, every time.",
+    metric: "SERVED FRESH ACROSS OUR BRANCHES IN HYDERABAD",
     coords: "HYDERABAD · EST. 2021",
   },
 ];

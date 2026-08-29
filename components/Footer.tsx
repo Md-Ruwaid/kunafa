@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { MapPin, Anchor, Shield, Phone, Mail, Clock, ArrowUp } from "lucide-react";
-import { ShipHelm, CompassRose, CaptainSeal } from "@/components/NauticalElements";
+import { MapPin, Shield, Phone, ArrowUp } from "lucide-react";
+import { ShipHelm, CompassRose } from "@/components/NauticalElements";
 
 const outlets = [
-  { city: "Barkas Port", area: "Old City Flagship", code: "HYD-01", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00001" },
-  { city: "Malakpet Haven", area: "Chanchalguda Metro", code: "HYD-02", hours: "12:00 PM – 01:00 AM", phone: "+91 90000 00002" },
-  { city: "Tolichowki Haven", area: "Paramount Colony", code: "HYD-03", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00003" },
-  { city: "Aero City Anchor", area: "Shamshabad Corridor", code: "HYD-04", hours: "10:00 AM – 02:30 AM", phone: "+91 90000 00004" },
+  { city: "Barkas Branch", area: "Old City Flagship", code: "HYD-01", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00001" },
+  { city: "Malakpet Branch", area: "Chanchalguda Metro", code: "HYD-02", hours: "12:00 PM – 01:00 AM", phone: "+91 90000 00002" },
+  { city: "Tolichowki Branch", area: "Paramount Colony", code: "HYD-03", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00003" },
+  { city: "Aero City Branch", area: "Shamshabad Corridor", code: "HYD-04", hours: "10:00 AM – 02:30 AM", phone: "+91 90000 00004" },
   { city: "Jubilee Hills", area: "Road No. 36 Flagship", code: "HYD-05", hours: "12:00 PM – 01:30 AM", phone: "+91 90000 00005" },
 ];
 
@@ -20,21 +20,21 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#2B1B12] text-[#FFF8EC] border-t-2 border-[#EFB80D]/30 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
+    <footer className="bg-[#030303] text-[#FFF8EC] border-t-2 border-[#EFB80D]/30 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       {/* Compass rose watermark */}
-      <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none hidden sm:block">
+      <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none hidden sm:block text-[#EFB80D]">
         <CompassRose size={350} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* 5 Hyderabad Branches Grid */}
+        {/* Hyderabad Branches Grid */}
         <div className="mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#EFB80D] flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034]" />
-              <span>THE 5 BRANCHES — HYDERABAD</span>
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#EFB80D] flex items-center gap-2 font-semibold">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D]" />
+              <span>THE BRANCHES — HYDERABAD</span>
             </div>
-            <span className="font-mono text-[9px] sm:text-[10px] text-[#B3A697] uppercase">
+            <span className="font-mono text-[9px] sm:text-[10px] text-white/40 uppercase">
               17.3115° N, 78.4871° E · HYDERABAD
             </span>
           </div>
@@ -43,31 +43,31 @@ export default function Footer() {
             {outlets.map((outlet, idx) => (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#1a0f06] border border-[#EFB80D]/20 hover:border-[#DA7034] transition-colors flex flex-col justify-between"
+                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#0a0a0a] border border-[#EFB80D]/20 hover:border-[#EFB80D] transition-all flex flex-col justify-between shadow-md"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                    <span className="font-mono text-[10px] text-[#DA7034] font-bold">
+                    <span className="font-mono text-[10px] text-[#EFB80D] font-bold">
                       {outlet.code}
                     </span>
-                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/20">
+                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/30 font-semibold">
                       ACTIVE
                     </span>
                   </div>
-                  <div className="font-display font-bold text-sm text-[#FFF8EC] mb-0.5">
+                  <div className="font-display font-bold text-sm text-white mb-0.5">
                     {outlet.city}
                   </div>
-                  <div className="font-sans text-xs text-[#B3A697]">
+                  <div className="font-sans text-xs text-white/60">
                     {outlet.area}
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/5 font-mono text-[9.5px] sm:text-[10px] text-[#7A6A5B] space-y-1">
-                  <div className="flex items-center gap-1 text-emerald-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/10 font-mono text-[9.5px] sm:text-[10px] text-white/50 space-y-1">
+                  <div className="flex items-center gap-1 text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                     <span>{outlet.hours}</span>
                   </div>
-                  <div className="text-white/60">{outlet.phone}</div>
+                  <div className="text-white/70">{outlet.phone}</div>
                 </div>
               </div>
             ))}
@@ -75,21 +75,21 @@ export default function Footer() {
         </div>
 
         {/* Main Footer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-[#E7DCC9]/15">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-white/10">
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#FFF8EC] border-2 border-[#EFB80D] flex items-center justify-center shrink-0">
-                <ShipHelm size={20} className="text-[#DA7034] sm:w-[22px] sm:h-[22px]" />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0a0a0a] border-2 border-[#EFB80D] flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(239,184,13,0.3)]">
+                <ShipHelm size={20} className="text-[#EFB80D] sm:w-[22px] sm:h-[22px]" />
               </div>
               <span className="font-display font-bold text-lg sm:text-xl text-white">
-                CAPTAIN <span className="italic text-[#DA7034]">KUNAFA</span>
+                CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
               </span>
             </div>
-            <p className="font-sans text-xs sm:text-sm text-[#B3A697] leading-relaxed max-w-sm mb-5 sm:mb-6">
-              Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across 5 city branches.
+            <p className="font-sans text-xs sm:text-sm text-white/70 leading-relaxed max-w-sm mb-5 sm:mb-6">
+              Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across our city branches.
             </p>
-            <div className="font-mono text-[11px] sm:text-xs text-[#DA7034] space-y-1">
+            <div className="font-mono text-[11px] sm:text-xs text-[#EFB80D] space-y-1">
               <div>CENTRAL HEARTH &amp; HQ: BARKAS, HYDERABAD · 500005</div>
               <div>HOTLINE: +91 90000 00001</div>
             </div>
@@ -100,18 +100,18 @@ export default function Footer() {
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               VOYAGE NAVIGATION
             </div>
-            <ul className="space-y-2 font-sans text-xs text-[#B3A697]">
+            <ul className="space-y-2 font-sans text-xs text-white/70">
               {[
                 { label: "The Scrollytelling Story", href: "#story" },
                 { label: "Saud's Levantine Chronicle", href: "#about" },
-                { label: "5 Hyderabad Branches", href: "#locations" },
+                { label: "Hyderabad Branches", href: "#locations" },
                 { label: "Copper Hearth Platters", href: "#menu" },
                 { label: "Ship's Logbook Reviews", href: "#reviews" },
               ].map((link, idx) => (
                 <li key={idx}>
                   <a
                     href={link.href}
-                    className="hover:text-[#DA7034] transition-colors py-0.5 inline-block"
+                    className="hover:text-[#EFB80D] transition-colors py-0.5 inline-block"
                   >
                     {link.label}
                   </a>
@@ -125,17 +125,17 @@ export default function Footer() {
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               THE CAPTAIN'S GUARANTEE
             </div>
-            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-[#B3A697] mb-5 sm:mb-6">
+            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/70 mb-5 sm:mb-6">
               <div className="flex items-start gap-2 sm:gap-2.5">
-                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D] shrink-0 mt-0.5" />
                 <span>100% Grass-Fed Clarified A2 Ghee — zero palm oil.</span>
               </div>
               <div className="flex items-start gap-2 sm:gap-2.5">
-                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D] shrink-0 mt-0.5" />
                 <span>18-hour cold desalinated mountain Akawi &amp; Nablusi curd.</span>
               </div>
               <div className="flex items-start gap-2 sm:gap-2.5">
-                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034] shrink-0 mt-0.5" />
+                <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D] shrink-0 mt-0.5" />
                 <span>Raw first-harvest Aleppo emerald green pistachios.</span>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20b858] text-white font-sans text-xs font-semibold px-4 py-2.5 rounded-full transition-all active:scale-95"
+                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs font-bold px-5 py-2.5 rounded-full transition-all active:scale-95 shadow-[0_0_15px_rgba(239,184,13,0.3)]"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Direct WhatsApp Desk</span>
@@ -155,14 +155,14 @@ export default function Footer() {
         </div>
 
         {/* Copyright & Back to Top */}
-        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10px] sm:text-xs text-[#7A6A5B] text-center sm:text-left">
+        <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10px] sm:text-xs text-white/50 text-center sm:text-left">
           <div>
             © {new Date().getFullYear()} CAPTAIN KUNAFA. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
           </div>
           <button
             type="button"
             onClick={scrollToTop}
-            className="flex items-center gap-1 text-[#DA7034] hover:text-[#EFB80D] transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-[#EFB80D] hover:text-white transition-colors cursor-pointer"
           >
             <span>Back to Top of Voyage</span>
             <ArrowUp className="w-3.5 h-3.5" />
