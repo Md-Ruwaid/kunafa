@@ -61,6 +61,8 @@ export const metadata: Metadata = {
   },
 };
 
+import SmoothScroll from "@/components/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: {
@@ -113,9 +115,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-[#FFF8EC] text-[#2B1B12] font-sans selection:bg-[#EFB80D]/30 selection:text-[#DA7034] min-h-screen flex flex-col antialiased">
-        <Navbar />
-        <div className="grow">{children}</div>
-        <Footer />
+        <SmoothScroll>
+          <Navbar />
+          <div className="grow">{children}</div>
+          <Footer />
+        </SmoothScroll>
       </body>
     </html>
   );
