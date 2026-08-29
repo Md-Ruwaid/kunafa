@@ -319,8 +319,8 @@ export default function KunafaExplodeCanvas() {
                 >
                   {/* Badge */}
                   {act.badge && (
-                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-3.5 py-1.5 rounded-full mb-3 sm:mb-5 backdrop-blur-md">
-                      <ShipHelm size={13} className="text-[#DA7034]" />
+                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#050505] bg-[#EFB80D] px-4 py-1.5 rounded-full mb-3 sm:mb-5 font-black shadow-[0_0_15px_rgba(239,184,13,0.4)]">
+                      <ShipHelm size={13} className="text-[#050505]" />
                       <span>{act.badge}</span>
                     </div>
                   )}
@@ -328,21 +328,9 @@ export default function KunafaExplodeCanvas() {
                   {/* Label pill */}
                   {act.label && (
                     <div
-                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3 py-1 rounded-full bg-[#2B1B12]/85 border border-white/10 backdrop-blur-md"
-                      style={{
-                        color:
-                          (act as { labelColor?: string }).labelColor ??
-                          "#EFB80D",
-                      }}
+                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3.5 py-1 rounded-full bg-[#EFB80D] text-[#050505] font-black shadow-sm"
                     >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{
-                          background:
-                            (act as { labelColor?: string }).labelColor ??
-                            "#EFB80D",
-                        }}
-                      />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#050505]" />
                       {act.label}
                     </div>
                   )}
@@ -365,13 +353,13 @@ export default function KunafaExplodeCanvas() {
 
                   {/* Metric tag or Coords */}
                   {"metric" in act && act.metric && (
-                    <div className="font-mono text-[10px] sm:text-xs text-[#EFB80D] tracking-wider bg-[#2B1B12]/80 inline-block px-3 py-1 rounded-md border border-[#EFB80D]/20">
+                    <div className="font-mono text-[10px] sm:text-xs text-[#050505] font-black tracking-wider bg-[#EFB80D] inline-block px-3.5 py-1.5 rounded-md shadow-sm">
                       {act.metric}
                     </div>
                   )}
 
                   {act.coords && (
-                    <div className="font-mono text-[10px] sm:text-[11px] text-[#DA7034] tracking-widest mt-2 uppercase">
+                    <div className="font-mono text-[10px] sm:text-[11px] text-[#EFB80D] font-bold tracking-widest mt-2 uppercase">
                       {act.coords}
                     </div>
                   )}

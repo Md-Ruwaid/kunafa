@@ -20,7 +20,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#030303] text-[#FFF8EC] border-t-2 border-[#EFB80D]/30 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
+    <footer className="bg-[#030303] text-[#FFF8EC] border-t-2 border-[#EFB80D]/40 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       {/* Compass rose watermark */}
       <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none hidden sm:block text-[#EFB80D]">
         <CompassRose size={350} />
@@ -30,11 +30,11 @@ export default function Footer() {
         {/* Hyderabad Branches Grid */}
         <div className="mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#EFB80D] flex items-center gap-2 font-semibold">
-              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D]" />
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#050505] bg-[#EFB80D] px-3.5 py-1 rounded-full flex items-center gap-2 font-bold shadow-[0_0_15px_rgba(239,184,13,0.3)]">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#050505]" />
               <span>THE BRANCHES — HYDERABAD</span>
             </div>
-            <span className="font-mono text-[9px] sm:text-[10px] text-white/40 uppercase">
+            <span className="font-mono text-[9px] sm:text-[10px] text-white/50 uppercase font-bold">
               17.3115° N, 78.4871° E · HYDERABAD
             </span>
           </div>
@@ -43,31 +43,31 @@ export default function Footer() {
             {outlets.map((outlet, idx) => (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#0a0a0a] border border-[#EFB80D]/20 hover:border-[#EFB80D] transition-all flex flex-col justify-between shadow-md"
+                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#0a0a0a] border-2 border-[#EFB80D]/30 hover:border-[#EFB80D] transition-all flex flex-col justify-between shadow-md"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                    <span className="font-mono text-[10px] text-[#EFB80D] font-bold">
+                    <span className="font-mono text-[10px] text-[#EFB80D] font-black">
                       {outlet.code}
                     </span>
-                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2 py-0.5 rounded-full bg-[#EFB80D]/10 text-[#EFB80D] border border-[#EFB80D]/30 font-semibold">
+                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#EFB80D] text-[#050505] font-black shadow-sm">
                       ACTIVE
                     </span>
                   </div>
                   <div className="font-display font-bold text-sm text-white mb-0.5">
                     {outlet.city}
                   </div>
-                  <div className="font-sans text-xs text-white/60">
+                  <div className="font-sans text-xs text-white/70">
                     {outlet.area}
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/10 font-mono text-[9.5px] sm:text-[10px] text-white/50 space-y-1">
-                  <div className="flex items-center gap-1 text-emerald-400 font-medium">
+                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/10 font-mono text-[9.5px] sm:text-[10px] text-white/60 space-y-1">
+                  <div className="flex items-center gap-1 text-emerald-400 font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                     <span>{outlet.hours}</span>
                   </div>
-                  <div className="text-white/70">{outlet.phone}</div>
+                  <div className="text-white/80">{outlet.phone}</div>
                 </div>
               </div>
             ))}
@@ -79,17 +79,17 @@ export default function Footer() {
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#0a0a0a] border-2 border-[#EFB80D] flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(239,184,13,0.3)]">
-                <ShipHelm size={20} className="text-[#EFB80D] sm:w-[22px] sm:h-[22px]" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#050505] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(239,184,13,0.4)]">
+                <ShipHelm size={22} className="text-[#050505] sm:w-[24px] sm:h-[24px]" />
               </div>
               <span className="font-display font-bold text-lg sm:text-xl text-white">
                 CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
               </span>
             </div>
-            <p className="font-sans text-xs sm:text-sm text-white/70 leading-relaxed max-w-sm mb-5 sm:mb-6">
+            <p className="font-sans text-xs sm:text-sm text-white/75 leading-relaxed max-w-sm mb-5 sm:mb-6">
               Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across our city branches.
             </p>
-            <div className="font-mono text-[11px] sm:text-xs text-[#EFB80D] space-y-1">
+            <div className="font-mono text-[11px] sm:text-xs text-[#EFB80D] font-bold space-y-1">
               <div>CENTRAL HEARTH &amp; HQ: BARKAS, HYDERABAD · 500005</div>
               <div>HOTLINE: +91 90000 00001</div>
             </div>
@@ -100,7 +100,7 @@ export default function Footer() {
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               VOYAGE NAVIGATION
             </div>
-            <ul className="space-y-2 font-sans text-xs text-white/70">
+            <ul className="space-y-2 font-sans text-xs text-white/80">
               {[
                 { label: "The Scrollytelling Story", href: "#story" },
                 { label: "Saud's Levantine Chronicle", href: "#about" },
@@ -125,7 +125,7 @@ export default function Footer() {
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[#EFB80D] font-bold mb-3 sm:mb-4">
               THE CAPTAIN'S GUARANTEE
             </div>
-            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/70 mb-5 sm:mb-6">
+            <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/80 mb-5 sm:mb-6">
               <div className="flex items-start gap-2 sm:gap-2.5">
                 <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#EFB80D] shrink-0 mt-0.5" />
                 <span>100% Grass-Fed Clarified A2 Ghee — zero palm oil.</span>
@@ -145,7 +145,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs font-bold px-5 py-2.5 rounded-full transition-all active:scale-95 shadow-[0_0_15px_rgba(239,184,13,0.3)]"
+                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 shadow-[0_0_20px_rgba(239,184,13,0.4)] hover:scale-105"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Direct WhatsApp Desk</span>
@@ -162,7 +162,7 @@ export default function Footer() {
           <button
             type="button"
             onClick={scrollToTop}
-            className="flex items-center gap-1 text-[#EFB80D] hover:text-white transition-colors cursor-pointer"
+            className="flex items-center gap-1 text-[#EFB80D] hover:text-white transition-colors cursor-pointer font-bold"
           >
             <span>Back to Top of Voyage</span>
             <ArrowUp className="w-3.5 h-3.5" />

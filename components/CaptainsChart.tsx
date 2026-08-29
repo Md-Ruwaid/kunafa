@@ -111,7 +111,6 @@ const BRANCHES: Branch[] = [
   },
 ];
 
-// Continuous smooth curve through all branch centers
 const ROUTE_PATH_D = "M 140 220 C 210 160, 240 140, 310 140 C 380 140, 410 240, 480 240 C 550 240, 580 110, 650 110 C 720 110, 750 180, 820 180";
 
 export default function CaptainsChart() {
@@ -158,7 +157,7 @@ export default function CaptainsChart() {
         currentProgress = targetProgress;
       }
 
-      // Update Path stroke-dashoffset in golden glow
+      // Update Path stroke-dashoffset
       if (pathRef.current) {
         const offset = totalPathLength * (1 - currentProgress);
         pathRef.current.style.strokeDashoffset = `${offset}`;
@@ -244,22 +243,22 @@ export default function CaptainsChart() {
     <div
       ref={containerRef}
       id="locations"
-      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#050505] border-t border-[#EFB80D]/20"
+      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#050505] border-t border-[#EFB80D]/30"
     >
       {/* Sticky Viewport */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 overflow-hidden bg-[#050505]">
         {/* Ambient Chart Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(239,184,13,0.06)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(239,184,13,0.08)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
         <div className="absolute top-12 right-12 opacity-10 pointer-events-none hidden xl:block text-[#EFB80D]">
           <CompassRose size={260} />
         </div>
 
-        {/* 1. Header & Golden Stepper Tabs */}
+        {/* 1. Header & Solid Golden Stepper Tabs */}
         <div className="relative z-10 max-w-7xl mx-auto w-full pt-14 sm:pt-16">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-2 sm:mb-3">
             <div className="text-center sm:text-left">
-              <div className="inline-flex items-center gap-1.5 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-[#EFB80D] bg-[#EFB80D]/10 border border-[#EFB80D]/30 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-full mb-0.5 font-semibold">
-                <Compass className="w-3 h-3 text-[#EFB80D]" />
+              <div className="inline-flex items-center gap-1.5 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-[#050505] bg-[#EFB80D] px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full mb-0.5 font-bold shadow-[0_0_15px_rgba(239,184,13,0.35)]">
+                <Compass className="w-3.5 h-3.5 text-[#050505]" />
                 <span>VOYAGE OF THE HYDERABAD BRANCHES</span>
               </div>
               <h2 className="font-display text-lg sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
@@ -267,20 +266,20 @@ export default function CaptainsChart() {
               </h2>
             </div>
 
-            {/* Live Voyage HUD in Gold */}
-            <div className="flex items-center gap-2 bg-[#0d0d0d] border border-[#EFB80D]/40 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-[0_0_15px_rgba(239,184,13,0.15)] text-[11px] sm:text-xs">
-              <div className="w-2 h-2 rounded-full bg-[#EFB80D] animate-ping shrink-0" />
+            {/* Live Voyage HUD in Solid Gold & Black */}
+            <div className="flex items-center gap-2 bg-[#0d0d0d] border-2 border-[#EFB80D] px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-[0_0_20px_rgba(239,184,13,0.25)] text-[11px] sm:text-xs">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#EFB80D] animate-ping shrink-0 shadow-[0_0_8px_#EFB80D]" />
               <span className="font-mono font-bold text-white truncate max-w-[140px] sm:max-w-none">
-                <span ref={hudProgressRef} className="text-[#EFB80D] uppercase">{BRANCHES[0].name}</span>
+                <span ref={hudProgressRef} className="text-[#EFB80D] uppercase font-bold">{BRANCHES[0].name}</span>
               </span>
-              <span ref={hudPercentRef} className="font-mono text-[10px] sm:text-[11px] text-[#EFB80D]/70">
+              <span ref={hudPercentRef} className="font-mono text-[10px] sm:text-[11px] text-[#EFB80D] font-bold">
                 (0%)
               </span>
             </div>
           </div>
 
-          {/* Stepper Navigation Tabs in #EFB80D Gold */}
-          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#0d0d0d]/90 border border-[#EFB80D]/30 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-md">
+          {/* Stepper Navigation Tabs in Solid #EFB80D Gold */}
+          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-md">
             {BRANCHES.map((branch, idx) => {
               const isPassed = idx < activeBranchIndex;
               const isCurrent = idx === activeBranchIndex;
@@ -290,18 +289,18 @@ export default function CaptainsChart() {
                   key={branch.id}
                   type="button"
                   onClick={() => handleJumpToBranch(idx)}
-                  className={`flex items-center justify-center gap-1 py-1.5 sm:py-2 px-1 sm:px-2.5 rounded-lg sm:rounded-xl font-mono text-[9px] sm:text-xs transition-all cursor-pointer truncate ${
+                  className={`flex items-center justify-center gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9px] sm:text-xs transition-all cursor-pointer truncate ${
                     isCurrent
-                      ? "bg-[#EFB80D] text-[#050505] font-bold shadow-[0_0_15px_rgba(239,184,13,0.4)] scale-[1.02]"
+                      ? "bg-[#EFB80D] text-[#050505] font-black shadow-[0_0_25px_rgba(239,184,13,0.55)] scale-[1.03]"
                       : isPassed
-                      ? "bg-[#EFB80D]/20 text-[#EFB80D] font-semibold border border-[#EFB80D]/30"
-                      : "bg-[#151515] text-white/60 hover:text-white hover:bg-[#1a1a1a]"
+                      ? "bg-[#EFB80D]/25 text-[#EFB80D] font-bold border border-[#EFB80D]/50"
+                      : "bg-[#1c1c1c] text-white/70 hover:text-white hover:bg-[#252525]"
                   }`}
                 >
                   <span className="sm:hidden">0{idx + 1}</span>
                   <span className="hidden sm:inline">0{idx + 1}. {branch.name.split(" ")[0]}</span>
                   {isPassed && (
-                    <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#EFB80D] hidden sm:inline shrink-0" />
+                    <CheckCircle className="w-3 h-3 text-[#EFB80D] hidden sm:inline shrink-0" />
                   )}
                 </button>
               );
@@ -312,10 +311,10 @@ export default function CaptainsChart() {
         {/* 2. Main Center Section: SVG Chart + Spotlight Card */}
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
           {/* Map Chart Container */}
-          <div className="lg:col-span-7 bg-[#0d0d0d] border-2 border-[#EFB80D]/30 rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-center">
-            <div className="flex justify-between font-mono text-[8px] sm:text-[9px] text-[#EFB80D]/60 border-b border-[#EFB80D]/15 pb-1 mb-1">
+          <div className="lg:col-span-7 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-center">
+            <div className="flex justify-between font-mono text-[8px] sm:text-[9px] text-[#EFB80D] border-b border-[#EFB80D]/20 pb-1 mb-1 font-bold">
               <span>LAT: 17.24° – 17.43° N</span>
-              <span className="text-[#EFB80D]">HYDERABAD MARITIME CHART</span>
+              <span>HYDERABAD MARITIME CHART</span>
               <span>LNG: 78.40° – 78.50° E</span>
             </div>
 
@@ -333,35 +332,35 @@ export default function CaptainsChart() {
                 <path
                   d={ROUTE_PATH_D}
                   fill="none"
-                  stroke="#333333"
-                  strokeWidth="3"
+                  stroke="#222222"
+                  strokeWidth="4"
                   strokeDasharray="6 6"
                 />
 
-                {/* Active Animated Trail in Glowing Captain Gold */}
+                {/* Active Animated Trail in Solid Glowing Captain Gold */}
                 <path
                   ref={pathRef}
                   d={ROUTE_PATH_D}
                   fill="none"
                   stroke="#EFB80D"
-                  strokeWidth="5"
+                  strokeWidth="6"
                   strokeLinecap="round"
-                  className="drop-shadow-[0_0_8px_rgba(239,184,13,0.6)]"
+                  className="drop-shadow-[0_0_12px_rgba(239,184,13,0.7)]"
                 />
 
-                {/* Sailing Vessel Group */}
+                {/* Sailing Vessel Group in Solid Gold */}
                 <g ref={shipGroupRef}>
-                  <circle r="22" fill="#EFB80D" fillOpacity="0.2" className="animate-pulse" />
-                  <circle r="14" fill="#050505" stroke="#EFB80D" strokeWidth="2.5" />
+                  <circle r="22" fill="#EFB80D" fillOpacity="0.3" className="animate-pulse" />
+                  <circle r="14" fill="#EFB80D" stroke="#050505" strokeWidth="2.5" />
                   <g transform="scale(0.7) translate(-12, -12)">
                     <path
                       d="M12 2L15 8H9L12 2ZM4 13L12 11L20 13L17 19H7L4 13Z"
-                      fill="#EFB80D"
+                      fill="#050505"
                     />
                   </g>
                 </g>
 
-                {/* Branch Markers */}
+                {/* Branch Markers with Solid Filled Gold */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
                   const isPassed = idx < activeBranchIndex;
@@ -374,45 +373,45 @@ export default function CaptainsChart() {
                     >
                       {isCurrent && (
                         <>
-                          <circle cx={branch.x} cy={branch.y} r="26" fill="#EFB80D" fillOpacity="0.25" className="animate-ping" />
-                          <circle cx={branch.x} cy={branch.y} r="18" fill="#EFB80D" fillOpacity="0.45" />
+                          <circle cx={branch.x} cy={branch.y} r="26" fill="#EFB80D" fillOpacity="0.35" className="animate-ping" />
+                          <circle cx={branch.x} cy={branch.y} r="18" fill="#EFB80D" fillOpacity="0.5" />
                         </>
                       )}
 
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 10 : 7}
+                        r={isCurrent ? 12 : 8}
                         fill={isCurrent ? "#EFB80D" : isPassed ? "#EFB80D" : "#333333"}
                         stroke="#050505"
-                        strokeWidth="2"
+                        strokeWidth="2.5"
                       />
                       <circle
                         cx={branch.x}
                         cy={branch.y}
-                        r={isCurrent ? 4 : 2}
+                        r={isCurrent ? 5 : 3}
                         fill={isCurrent ? "#050505" : "#EFB80D"}
                       />
 
                       <text
                         x={branch.x}
-                        y={branch.y - 16}
+                        y={branch.y - 18}
                         textAnchor="middle"
                         fill={isCurrent ? "#EFB80D" : "#FFFFFF"}
                         fontFamily="var(--font-fraunces), serif"
-                        fontWeight={isCurrent ? "800" : "600"}
-                        fontSize="13"
+                        fontWeight={isCurrent ? "900" : "700"}
+                        fontSize={isCurrent ? "14" : "12"}
                       >
                         {branch.name}
                       </text>
                       <text
                         x={branch.x}
-                        y={branch.y + 20}
+                        y={branch.y + 22}
                         textAnchor="middle"
                         fill={isCurrent ? "#EFB80D" : "#888888"}
                         fontFamily="var(--font-ibm-mono), monospace"
                         fontSize="9"
-                        fontWeight="600"
+                        fontWeight="700"
                       >
                         {branch.code}
                       </text>
@@ -423,7 +422,7 @@ export default function CaptainsChart() {
             </div>
           </div>
 
-          {/* Active Branch Spotlight Card in Black & Gold */}
+          {/* Active Branch Spotlight Card with Solid Gold Header & Button */}
           <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
@@ -432,14 +431,14 @@ export default function CaptainsChart() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.98 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-4 sm:p-6 shadow-[0_10px_35px_rgba(239,184,13,0.15)] relative overflow-hidden"
+                className="bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_10px_40px_rgba(239,184,13,0.2)] relative overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[10px] sm:text-xs font-bold text-[#050505] bg-[#EFB80D] px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-wider shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-mono text-[10px] sm:text-xs font-black text-[#050505] bg-[#EFB80D] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
                     {activeBranch.code} · STOP 0{activeBranchIndex + 1}/05
                   </span>
-                  <span className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-500/40">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500 text-[#050505] font-black shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#050505] animate-pulse" />
                     LIVE SERVICE OPEN
                   </span>
                 </div>
@@ -448,16 +447,20 @@ export default function CaptainsChart() {
                   <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
                     {activeBranch.name}
                   </h3>
-                  <span className="font-sans text-[11px] sm:text-xs text-[#EFB80D] font-semibold">
+                  <span className="font-sans text-[11px] sm:text-xs text-[#EFB80D] font-bold">
                     {activeBranch.area}
                   </span>
                 </div>
 
-                <p className="font-sans text-xs text-white/70 leading-relaxed my-2 line-clamp-2 sm:line-clamp-none">
+                <div className="inline-block bg-[#EFB80D] text-[#050505] font-mono text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md my-2.5">
+                  {activeBranch.highlight}
+                </div>
+
+                <p className="font-sans text-xs text-white/80 leading-relaxed mb-3 line-clamp-2 sm:line-clamp-none">
                   {activeBranch.description}
                 </p>
 
-                <div className="space-y-1.5 font-sans text-xs text-white/70 border-t border-[#EFB80D]/20 pt-2.5 mb-3">
+                <div className="space-y-1.5 font-sans text-xs text-white/75 border-t border-[#EFB80D]/20 pt-3 mb-4">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
                     <span className="truncate text-white font-medium text-[11px] sm:text-xs">
@@ -465,8 +468,8 @@ export default function CaptainsChart() {
                     </span>
                   </div>
                   <div className="flex items-center gap-4 text-[10px] sm:text-[11px] font-mono">
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-[#EFB80D]" /> {activeBranch.hours}</span>
-                    <span className="flex items-center gap-1"><Phone className="w-3 h-3 text-[#EFB80D]" /> {activeBranch.phone}</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#EFB80D]" /> {activeBranch.hours}</span>
+                    <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5 text-[#EFB80D]" /> {activeBranch.phone}</span>
                   </div>
                 </div>
 
@@ -479,7 +482,7 @@ export default function CaptainsChart() {
                   )}!%20I'd%20like%20to%20order%20fresh%20kunafa.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs sm:text-sm font-bold py-2.5 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] shadow-[0_0_20px_rgba(239,184,13,0.3)] cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs sm:text-sm font-black py-3 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] shadow-[0_0_20px_rgba(239,184,13,0.4)] cursor-pointer"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -494,10 +497,10 @@ export default function CaptainsChart() {
         {/* 3. Bottom Guide */}
         <div className="relative z-10 max-w-7xl mx-auto w-full pb-1 flex items-center justify-between font-mono text-[9px] sm:text-[11px] text-white/50">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
+            <span className="w-2 h-2 rounded-full bg-[#EFB80D]" />
             <span className="truncate">BRANCH VOYAGE: BARKAS ➔ MALAKPET ➔ TOLICHOWKI ➔ AERO CITY ➔ JUBILEE HILLS</span>
           </div>
-          <div className="text-[#EFB80D] font-semibold hidden sm:block">
+          <div className="text-[#EFB80D] font-bold hidden sm:block">
             {activeBranchIndex === BRANCHES.length - 1
               ? "VOYAGE COMPLETED · SCROLL FOR PLATTERS MENU ↓"
               : "SCROLL TO COMPLETE JOURNEY TO JUBILEE HILLS"}
