@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MessageCircle, Sparkles, MoveHorizontal } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import { ShipHelm } from "@/components/NauticalElements";
 import CircularGallery, { GalleryItem } from "@/components/CircularGallery";
@@ -9,19 +9,15 @@ import CircularGallery, { GalleryItem } from "@/components/CircularGallery";
 const GALLERY_ITEMS: GalleryItem[] = [
   {
     image: "/platters/platter-original.png",
-    text: "The Captain's Original Akawi",
   },
   {
     image: "/platters/platter-pistachio.png",
-    text: "Aleppo Emerald Pistachio Crown",
   },
   {
     image: "/platters/platter-biscoff.png",
-    text: "Lotus Biscoff Royale",
   },
   {
     image: "/platters/platter-choco.png",
-    text: "Dark Choco & Hazelnut Lava",
   },
 ];
 
@@ -47,29 +43,20 @@ export default function MenuPreview() {
           </p>
         </div>
 
-        {/* 3D WebGL CircularGallery Showcase from React Bits */}
-        <div className="relative w-full mb-14 sm:mb-16">
-          <div className="relative h-[380px] xs:h-[430px] sm:h-[500px] lg:h-[540px] w-full rounded-[24px] sm:rounded-[32px] bg-[#0c0c0c] border border-white/10 shadow-2xl overflow-hidden">
+        {/* 3D WebGL CircularGallery Showcase from React Bits - Mobile Optimized */}
+        <div className="relative w-full mb-12 sm:mb-16">
+          <div className="relative h-[320px] xs:h-[360px] sm:h-[460px] lg:h-[520px] w-full rounded-[24px] sm:rounded-[32px] bg-[#0c0c0c] border border-white/10 shadow-2xl overflow-hidden">
             <CircularGallery
               items={GALLERY_ITEMS}
               bend={2.5}
-              textColor="#FFFFFF"
               borderRadius={0.06}
               scrollSpeed={2.2}
-              scrollEase={0.03}
+              scrollEase={0.04}
             />
 
             {/* Subtle Gradient Overlays for Depth */}
-            <div className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#0c0c0c] to-transparent pointer-events-none z-10" />
-            <div className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#0c0c0c] to-transparent pointer-events-none z-10" />
-
-            {/* Interactive Drag Hint Pill */}
-            <div className="absolute bottom-4 inset-x-0 flex justify-center pointer-events-none z-20">
-              <div className="flex items-center gap-2 font-mono text-[9.5px] sm:text-xs uppercase tracking-widest text-black bg-white font-black px-4 py-1.5 rounded-full shadow-lg">
-                <MoveHorizontal className="w-3.5 h-3.5 text-black" />
-                <span>DRAG OR SCROLL TO ROTATE 3D GALLERY</span>
-              </div>
-            </div>
+            <div className="absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#0c0c0c] to-transparent pointer-events-none z-10" />
+            <div className="absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#0c0c0c] to-transparent pointer-events-none z-10" />
           </div>
         </div>
 

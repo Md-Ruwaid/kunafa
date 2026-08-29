@@ -6,7 +6,7 @@ import "./CircularGallery.css";
 
 export interface GalleryItem {
   image: string;
-  text: string;
+  text?: string;
 }
 
 export interface CircularGalleryProps {
@@ -43,204 +43,6 @@ function autoBind(instance: object) {
   });
 }
 
-const DEFAULT_FONT = "bold 30px Figtree";
-const DEFAULT_FONT_URL =
-  "https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap";
-
-function deriveFontFamilyFromUrl(url: string) {
-  const fileName = (url.split("/").pop() || "custom-font").split("?")[0];
-  const base = fileName.replace(/\.(woff2?|ttf|otf|eot)$/i, "");
-  return base.replace(/[^a-zA-Z0-9-_ ]/g, "").trim() || "CircularGalleryFont";
-}
-
-async function loadFontFromStylesheet(url: string) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch font stylesheet (${response.status})`);
-  const cssText = await response.text();
-  const faceBlocks = cssText.match(/@font-face\s*{[^}]*}/g) || [];
-  let family: string | null = null;
-  const fontFaces: FontFace[] = [];
-  for (const block of faceBlocks) {
-    const familyMatch = block.match(/font-family:\s*['"]?([^;'"]+)['"]?/);
-    const urlMatch = block.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/);
-    if (!familyMatch || !urlMatch) continue;
-    family = familyMatch[1].trim();
-    const descriptors: FontFaceDescriptors = {};
-    const weightMatch = block.match(/font-weight:\s*([^;]+);/);
-    const styleMatch = block.match(/font-style:\s*([^;]+);/);
-    const rangeMatch = block.match(/unicode-range:\s*([^;]+);/);
-    if (weightMatch) descriptors.weight = weightMatch[1].trim();
-    if (styleMatch) descriptors.style = styleMatch[1].trim();
-    if (rangeMatch) descriptors.unicodeRange = rangeMatch[1].trim();
-    fontFaces.push(new FontFace(family, `url(${urlMatch[1]})`, descriptors));
-  }
-  if (!family) throw new Error("No @font-face rule found in the stylesheet");
-  await Promise.allSettled(
-    fontFaces.map(async (face) => {
-      await face.load();
-      document.fonts.add(face);
-    })
-  );
-  return family;
-}
-
-async function loadFontFromFile(url: string) {
-  const family = deriveFontFamilyFromUrl(url);
-  const fontFace = new FontFace(family, `url(${url})`);
-  await fontFace.load();
-  document.fonts.add(fontFace);
-  return family;
-}
-
-async function loadCustomFont(fontUrl: string) {
-  const isStylesheet =
-    fontUrl.includes("fonts.googleapis.com") || /\.css(\?.*)?$/i.test(fontUrl);
-  return isStylesheet ? loadFontFromStylesheet(fontUrl) : loadFontFromFile(fontUrl);
-}
-
-async function resolveFont(font: string, fontUrl?: string) {
-  const effectiveUrl = fontUrl || (font === DEFAULT_FONT ? DEFAULT_FONT_URL : null);
-  if (!effectiveUrl) {
-    if (typeof document !== "undefined" && document.fonts && document.fonts.load) {
-      try {
-        await document.fonts.load(font);
-        await document.fonts.ready;
-      } catch {
-        // Ignore fallback
-      }
-    }
-    return font;
-  }
-  try {
-    const family = await loadCustomFont(effectiveUrl);
-    const sizeMatch = font.match(/^\s*(.*?\d+px)/);
-    const prefix = sizeMatch ? sizeMatch[1].trim() : "bold 30px";
-    const resolved = `${prefix} "${family}"`;
-    if (typeof document !== "undefined" && document.fonts && document.fonts.load) {
-      try {
-        await document.fonts.load(resolved);
-      } catch {
-        // Ignore
-      }
-    }
-    return resolved;
-  } catch (error) {
-    console.error("CircularGallery: unable to load font from", fontUrl, error);
-    return font;
-  }
-}
-
-function getFontSize(font: string) {
-  const match = font.match(/(\d+)px/);
-  return match ? parseInt(match[1], 10) : 30;
-}
-
-function createTextTexture(
-  gl: Renderer["gl"],
-  text: string,
-  font = "bold 30px monospace",
-  color = "black"
-) {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  if (!context) {
-    const texture = new Texture(gl, { generateMipmaps: false });
-    return { texture, width: 100, height: 40 };
-  }
-  context.font = font;
-  const metrics = context.measureText(text);
-  const textWidth = Math.ceil(metrics.width);
-  const textHeight = Math.ceil(getFontSize(font) * 1.2);
-  canvas.width = textWidth + 20;
-  canvas.height = textHeight + 20;
-  context.font = font;
-  context.fillStyle = color;
-  context.textBaseline = "middle";
-  context.textAlign = "center";
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillText(text, canvas.width / 2, canvas.height / 2);
-  const texture = new Texture(gl, { generateMipmaps: false });
-  texture.image = canvas;
-  return { texture, width: canvas.width, height: canvas.height };
-}
-
-class Title {
-  gl: Renderer["gl"];
-  plane: Mesh;
-  renderer: Renderer;
-  text: string;
-  textColor: string;
-  font: string;
-  mesh!: Mesh;
-
-  constructor({
-    gl,
-    plane,
-    renderer,
-    text,
-    textColor = "#545050",
-    font = "30px sans-serif",
-  }: {
-    gl: Renderer["gl"];
-    plane: Mesh;
-    renderer: Renderer;
-    text: string;
-    textColor?: string;
-    font?: string;
-  }) {
-    autoBind(this);
-    this.gl = gl;
-    this.plane = plane;
-    this.renderer = renderer;
-    this.text = text;
-    this.textColor = textColor;
-    this.font = font;
-    this.createMesh();
-  }
-
-  createMesh() {
-    const { texture, width, height } = createTextTexture(
-      this.gl,
-      this.text,
-      this.font,
-      this.textColor
-    );
-    const geometry = new Plane(this.gl);
-    const program = new Program(this.gl, {
-      vertex: `
-        attribute vec3 position;
-        attribute vec2 uv;
-        uniform mat4 modelViewMatrix;
-        uniform mat4 projectionMatrix;
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragment: `
-        precision highp float;
-        uniform sampler2D tMap;
-        varying vec2 vUv;
-        void main() {
-          vec4 color = texture2D(tMap, vUv);
-          if (color.a < 0.1) discard;
-          gl_FragColor = color;
-        }
-      `,
-      uniforms: { tMap: { value: texture } },
-      transparent: true,
-    });
-    this.mesh = new Mesh(this.gl, { geometry, program });
-    const aspect = width / height;
-    const textHeight = this.plane.scale.y * 0.15;
-    const textWidth = textHeight * aspect;
-    this.mesh.scale.set(textWidth, textHeight, 1);
-    this.mesh.position.y = -this.plane.scale.y * 0.5 - textHeight * 0.5 - 0.05;
-    this.mesh.setParent(this.plane);
-  }
-}
-
 class Media {
   extra = 0;
   geometry: Plane;
@@ -251,15 +53,12 @@ class Media {
   renderer: Renderer;
   scene: Transform;
   screen: { width: number; height: number };
-  text: string;
   viewport: { width: number; height: number };
   bend: number;
   textColor: string;
   borderRadius: number;
-  font: string;
   program!: Program;
   plane!: Mesh;
-  title!: Title;
   speed = 0;
   isBefore = false;
   isAfter = false;
@@ -278,12 +77,10 @@ class Media {
     renderer,
     scene,
     screen,
-    text,
     viewport,
     bend,
     textColor,
     borderRadius = 0,
-    font,
   }: {
     geometry: Plane;
     gl: Renderer["gl"];
@@ -293,12 +90,10 @@ class Media {
     renderer: Renderer;
     scene: Transform;
     screen: { width: number; height: number };
-    text: string;
     viewport: { width: number; height: number };
     bend: number;
     textColor: string;
     borderRadius?: number;
-    font: string;
   }) {
     this.geometry = geometry;
     this.gl = gl;
@@ -308,15 +103,12 @@ class Media {
     this.renderer = renderer;
     this.scene = scene;
     this.screen = screen;
-    this.text = text;
     this.viewport = viewport;
     this.bend = bend;
     this.textColor = textColor;
     this.borderRadius = borderRadius;
-    this.font = font;
     this.createShader();
     this.createMesh();
-    this.createTitle();
     this.onResize();
   }
 
@@ -368,8 +160,6 @@ class Media {
           vec4 color = texture2D(tMap, uv);
           
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
-          
-          // Smooth antialiasing for edges
           float edgeSmooth = 0.002;
           float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
           
@@ -403,18 +193,10 @@ class Media {
     this.plane.setParent(this.scene);
   }
 
-  createTitle() {
-    this.title = new Title({
-      gl: this.gl,
-      plane: this.plane,
-      renderer: this.renderer,
-      text: this.text,
-      textColor: this.textColor,
-      font: this.font,
-    });
-  }
-
-  update(scroll: { current: number; last: number; ease: number; target: number }, direction: "left" | "right") {
+  update(
+    scroll: { current: number; last: number; ease: number; target: number },
+    direction: "left" | "right"
+  ) {
     this.plane.position.x = this.x - scroll.current - this.extra;
 
     const x = this.plane.position.x;
@@ -459,7 +241,10 @@ class Media {
   onResize({
     screen,
     viewport,
-  }: { screen?: { width: number; height: number }; viewport?: { width: number; height: number } } = {}) {
+  }: {
+    screen?: { width: number; height: number };
+    viewport?: { width: number; height: number };
+  } = {}) {
     if (screen) this.screen = screen;
     if (viewport) {
       this.viewport = viewport;
@@ -470,11 +255,14 @@ class Media {
         ];
       }
     }
+    const isMobile = this.screen.width < 768;
     this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+    this.plane.scale.y =
+      (this.viewport.height * ((isMobile ? 1150 : 920) * this.scale)) / this.screen.height;
+    this.plane.scale.x =
+      (this.viewport.width * ((isMobile ? 920 : 720) * this.scale)) / this.screen.width;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = 2;
+    this.padding = isMobile ? 1.2 : 2.0;
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
@@ -512,7 +300,6 @@ class App {
       bend,
       textColor = "#ffffff",
       borderRadius = 0,
-      font = "bold 30px Figtree",
       scrollSpeed = 2,
       scrollEase = 0.05,
     }: {
@@ -520,7 +307,6 @@ class App {
       bend?: number;
       textColor?: string;
       borderRadius?: number;
-      font?: string;
       scrollSpeed?: number;
       scrollEase?: number;
     } = {}
@@ -537,7 +323,7 @@ class App {
     this.createScene();
     this.onResize();
     this.createGeometry();
-    this.createMedias(items, bend, textColor, borderRadius, font);
+    this.createMedias(items, bend, textColor, borderRadius);
     this.update();
     this.addEventListeners();
   }
@@ -570,18 +356,12 @@ class App {
     });
   }
 
-  createMedias(
-    items?: GalleryItem[],
-    bend = 1,
-    textColor?: string,
-    borderRadius?: number,
-    font = "bold 30px Figtree"
-  ) {
+  createMedias(items?: GalleryItem[], bend = 1, textColor = "#ffffff", borderRadius = 0) {
     const defaultItems: GalleryItem[] = [
-      { image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png", text: "Classic Akawi Kunafa" },
-      { image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png", text: "Pistachio Royal Crown" },
-      { image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png", text: "Lotus Biscoff Royale" },
-      { image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png", text: "Dark Choco Lava" },
+      { image: "/platters/platter-original.png" },
+      { image: "/platters/platter-pistachio.png" },
+      { image: "/platters/platter-biscoff.png" },
+      { image: "/platters/platter-choco.png" },
     ];
     const galleryItems = items && items.length ? items : defaultItems;
     this.mediasImages = galleryItems.concat(galleryItems);
@@ -595,12 +375,10 @@ class App {
         renderer: this.renderer,
         scene: this.scene,
         screen: this.screen,
-        text: data.text,
         viewport: this.viewport,
         bend,
-        textColor: textColor || "#ffffff",
+        textColor,
         borderRadius,
-        font,
       });
     });
   }
@@ -624,7 +402,7 @@ class App {
   }
 
   onWheel(e: WheelEvent) {
-    const delta = e.deltaY || e.detail;
+    const delta = e.deltaY || (e as unknown as { wheelDelta?: number }).wheelDelta || e.detail;
     this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
     this.onCheckDebounce();
   }
@@ -665,7 +443,7 @@ class App {
   onResize() {
     if (!this.container) return;
     this.screen = {
-      width: this.container.clientWidth || window.innerWidth,
+      width: this.container.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800),
       height: this.container.clientHeight || 500,
     };
     this.renderer.setSize(this.screen.width, this.screen.height);
@@ -737,11 +515,9 @@ class App {
 
 export default function CircularGallery({
   items,
-  bend = 3,
+  bend = 2.5,
   textColor = "#ffffff",
-  borderRadius = 0.05,
-  font = "bold 30px Figtree",
-  fontUrl,
+  borderRadius = 0.06,
   scrollSpeed = 2,
   scrollEase = 0.05,
 }: CircularGalleryProps) {
@@ -752,24 +528,21 @@ export default function CircularGallery({
     let app: App | null = null;
     let isMounted = true;
 
-    resolveFont(font, fontUrl).then((resolvedFont) => {
-      if (!isMounted || !containerRef.current) return;
-      app = new App(containerRef.current, {
-        items,
-        bend,
-        textColor,
-        borderRadius,
-        font: resolvedFont,
-        scrollSpeed,
-        scrollEase,
-      });
+    if (!isMounted || !containerRef.current) return;
+    app = new App(containerRef.current, {
+      items,
+      bend,
+      textColor,
+      borderRadius,
+      scrollSpeed,
+      scrollEase,
     });
 
     return () => {
       isMounted = false;
       if (app) app.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
+  }, [items, bend, textColor, borderRadius, scrollSpeed, scrollEase]);
 
   return (
     <div
@@ -777,7 +550,7 @@ export default function CircularGallery({
       ref={containerRef}
       tabIndex={0}
       role="region"
-      aria-label="Circular image gallery. Use drag, scroll or arrow keys to navigate."
+      aria-label="Interactive 3D image gallery. Drag or scroll to rotate."
     />
   );
 }
