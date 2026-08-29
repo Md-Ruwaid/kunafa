@@ -95,7 +95,7 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Canvas drawing with dynamic mobile portrait cover scaling
+  // Canvas drawing with clean containment scaling so the whole animation fits perfectly without cropping
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
@@ -119,11 +119,8 @@ export default function KunafaExplodeCanvas() {
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    // Responsive scaling: in portrait mobile view, use cover scaling so animation fills the portrait screen immersively
-    const isPortrait = height > width;
-    const scale = isPortrait
-      ? Math.max(width / FRAME_WIDTH, height / FRAME_HEIGHT) * 1.15
-      : Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
+    // Perfectly fitted scaling: shows 100% of the animation on all screen sizes with zero clipping
+    const scale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
 
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
@@ -259,10 +256,10 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything */}
+        {/* Canvas behind everything - Contained and sharp */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
         />
 
         {/* Seamless edge blends */}
