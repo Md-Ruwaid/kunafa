@@ -394,8 +394,8 @@ class App {
     const x = "touches" in e ? e.touches[0].clientX : e.clientX;
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
-    // Lower sensitivity for desktop mouse control, higher sensitivity for mobile touch control
-    const dragSensitivity = isMobile ? this.scrollSpeed * 0.13 : this.scrollSpeed * 0.018;
+    // Reduced sensitivity for calm, controlled dragging on both mobile and desktop
+    const dragSensitivity = isMobile ? this.scrollSpeed * 0.045 : this.scrollSpeed * 0.010;
     const distance = (this.start - x) * dragSensitivity;
 
     const now = performance.now();
@@ -413,9 +413,9 @@ class App {
 
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
-    // Add flick momentum on release tuned specifically for mobile vs desktop
+    // Controlled momentum glide on release
     if (Math.abs(this.touchVelocity) > 0.1) {
-      const momentumMultiplier = isMobile ? 50 : 8;
+      const momentumMultiplier = isMobile ? 15 : 3;
       this.scroll.target += this.touchVelocity * this.scrollSpeed * momentumMultiplier;
     }
 
@@ -425,8 +425,8 @@ class App {
   onWheel(e: WheelEvent) {
     const delta = e.deltaY || (e as unknown as { wheelDelta?: number }).wheelDelta || e.detail;
     if (Math.abs(delta) > 3) {
-      // Lowered wheel sensitivity for smooth and controlled desktop scrolling
-      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.08;
+      // Gentle wheel scrolling
+      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.04;
       this.onCheckDebounce();
     }
   }
