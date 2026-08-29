@@ -75,9 +75,6 @@ export default function Navbar() {
             <span className="font-display font-bold text-base sm:text-lg text-white tracking-wide leading-tight">
               CAPTAIN <span className="italic font-semibold text-[#EFB80D]">KUNAFA</span>
             </span>
-            <span className="font-mono text-[7.5px] sm:text-[8.5px] uppercase tracking-[0.2em] text-[#EFB80D] font-bold">
-              HYDERABAD · EST. 2021
-            </span>
           </div>
         </button>
 

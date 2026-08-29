@@ -317,24 +317,6 @@ export default function KunafaExplodeCanvas() {
                       : "text-left bg-[#030303]/60 md:bg-transparent border border-white/10 md:border-0 p-5 sm:p-6 md:p-0 rounded-[20px] backdrop-blur-md md:backdrop-blur-none"
                   }`}
                 >
-                  {/* Badge */}
-                  {act.badge && (
-                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#000000] bg-[#EFB80D] px-4 py-1.5 rounded-full mb-3 sm:mb-5 font-black">
-                      <ShipHelm size={13} className="text-[#000000]" />
-                      <span>{act.badge}</span>
-                    </div>
-                  )}
-
-                  {/* Label pill */}
-                  {act.label && (
-                    <div
-                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3.5 py-1 rounded-full bg-[#EFB80D] text-[#000000] font-black"
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#000000]" />
-                      {act.label}
-                    </div>
-                  )}
-
                   {/* Headline */}
                   <h2
                     className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 sm:mb-4 ${
@@ -347,22 +329,9 @@ export default function KunafaExplodeCanvas() {
                   </h2>
 
                   {/* Body copy */}
-                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/80 leading-relaxed mb-3.5 sm:mb-4 max-w-lg">
+                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/80 leading-relaxed max-w-lg">
                     {act.body}
                   </p>
-
-                  {/* Metric tag or Coords */}
-                  {"metric" in act && act.metric && (
-                    <div className="font-mono text-[10px] sm:text-xs text-[#000000] font-black tracking-wider bg-[#EFB80D] inline-block px-3.5 py-1.5 rounded-md">
-                      {act.metric}
-                    </div>
-                  )}
-
-                  {act.coords && (
-                    <div className="font-mono text-[10px] sm:text-[11px] text-[#EFB80D] font-bold tracking-widest mt-2 uppercase">
-                      {act.coords}
-                    </div>
-                  )}
                 </div>
               </div>
             );
