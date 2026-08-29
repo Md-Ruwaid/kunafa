@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Anchor, CheckCircle2, MessageSquarePlus, ExternalLink } from "lucide-react";
+import { Star, CheckCircle2, MessageSquarePlus, ExternalLink } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 
 const REVIEWS = [
@@ -90,13 +90,8 @@ export default function ShipsLog() {
   return (
     <section id="reviews" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#EFB80D]/30 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header with Solid Gold Badge */}
+        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#050505] bg-[#EFB80D] px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 font-bold shadow-[0_0_15px_rgba(239,184,13,0.35)]">
-            <Anchor className="w-3.5 h-3.5 text-[#050505]" />
-            <span>THE SHIP'S LOGBOOK</span>
-          </div>
-
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
             Dispatches from Our <SwashAccent color="gold">Hyderabad Voyagers</SwashAccent>
           </h2>

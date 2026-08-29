@@ -1,16 +1,8 @@
 import React from "react";
-import { Star, MapPin, Users, Flame } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose, ShipHelm, CaptainSeal } from "@/components/NauticalElements";
+import { CompassRose, CaptainSeal } from "@/components/NauticalElements";
 
 export default function AboutSection() {
-  const stats = [
-    { value: "5", label: "Active Branches", sub: "Hyderabad Fleet", icon: MapPin },
-    { value: "205°C", label: "Copper Hearth", sub: "Precision Sear", icon: Flame },
-    { value: "50K+", label: "Trays Served", sub: "Since 2021", icon: Users },
-    { value: "4.8★", label: "Google Rating", sub: "520+ Reviews", icon: Star },
-  ];
-
   const craftPillars = [
     {
       title: "18-Hour Cold Desalination",
@@ -38,13 +30,8 @@ export default function AboutSection() {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header with Solid Gold Badge */}
+        {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#050505] bg-[#EFB80D] px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 font-bold shadow-[0_0_15px_rgba(239,184,13,0.35)]">
-            <ShipHelm size={14} className="text-[#050505]" />
-            <span>THE FOUNDER'S CHRONICLE</span>
-          </div>
-
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
             From the Levant to Hyderabad:{" "}
             <SwashAccent color="gold">The Maestro's Craft</SwashAccent>
@@ -57,7 +44,7 @@ export default function AboutSection() {
         </div>
 
         {/* Founder Story & Craft Details Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch mb-14 sm:mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
           {/* Left Column: Founder Persona (6 cols) */}
           <div className="lg:col-span-6 bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-9 shadow-[0_10px_35px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-between">
             <div className="absolute top-0 right-0 w-36 h-36 bg-[#EFB80D]/10 rounded-full blur-2xl pointer-events-none" />
@@ -98,7 +85,7 @@ export default function AboutSection() {
             </div>
           </div>
 
-          {/* Right Column: 3 Core Pillars with Solid Filled Gold Badges (6 cols) */}
+          {/* Right Column: 3 Core Pillars (6 cols) */}
           <div className="lg:col-span-6 flex flex-col justify-between gap-3 sm:gap-4">
             {craftPillars.map((pillar, idx) => (
               <div
@@ -119,29 +106,6 @@ export default function AboutSection() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* 4 Stats Cards with Solid Filled Gold Icon Circles */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-          {stats.map(({ value, label, sub, icon: Icon }, idx) => (
-            <div
-              key={idx}
-              className="p-5 sm:p-6 bg-[#0d0d0d] border border-[#EFB80D]/40 rounded-[16px] sm:rounded-[20px] hover:border-[#EFB80D] hover:shadow-[0_0_25px_rgba(239,184,13,0.2)] transition-all text-center"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#050505] flex items-center justify-center mx-auto mb-2 sm:mb-3 shadow-[0_0_15px_rgba(239,184,13,0.35)]">
-                <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              <div className="font-display text-2xl sm:text-4xl font-bold text-[#EFB80D] mb-0.5">
-                {value}
-              </div>
-              <div className="font-mono text-[10px] sm:text-xs uppercase tracking-wider text-white font-bold">
-                {label}
-              </div>
-              <div className="font-mono text-[9px] sm:text-[10px] text-white/50 mt-0.5">
-                {sub}
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </section>

@@ -3,14 +3,13 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Compass,
   MapPin,
   Phone,
   Clock,
   CheckCircle,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose, ShipHelm } from "@/components/NauticalElements";
+import { CompassRose } from "@/components/NauticalElements";
 
 interface Branch {
   id: string;
@@ -117,8 +116,6 @@ export default function CaptainsChart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const shipGroupRef = useRef<SVGGElement>(null);
-  const hudProgressRef = useRef<HTMLSpanElement>(null);
-  const hudPercentRef = useRef<HTMLSpanElement>(null);
 
   const [activeBranchIndex, setActiveBranchIndex] = useState(0);
 
@@ -179,11 +176,6 @@ export default function CaptainsChart() {
         );
       }
 
-      const percent = Math.round(currentProgress * 100);
-      if (hudPercentRef.current) {
-        hudPercentRef.current.textContent = `(${percent}%)`;
-      }
-
       // Branch activation thresholds
       let currentIdx = 0;
       if (currentProgress < 0.125) currentIdx = 0;
@@ -195,9 +187,6 @@ export default function CaptainsChart() {
       if (currentIdx !== lastBranchIdx) {
         lastBranchIdx = currentIdx;
         setActiveBranchIndex(currentIdx);
-        if (hudProgressRef.current) {
-          hudProgressRef.current.textContent = BRANCHES[currentIdx].name.toUpperCase();
-        }
       }
 
       animFrame = requestAnimationFrame(renderLoop);
@@ -255,30 +244,13 @@ export default function CaptainsChart() {
 
         {/* 1. Header & Solid Golden Stepper Tabs */}
         <div className="relative z-10 max-w-7xl mx-auto w-full pt-14 sm:pt-16">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-2 sm:mb-3">
-            <div className="text-center sm:text-left">
-              <div className="inline-flex items-center gap-1.5 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-[#050505] bg-[#EFB80D] px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full mb-0.5 font-bold shadow-[0_0_15px_rgba(239,184,13,0.35)]">
-                <Compass className="w-3.5 h-3.5 text-[#050505]" />
-                <span>VOYAGE OF THE HYDERABAD BRANCHES</span>
-              </div>
-              <h2 className="font-display text-lg sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
-                From Barkas to <SwashAccent color="gold">Jubilee Hills</SwashAccent>
-              </h2>
-            </div>
-
-            {/* Live Voyage HUD in Solid Gold & Black */}
-            <div className="flex items-center gap-2 bg-[#0d0d0d] border-2 border-[#EFB80D] px-3 py-1 sm:px-4 sm:py-1.5 rounded-full shadow-[0_0_20px_rgba(239,184,13,0.25)] text-[11px] sm:text-xs">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#EFB80D] animate-ping shrink-0 shadow-[0_0_8px_#EFB80D]" />
-              <span className="font-mono font-bold text-white truncate max-w-[140px] sm:max-w-none">
-                <span ref={hudProgressRef} className="text-[#EFB80D] uppercase font-bold">{BRANCHES[0].name}</span>
-              </span>
-              <span ref={hudPercentRef} className="font-mono text-[10px] sm:text-[11px] text-[#EFB80D] font-bold">
-                (0%)
-              </span>
-            </div>
+          <div className="text-center sm:text-left mb-3">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+              From Barkas to <SwashAccent color="gold">Jubilee Hills</SwashAccent>
+            </h2>
           </div>
 
-          {/* Stepper Navigation Tabs in Solid #EFB80D Gold */}
+          {/* Stepper Navigation Tabs */}
           <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-md">
             {BRANCHES.map((branch, idx) => {
               const isPassed = idx < activeBranchIndex;
@@ -312,13 +284,7 @@ export default function CaptainsChart() {
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
           {/* Map Chart Container */}
           <div className="lg:col-span-7 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-center">
-            <div className="flex justify-between font-mono text-[8px] sm:text-[9px] text-[#EFB80D] border-b border-[#EFB80D]/20 pb-1 mb-1 font-bold">
-              <span>LAT: 17.24° – 17.43° N</span>
-              <span>HYDERABAD MARITIME CHART</span>
-              <span>LNG: 78.40° – 78.50° E</span>
-            </div>
-
-            <div className="relative w-full h-[150px] sm:h-[220px] lg:h-[270px] select-none">
+            <div className="relative w-full h-[160px] sm:h-[230px] lg:h-[280px] select-none">
               <svg
                 viewBox="0 0 960 320"
                 className="w-full h-full absolute inset-0"
@@ -337,7 +303,7 @@ export default function CaptainsChart() {
                   strokeDasharray="6 6"
                 />
 
-                {/* Active Animated Trail in Solid Glowing Captain Gold */}
+                {/* Active Animated Trail */}
                 <path
                   ref={pathRef}
                   d={ROUTE_PATH_D}
@@ -348,7 +314,7 @@ export default function CaptainsChart() {
                   className="drop-shadow-[0_0_12px_rgba(239,184,13,0.7)]"
                 />
 
-                {/* Sailing Vessel Group in Solid Gold */}
+                {/* Sailing Vessel Group */}
                 <g ref={shipGroupRef}>
                   <circle r="22" fill="#EFB80D" fillOpacity="0.3" className="animate-pulse" />
                   <circle r="14" fill="#EFB80D" stroke="#050505" strokeWidth="2.5" />
@@ -360,7 +326,7 @@ export default function CaptainsChart() {
                   </g>
                 </g>
 
-                {/* Branch Markers with Solid Filled Gold */}
+                {/* Branch Markers */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
                   const isPassed = idx < activeBranchIndex;
@@ -422,7 +388,7 @@ export default function CaptainsChart() {
             </div>
           </div>
 
-          {/* Active Branch Spotlight Card with Solid Gold Header & Button */}
+          {/* Active Branch Spotlight Card */}
           <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
@@ -433,17 +399,7 @@ export default function CaptainsChart() {
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className="bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_10px_40px_rgba(239,184,13,0.2)] relative overflow-hidden"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-[10px] sm:text-xs font-black text-[#050505] bg-[#EFB80D] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                    {activeBranch.code} · STOP 0{activeBranchIndex + 1}/05
-                  </span>
-                  <span className="inline-flex items-center gap-1 font-mono text-[9px] sm:text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500 text-[#050505] font-black shadow-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#050505] animate-pulse" />
-                    LIVE SERVICE OPEN
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-baseline gap-2 mb-1">
                   <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
                     {activeBranch.name}
                   </h3>

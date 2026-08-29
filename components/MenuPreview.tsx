@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import { ShipHelm } from "@/components/NauticalElements";
 
@@ -13,11 +13,9 @@ const MENU_ITEMS = [
     name: "The Captain's Original",
     category: "Classic" as Category,
     tag: "ROYAL SIGNATURE",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "Clarified A2 ghee kataifi encasing molten 18-hr desalinated Akawi cheese, bathed in Damascus rose and orange blossom attar.",
     price: "₹180",
-    specs: "48 dB Acoustic Snap · 45cm Molten Pull",
     bestSeller: true,
     image: "/kunafa-frames/ezgif-frame-001.webp",
   },
@@ -26,11 +24,9 @@ const MENU_ITEMS = [
     name: "Aleppo Emerald Crown",
     category: "Classic" as Category,
     tag: "BEST SELLER",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "Double-loaded with raw first-harvest green Aleppo pistachios, crushed cardamom nectar, and rich buffalo clotted ashta cream.",
     price: "₹220",
-    specs: "First-Crop G1 Pistachio · Ashta Foam",
     bestSeller: true,
     image: "/kunafa-frames/ezgif-frame-050.webp",
   },
@@ -39,11 +35,9 @@ const MENU_ITEMS = [
     name: "Dark Choco & Hazelnut Lava",
     category: "Fusion" as Category,
     tag: "CROWD OBSESSION",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "72% dark chocolate molten core enveloped by toasted kataifi strands and roasted hazelnut praline drizzle. Hyderabad's favourite dessert crossover.",
     price: "₹240",
-    specs: "72% Single-Origin Cocoa · Nut Praline",
     bestSeller: true,
     image: "/kunafa-frames/ezgif-frame-075.webp",
   },
@@ -52,11 +46,9 @@ const MENU_ITEMS = [
     name: "Toasted Salted Caramel",
     category: "Fusion" as Category,
     tag: "SEASONAL",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "Smoked sea-salt caramel drizzle infused into roasted kataifi nests, layered with molten Nablusi curd and crushed pecan crunch.",
     price: "₹230",
-    specs: "Smoked Maldon Salt · Caramel Nectar",
     bestSeller: false,
     image: "/kunafa-frames/ezgif-frame-100.webp",
   },
@@ -65,11 +57,9 @@ const MENU_ITEMS = [
     name: "Lotus Biscoff Royale",
     category: "Fusion" as Category,
     tag: "CHEF'S SPECIAL",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "Warm spiced Belgian speculoos cream baked into the crispy pastry nest, filled with sweet cream cheese and topped with crunchy Biscoff crumble.",
     price: "₹250",
-    specs: "Belgian Speculoos · Cream Curd",
     bestSeller: false,
     image: "/kunafa-frames/ezgif-frame-030.webp",
   },
@@ -78,11 +68,9 @@ const MENU_ITEMS = [
     name: "Captain's Mini Platter (4 pcs)",
     category: "Classic" as Category,
     tag: "SHARING BOX",
-    tagColor: "bg-[#EFB80D] text-[#050505]",
     description:
       "Four individual mini copper-pan nests featuring Classic Akawi, Pistachio, Choco, and Biscoff. Ideal for family gifting and tasting.",
     price: "₹340",
-    specs: "4 Flavour Sampler · Gift Box",
     bestSeller: true,
     image: "/kunafa-frames/ezgif-frame-080.webp",
   },
@@ -102,13 +90,8 @@ export default function MenuPreview() {
   return (
     <section id="menu" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#EFB80D]/30 relative">
       <div className="max-w-7xl mx-auto">
-        {/* Header with Solid Gold Badge */}
+        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#050505] bg-[#EFB80D] px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full mb-3 sm:mb-4 font-bold shadow-[0_0_15px_rgba(239,184,13,0.35)]">
-            <Sparkles className="w-3.5 h-3.5 text-[#050505]" />
-            <span>THE COPPER HEARTH PLATTERS</span>
-          </div>
-
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
             Handcrafted with <SwashAccent color="gold">Uncompromising Precision</SwashAccent>
           </h2>
@@ -167,17 +150,12 @@ export default function MenuPreview() {
                   {item.name}
                 </h3>
 
-                <p className="font-sans text-xs text-white/75 leading-relaxed mb-3 sm:mb-4">
+                <p className="font-sans text-xs text-white/75 leading-relaxed mb-4">
                   {item.description}
                 </p>
               </div>
 
               <div>
-                <div className="pt-2.5 sm:pt-3 border-t border-[#EFB80D]/20 font-mono text-[10px] sm:text-[10.5px] text-[#EFB80D] font-bold mb-3 sm:mb-4 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#EFB80D] shrink-0 shadow-[0_0_8px_#EFB80D]" />
-                  <span className="truncate">{item.specs}</span>
-                </div>
-
                 <a
                   href={`https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20${encodeURIComponent(item.name)}%20(${item.price}).`}
                   target="_blank"
