@@ -43,10 +43,10 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00001",
     hours: "12:00 PM – 01:30 AM",
     x: 140,
-    y: 220,
-    mobileX: 70,
+    y: 200,
+    mobileX: 75,
     mobileY: 50,
-    mobileLabelX: 96,
+    mobileLabelX: 102,
     mobileLabelY: 53,
     mobileTextAnchor: "start",
     highlight: "Origin Flagship · Est. 2021",
@@ -65,10 +65,10 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00002",
     hours: "12:00 PM – 01:00 AM",
     x: 310,
-    y: 130,
-    mobileX: 290,
+    y: 120,
+    mobileX: 285,
     mobileY: 145,
-    mobileLabelX: 264,
+    mobileLabelX: 258,
     mobileLabelY: 148,
     mobileTextAnchor: "end",
     highlight: "Live Seating & Takeaway",
@@ -87,11 +87,11 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00003",
     hours: "12:00 PM – 01:30 AM",
     x: 480,
-    y: 240,
-    mobileX: 70,
-    mobileY: 245,
-    mobileLabelX: 96,
-    mobileLabelY: 248,
+    y: 200,
+    mobileX: 75,
+    mobileY: 240,
+    mobileLabelX: 102,
+    mobileLabelY: 243,
     mobileTextAnchor: "start",
     highlight: "Late-Night Family Hub",
     lat: "17.4042° N",
@@ -109,11 +109,11 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00004",
     hours: "10:00 AM – 02:30 AM",
     x: 650,
-    y: 100,
-    mobileX: 290,
-    mobileY: 345,
-    mobileLabelX: 264,
-    mobileLabelY: 348,
+    y: 120,
+    mobileX: 285,
+    mobileY: 335,
+    mobileLabelX: 258,
+    mobileLabelY: 338,
     mobileTextAnchor: "end",
     highlight: "Airport Corridor Terminal",
     lat: "17.2403° N",
@@ -131,11 +131,11 @@ const BRANCHES: Branch[] = [
     phone: "+91 90000 00005",
     hours: "12:00 PM – 01:30 AM",
     x: 820,
-    y: 180,
+    y: 200,
     mobileX: 180,
-    mobileY: 440,
+    mobileY: 430,
     mobileLabelX: 180,
-    mobileLabelY: 418,
+    mobileLabelY: 408,
     mobileTextAnchor: "middle",
     highlight: "Artisanal Tasting Lounge",
     lat: "17.4325° N",
@@ -145,11 +145,11 @@ const BRANCHES: Branch[] = [
   },
 ];
 
-// Horizontal Path for Desktop
-const ROUTE_PATH_D = "M 140 220 C 210 150, 240 130, 310 130 C 380 130, 410 240, 480 240 C 550 240, 580 100, 650 100 C 720 100, 750 180, 820 180";
+// Perfectly Symmetrical Harmonic Wave Path for Desktop (viewBox: 0 0 960 320)
+const ROUTE_PATH_D = "M 140 200 C 225 200, 225 120, 310 120 C 395 120, 395 200, 480 200 C 565 200, 565 120, 650 120 C 735 120, 735 200, 820 200";
 
-// Flowing Vertical S-Curve Path optimized for Mobile Portrait screens
-const ROUTE_PATH_VERTICAL_D = "M 70 50 C 180 50, 290 95, 290 145 C 290 195, 70 195, 70 245 C 70 295, 290 295, 290 345 C 290 395, 180 395, 180 440";
+// Perfectly Symmetrical S-Curve Wave Path for Mobile Portrait (viewBox: 0 0 360 480)
+const ROUTE_PATH_VERTICAL_D = "M 75 50 C 180 50, 285 97.5, 285 145 C 285 192.5, 75 192.5, 75 240 C 75 287.5, 285 287.5, 285 335 C 285 382.5, 180 382.5, 180 430";
 
 export default function CaptainsChart() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -321,25 +321,25 @@ export default function CaptainsChart() {
           </div>
         </div>
 
-        {/* 2. Main Center Section: Vertical Mobile Chart + Horizontal Desktop Chart + Spotlight Card */}
+        {/* 2. Main Center Section: Symmetrical Vertical Mobile Chart + Symmetrical Horizontal Desktop Chart + Spotlight Card */}
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
           
-          {/* Map Chart Container */}
+          {/* Symmetrical Map Chart Container */}
           <div className="lg:col-span-7 bg-[#111111] rounded-[20px] sm:rounded-[24px] p-3 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-xl">
             
-            {/* MOBILE ONLY: Vertical Serpentine Voyage Animation (viewBox: 0 0 360 480) */}
+            {/* MOBILE ONLY: Symmetrical Vertical Serpentine Voyage Animation (viewBox: 0 0 360 480) */}
             <div className="block lg:hidden relative w-full h-[240px] xs:h-[260px] sm:h-[300px] select-none">
               <svg
                 viewBox="0 0 360 480"
                 preserveAspectRatio="xMidYMid meet"
                 className="w-full h-full absolute inset-0"
               >
-                {/* Nautical Vertical Grid Lines */}
-                <line x1="70" y1="30" x2="70" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="180" y1="30" x2="180" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="290" y1="30" x2="290" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                {/* Symmetrical Nautical Vertical Guide Lines */}
+                <line x1="75" y1="30" x2="75" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="180" y1="30" x2="180" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="285" y1="30" x2="285" y2="450" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
 
-                {/* Ghost Path (Vertical) */}
+                {/* Symmetrical Ghost Path (Vertical) */}
                 <path
                   d={ROUTE_PATH_VERTICAL_D}
                   fill="none"
@@ -348,7 +348,7 @@ export default function CaptainsChart() {
                   strokeDasharray="6 6"
                 />
 
-                {/* Active Animated Trail in Solid Captain Gold */}
+                {/* Symmetrical Active Animated Trail in Solid Captain Gold */}
                 <path
                   ref={pathRefMobile}
                   d={ROUTE_PATH_VERTICAL_D}
@@ -369,7 +369,7 @@ export default function CaptainsChart() {
                   </g>
                 </g>
 
-                {/* Mobile Branch Stops with Clear Side Labels */}
+                {/* Mobile Symmetrical Branch Stops with Clear Side Labels */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
 
@@ -431,19 +431,19 @@ export default function CaptainsChart() {
               </svg>
             </div>
 
-            {/* DESKTOP ONLY: Horizontal Maritime Chart Animation (viewBox: 0 0 960 320) */}
+            {/* DESKTOP ONLY: Symmetrical Horizontal Maritime Chart Animation (viewBox: 0 0 960 320) */}
             <div className="hidden lg:block relative w-full h-[280px] select-none">
               <svg
                 viewBox="0 0 960 320"
                 preserveAspectRatio="xMidYMid meet"
                 className="w-full h-full absolute inset-0"
               >
-                {/* Guide Grid */}
-                <line x1="40" y1="80" x2="920" y2="80" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
+                {/* Symmetrical Guide Grid */}
+                <line x1="40" y1="120" x2="920" y2="120" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
                 <line x1="40" y1="160" x2="920" y2="160" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
-                <line x1="40" y1="240" x2="920" y2="240" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="40" y1="200" x2="920" y2="200" stroke="#333333" strokeWidth="1" strokeDasharray="4 4" />
 
-                {/* Ghost Path */}
+                {/* Symmetrical Ghost Path */}
                 <path
                   d={ROUTE_PATH_D}
                   fill="none"
@@ -452,7 +452,7 @@ export default function CaptainsChart() {
                   strokeDasharray="6 6"
                 />
 
-                {/* Active Animated Trail in Crisp Solid #EFB80D */}
+                {/* Active Animated Symmetrical Trail in Crisp Solid #EFB80D */}
                 <path
                   ref={pathRef}
                   d={ROUTE_PATH_D}
@@ -473,7 +473,7 @@ export default function CaptainsChart() {
                   </g>
                 </g>
 
-                {/* Branch Markers with Solid Filled Gold & White Text */}
+                {/* Symmetrical Branch Markers with Solid Filled Gold & White Text */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
 
