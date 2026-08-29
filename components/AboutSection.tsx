@@ -21,14 +21,8 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#EFB80D]/30 relative overflow-hidden"
+      className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#222222] relative overflow-hidden"
     >
-      {/* Background gold chart grid & watermark */}
-      <div className="absolute inset-0 bg-[radial-gradient(rgba(239,184,13,0.08)_1px,transparent_1px)] bg-[size:36px_36px] pointer-events-none" />
-      <div className="absolute top-10 right-10 opacity-10 pointer-events-none hidden lg:block text-[#EFB80D]">
-        <CompassRose size={220} />
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
@@ -46,19 +40,17 @@ export default function AboutSection() {
         {/* Founder Story & Craft Details Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
           {/* Left Column: Founder Persona (6 cols) */}
-          <div className="lg:col-span-6 bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-9 shadow-[0_10px_35px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-between">
-            <div className="absolute top-0 right-0 w-36 h-36 bg-[#EFB80D]/10 rounded-full blur-2xl pointer-events-none" />
-
+          <div className="lg:col-span-6 bg-[#111111] border-2 border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-9 relative overflow-hidden flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3.5 sm:gap-4 mb-5 sm:mb-6">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#EFB80D] text-[#050505] flex items-center justify-center font-display font-black text-2xl sm:text-3xl shrink-0 shadow-[0_0_20px_rgba(239,184,13,0.45)]">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center font-display font-black text-2xl sm:text-3xl shrink-0">
                   S
                 </div>
                 <div>
                   <div className="font-display font-bold text-lg sm:text-xl text-white">
                     Saud bin Nasar Khulagi
                   </div>
-                  <div className="inline-block bg-[#EFB80D] text-[#050505] font-mono text-[10px] sm:text-xs uppercase tracking-wider font-bold px-2 py-0.5 rounded-md mt-0.5">
+                  <div className="inline-block bg-[#EFB80D] text-[#000000] font-mono text-[10px] sm:text-xs uppercase tracking-wider font-black px-2 py-0.5 rounded-md mt-0.5">
                     Founder &amp; Recipe Maestro
                   </div>
                   <div className="font-mono text-[9px] sm:text-[10px] text-white/50 mt-1">
@@ -67,7 +59,7 @@ export default function AboutSection() {
                 </div>
               </div>
 
-              <div className="space-y-3.5 font-sans text-xs sm:text-sm text-white/80 leading-relaxed border-t border-[#EFB80D]/20 pt-5">
+              <div className="space-y-3.5 font-sans text-xs sm:text-sm text-white/80 leading-relaxed border-t border-[#222222] pt-5">
                 <p>
                   Growing up in a household where the aroma of clarified ghee and simmering orange blossom syrup signaled celebrations, Saud learned the exacting alchemy of Levantine pastry from his family elders.
                 </p>
@@ -80,7 +72,7 @@ export default function AboutSection() {
               </div>
             </div>
 
-            <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-[#EFB80D]/20 flex items-center justify-between">
+            <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-[#222222] flex items-center justify-between">
               <CaptainSeal />
             </div>
           </div>
@@ -90,10 +82,10 @@ export default function AboutSection() {
             {craftPillars.map((pillar, idx) => (
               <div
                 key={idx}
-                className="bg-[#0d0d0d] border border-[#EFB80D]/40 hover:border-[#EFB80D] rounded-[18px] sm:rounded-[22px] p-5 sm:p-7 transition-all flex-1 flex flex-col justify-center shadow-md hover:shadow-[0_0_20px_rgba(239,184,13,0.15)]"
+                className="bg-[#111111] border border-[#222222] hover:border-[#EFB80D] rounded-[18px] sm:rounded-[22px] p-5 sm:p-7 transition-all flex-1 flex flex-col justify-center"
               >
                 <div className="flex items-center gap-2.5 sm:gap-3 mb-1.5 sm:mb-2">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#EFB80D] text-[#050505] flex items-center justify-center font-mono text-xs font-black shrink-0 shadow-sm">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center font-mono text-xs font-black shrink-0">
                     0{idx + 1}
                   </div>
                   <h3 className="font-display font-bold text-base sm:text-lg text-white">

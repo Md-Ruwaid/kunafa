@@ -20,18 +20,13 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#030303] text-[#FFF8EC] border-t-2 border-[#EFB80D]/40 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
-      {/* Compass rose watermark */}
-      <div className="absolute -bottom-10 right-10 opacity-5 pointer-events-none hidden sm:block text-[#EFB80D]">
-        <CompassRose size={350} />
-      </div>
-
+    <footer className="bg-[#030303] text-[#FFF8EC] border-t border-[#222222] pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Hyderabad Branches Grid */}
         <div className="mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#050505] bg-[#EFB80D] px-3.5 py-1 rounded-full flex items-center gap-2 font-bold shadow-[0_0_15px_rgba(239,184,13,0.3)]">
-              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#050505]" />
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#000000] bg-[#EFB80D] px-3.5 py-1 rounded-full flex items-center gap-2 font-black">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#000000]" />
               <span>THE BRANCHES — HYDERABAD</span>
             </div>
             <span className="font-mono text-[9px] sm:text-[10px] text-white/50 uppercase font-bold">
@@ -43,14 +38,14 @@ export default function Footer() {
             {outlets.map((outlet, idx) => (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#0a0a0a] border-2 border-[#EFB80D]/30 hover:border-[#EFB80D] transition-all flex flex-col justify-between shadow-md"
+                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#111111] border border-[#222222] hover:border-[#EFB80D] transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5 sm:mb-2">
                     <span className="font-mono text-[10px] text-[#EFB80D] font-black">
                       {outlet.code}
                     </span>
-                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#EFB80D] text-[#050505] font-black shadow-sm">
+                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#EFB80D] text-[#000000] font-black">
                       ACTIVE
                     </span>
                   </div>
@@ -79,8 +74,8 @@ export default function Footer() {
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
             <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#050505] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(239,184,13,0.4)]">
-                <ShipHelm size={22} className="text-[#050505] sm:w-[24px] sm:h-[24px]" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0">
+                <ShipHelm size={22} className="text-[#000000] sm:w-[24px] sm:h-[24px]" />
               </div>
               <span className="font-display font-bold text-lg sm:text-xl text-white">
                 CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
@@ -145,7 +140,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 shadow-[0_0_20px_rgba(239,184,13,0.4)] hover:scale-105"
+                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#000000] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 hover:scale-105"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Direct WhatsApp Desk</span>

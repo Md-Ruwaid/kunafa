@@ -232,17 +232,17 @@ export default function CaptainsChart() {
     <div
       ref={containerRef}
       id="locations"
-      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#050505] border-t border-[#EFB80D]/30"
+      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#050505] border-t border-[#222222]"
     >
       {/* Sticky Viewport */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-between p-3 sm:p-6 lg:p-8 overflow-hidden bg-[#050505]">
         {/* Ambient Chart Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(239,184,13,0.08)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
-        <div className="absolute top-12 right-12 opacity-10 pointer-events-none hidden xl:block text-[#EFB80D]">
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(239,184,13,0.04)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
+        <div className="absolute top-12 right-12 opacity-5 pointer-events-none hidden xl:block text-[#EFB80D]">
           <CompassRose size={260} />
         </div>
 
-        {/* 1. Header & Solid Golden Stepper Tabs */}
+        {/* 1. Header & Solid Flat Tabs (NO GLOW, NO HOLLOW OUTLINES) */}
         <div className="relative z-10 max-w-7xl mx-auto w-full pt-14 sm:pt-16">
           <div className="text-center sm:text-left mb-3">
             <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
@@ -250,10 +250,9 @@ export default function CaptainsChart() {
             </h2>
           </div>
 
-          {/* Stepper Navigation Tabs */}
-          <div className="grid grid-cols-5 gap-1 sm:gap-2.5 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-md">
+          {/* Stepper Navigation Tabs: Pure Solid Fills */}
+          <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5 bg-[#111111] p-1.5 rounded-xl sm:rounded-2xl">
             {BRANCHES.map((branch, idx) => {
-              const isPassed = idx < activeBranchIndex;
               const isCurrent = idx === activeBranchIndex;
 
               return (
@@ -261,18 +260,16 @@ export default function CaptainsChart() {
                   key={branch.id}
                   type="button"
                   onClick={() => handleJumpToBranch(idx)}
-                  className={`flex items-center justify-center gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[9px] sm:text-xs transition-all cursor-pointer truncate ${
+                  className={`flex items-center justify-center gap-1.5 py-2.5 sm:py-3 px-2 sm:px-3 rounded-lg sm:rounded-xl font-mono text-[10px] sm:text-xs transition-all cursor-pointer truncate ${
                     isCurrent
-                      ? "bg-[#EFB80D] text-[#050505] font-black shadow-[0_0_25px_rgba(239,184,13,0.55)] scale-[1.03]"
-                      : isPassed
-                      ? "bg-[#EFB80D]/25 text-[#EFB80D] font-bold border border-[#EFB80D]/50"
-                      : "bg-[#1c1c1c] text-white/70 hover:text-white hover:bg-[#252525]"
+                      ? "bg-[#EFB80D] text-[#000000] font-black scale-[1.02]"
+                      : "bg-[#222222] text-[#EFB80D] font-bold hover:bg-[#2c2c2c]"
                   }`}
                 >
                   <span className="sm:hidden">0{idx + 1}</span>
                   <span className="hidden sm:inline">0{idx + 1}. {branch.name.split(" ")[0]}</span>
-                  {isPassed && (
-                    <CheckCircle className="w-3 h-3 text-[#EFB80D] hidden sm:inline shrink-0" />
+                  {isCurrent && (
+                    <CheckCircle className="w-3.5 h-3.5 text-[#000000] hidden sm:inline shrink-0" />
                   )}
                 </button>
               );
@@ -280,56 +277,53 @@ export default function CaptainsChart() {
           </div>
         </div>
 
-        {/* 2. Main Center Section: SVG Chart + Spotlight Card */}
+        {/* 2. Main Center Section: Flat SVG Chart + Spotlight Card */}
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
-          {/* Map Chart Container */}
-          <div className="lg:col-span-7 bg-[#0d0d0d] border-2 border-[#EFB80D]/40 rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col justify-center">
+          {/* Map Chart Container (Solid Dark, Crisp Flat Stroke, No Blurry Glow) */}
+          <div className="lg:col-span-7 bg-[#111111] rounded-[18px] sm:rounded-[24px] p-3 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-[#222222]">
             <div className="relative w-full h-[160px] sm:h-[230px] lg:h-[280px] select-none">
               <svg
                 viewBox="0 0 960 320"
                 className="w-full h-full absolute inset-0"
               >
                 {/* Guide Grid */}
-                <line x1="40" y1="80" x2="920" y2="80" stroke="#EFB80D" strokeOpacity="0.1" strokeDasharray="4 4" />
-                <line x1="40" y1="160" x2="920" y2="160" stroke="#EFB80D" strokeOpacity="0.1" strokeDasharray="4 4" />
-                <line x1="40" y1="240" x2="920" y2="240" stroke="#EFB80D" strokeOpacity="0.1" strokeDasharray="4 4" />
+                <line x1="40" y1="80" x2="920" y2="80" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="40" y1="160" x2="920" y2="160" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="40" y1="240" x2="920" y2="240" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
 
                 {/* Ghost Path */}
                 <path
                   d={ROUTE_PATH_D}
                   fill="none"
-                  stroke="#222222"
+                  stroke="#262626"
                   strokeWidth="4"
                   strokeDasharray="6 6"
                 />
 
-                {/* Active Animated Trail */}
+                {/* Active Animated Trail in Crisp Solid #EFB80D (NO GLOW FILTERS) */}
                 <path
                   ref={pathRef}
                   d={ROUTE_PATH_D}
                   fill="none"
                   stroke="#EFB80D"
-                  strokeWidth="6"
+                  strokeWidth="5"
                   strokeLinecap="round"
-                  className="drop-shadow-[0_0_12px_rgba(239,184,13,0.7)]"
                 />
 
-                {/* Sailing Vessel Group */}
+                {/* Sailing Vessel Group in Crisp Solid Gold */}
                 <g ref={shipGroupRef}>
-                  <circle r="22" fill="#EFB80D" fillOpacity="0.3" className="animate-pulse" />
-                  <circle r="14" fill="#EFB80D" stroke="#050505" strokeWidth="2.5" />
+                  <circle r="14" fill="#EFB80D" stroke="#000000" strokeWidth="2.5" />
                   <g transform="scale(0.7) translate(-12, -12)">
                     <path
                       d="M12 2L15 8H9L12 2ZM4 13L12 11L20 13L17 19H7L4 13Z"
-                      fill="#050505"
+                      fill="#000000"
                     />
                   </g>
                 </g>
 
-                {/* Branch Markers */}
+                {/* Branch Markers with Solid Filled Gold */}
                 {BRANCHES.map((branch, idx) => {
                   const isCurrent = idx === activeBranchIndex;
-                  const isPassed = idx < activeBranchIndex;
 
                   return (
                     <g
@@ -337,31 +331,24 @@ export default function CaptainsChart() {
                       onClick={() => handleJumpToBranch(idx)}
                       className="cursor-pointer"
                     >
-                      {isCurrent && (
-                        <>
-                          <circle cx={branch.x} cy={branch.y} r="26" fill="#EFB80D" fillOpacity="0.35" className="animate-ping" />
-                          <circle cx={branch.x} cy={branch.y} r="18" fill="#EFB80D" fillOpacity="0.5" />
-                        </>
-                      )}
-
                       <circle
                         cx={branch.x}
                         cy={branch.y}
                         r={isCurrent ? 12 : 8}
-                        fill={isCurrent ? "#EFB80D" : isPassed ? "#EFB80D" : "#333333"}
-                        stroke="#050505"
+                        fill={isCurrent ? "#EFB80D" : "#444444"}
+                        stroke="#000000"
                         strokeWidth="2.5"
                       />
                       <circle
                         cx={branch.x}
                         cy={branch.y}
                         r={isCurrent ? 5 : 3}
-                        fill={isCurrent ? "#050505" : "#EFB80D"}
+                        fill={isCurrent ? "#000000" : "#EFB80D"}
                       />
 
                       <text
                         x={branch.x}
-                        y={branch.y - 18}
+                        y={branch.y - 16}
                         textAnchor="middle"
                         fill={isCurrent ? "#EFB80D" : "#FFFFFF"}
                         fontFamily="var(--font-fraunces), serif"
@@ -388,16 +375,16 @@ export default function CaptainsChart() {
             </div>
           </div>
 
-          {/* Active Branch Spotlight Card */}
+          {/* Active Branch Spotlight Card in Crisp Solid Black & Gold */}
           <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeBranch.id}
-                initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-[18px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_10px_40px_rgba(239,184,13,0.2)] relative overflow-hidden"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className="bg-[#111111] rounded-[18px] sm:rounded-[24px] p-5 sm:p-6 border-2 border-[#EFB80D] relative overflow-hidden"
               >
                 <div className="flex items-baseline gap-2 mb-1">
                   <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
@@ -408,7 +395,7 @@ export default function CaptainsChart() {
                   </span>
                 </div>
 
-                <div className="inline-block bg-[#EFB80D] text-[#050505] font-mono text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-md my-2.5">
+                <div className="inline-block bg-[#EFB80D] text-[#000000] font-mono text-[10px] sm:text-[11px] font-black px-3 py-1 rounded-md my-2.5">
                   {activeBranch.highlight}
                 </div>
 
@@ -416,7 +403,7 @@ export default function CaptainsChart() {
                   {activeBranch.description}
                 </p>
 
-                <div className="space-y-1.5 font-sans text-xs text-white/75 border-t border-[#EFB80D]/20 pt-3 mb-4">
+                <div className="space-y-1.5 font-sans text-xs text-white/75 border-t border-[#222222] pt-3 mb-4">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-3.5 h-3.5 text-[#EFB80D] shrink-0" />
                     <span className="truncate text-white font-medium text-[11px] sm:text-xs">
@@ -438,7 +425,7 @@ export default function CaptainsChart() {
                   )}!%20I'd%20like%20to%20order%20fresh%20kunafa.`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs sm:text-sm font-black py-3 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] shadow-[0_0_20px_rgba(239,184,13,0.4)] cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#000000] font-sans text-xs sm:text-sm font-black py-3 sm:py-3.5 rounded-full transition-all hover:scale-[1.01] cursor-pointer"
                 >
                   <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />

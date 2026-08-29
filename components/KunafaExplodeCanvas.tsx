@@ -319,8 +319,8 @@ export default function KunafaExplodeCanvas() {
                 >
                   {/* Badge */}
                   {act.badge && (
-                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#050505] bg-[#EFB80D] px-4 py-1.5 rounded-full mb-3 sm:mb-5 font-black shadow-[0_0_15px_rgba(239,184,13,0.4)]">
-                      <ShipHelm size={13} className="text-[#050505]" />
+                    <div className="inline-flex items-center gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] text-[#000000] bg-[#EFB80D] px-4 py-1.5 rounded-full mb-3 sm:mb-5 font-black">
+                      <ShipHelm size={13} className="text-[#000000]" />
                       <span>{act.badge}</span>
                     </div>
                   )}
@@ -328,9 +328,9 @@ export default function KunafaExplodeCanvas() {
                   {/* Label pill */}
                   {act.label && (
                     <div
-                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3.5 py-1 rounded-full bg-[#EFB80D] text-[#050505] font-black shadow-sm"
+                      className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-3.5 py-1 rounded-full bg-[#EFB80D] text-[#000000] font-black"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#050505]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#000000]" />
                       {act.label}
                     </div>
                   )}
@@ -353,7 +353,7 @@ export default function KunafaExplodeCanvas() {
 
                   {/* Metric tag or Coords */}
                   {"metric" in act && act.metric && (
-                    <div className="font-mono text-[10px] sm:text-xs text-[#050505] font-black tracking-wider bg-[#EFB80D] inline-block px-3.5 py-1.5 rounded-md shadow-sm">
+                    <div className="font-mono text-[10px] sm:text-xs text-[#000000] font-black tracking-wider bg-[#EFB80D] inline-block px-3.5 py-1.5 rounded-md">
                       {act.metric}
                     </div>
                   )}
@@ -371,8 +371,8 @@ export default function KunafaExplodeCanvas() {
 
         {/* Mobile scroll hint */}
         <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
-          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-white/60 bg-[#030303]/70 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#DA7034] animate-pulse" />
+          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-white/60 bg-[#030303] px-3 py-1 rounded-full border border-white/10">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
             <span>SCROLL TO SAIL</span>
           </div>
         </div>

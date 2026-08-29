@@ -88,7 +88,7 @@ export default function ShipsLog() {
   });
 
   return (
-    <section id="reviews" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#EFB80D]/30 relative overflow-hidden">
+    <section id="reviews" className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#222222] relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
@@ -100,9 +100,9 @@ export default function ShipsLog() {
             Verified customer experiences from copper-pan tables across Barkas, Jubilee Hills, Tolichowki, Malakpet, and Aero City.
           </p>
 
-          {/* Live Google Aggregate Rating Badge in Solid Gold & Black */}
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 py-2.5 sm:px-7 sm:py-3.5 bg-[#0d0d0d] border-2 border-[#EFB80D] rounded-full shadow-[0_0_20px_rgba(239,184,13,0.25)]">
-            <div className="flex items-center gap-1 bg-[#EFB80D] px-2.5 py-1 rounded-full text-[#050505] font-black shadow-sm">
+          {/* Live Google Aggregate Rating Badge in Flat Solid Gold & Black */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-6 sm:mt-8 px-4 py-2.5 sm:px-7 sm:py-3.5 bg-[#111111] border-2 border-[#EFB80D] rounded-full">
+            <div className="flex items-center gap-1 bg-[#EFB80D] px-2.5 py-1 rounded-full text-[#000000] font-black">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-3.5 h-3.5 fill-current" />
               ))}
@@ -110,11 +110,11 @@ export default function ShipsLog() {
             <div className="font-display font-bold text-base sm:text-lg text-white">
               4.8 <span className="text-[10px] sm:text-xs font-mono font-bold text-[#EFB80D]">/ 5.0</span>
             </div>
-            <div className="h-4 w-px bg-[#EFB80D]/40" />
+            <div className="h-4 w-px bg-[#333333]" />
             <span className="font-mono text-[11px] sm:text-xs text-white">
               <strong className="text-[#EFB80D] font-bold">520+</strong> Google Reviews
             </span>
-            <div className="h-4 w-px bg-[#EFB80D]/40 hidden sm:block" />
+            <div className="h-4 w-px bg-[#333333] hidden sm:block" />
             <a
               href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
               target="_blank"
@@ -127,7 +127,7 @@ export default function ShipsLog() {
           </div>
         </div>
 
-        {/* Filter Pills in Solid #EFB80D Gold */}
+        {/* Filter Pills in Pure Solid Fills */}
         <div className="flex justify-center gap-2 mb-10 sm:mb-12 overflow-x-auto pb-2 px-1">
           {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Aero City"].map((tab) => (
             <button
@@ -136,8 +136,8 @@ export default function ShipsLog() {
               onClick={() => setFilter(tab)}
               className={`font-mono text-[10px] sm:text-xs uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all cursor-pointer shrink-0 ${
                 filter === tab
-                  ? "bg-[#EFB80D] text-[#050505] font-black shadow-[0_0_20px_rgba(239,184,13,0.45)] scale-105"
-                  : "bg-[#1c1c1c] text-white/80 hover:bg-[#252525] hover:text-[#EFB80D] font-bold"
+                  ? "bg-[#EFB80D] text-[#000000] font-black scale-105"
+                  : "bg-[#222222] text-[#EFB80D] font-bold hover:bg-[#2c2c2c]"
               }`}
             >
               {tab}
@@ -145,12 +145,12 @@ export default function ShipsLog() {
           ))}
         </div>
 
-        {/* Reviews Grid in Black & Solid Gold */}
+        {/* Reviews Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
           {filteredReviews.map((rev) => (
             <div
               key={rev.id}
-              className="bg-[#0d0d0d] border-2 border-[#EFB80D]/30 hover:border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 flex flex-col justify-between hover:shadow-[0_10px_35px_rgba(239,184,13,0.15)] transition-all"
+              className="bg-[#111111] border border-[#222222] hover:border-[#EFB80D] rounded-[20px] sm:rounded-[24px] p-5 sm:p-7 flex flex-col justify-between transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -159,7 +159,7 @@ export default function ShipsLog() {
                       <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" />
                     ))}
                   </div>
-                  <span className="font-mono text-[9px] sm:text-[10px] uppercase font-black text-[#050505] bg-[#EFB80D] px-2.5 py-1 rounded-full shadow-sm">
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase font-black text-[#000000] bg-[#EFB80D] px-2.5 py-1 rounded-full">
                     {rev.tag}
                   </span>
                 </div>
@@ -173,7 +173,7 @@ export default function ShipsLog() {
                 </p>
               </div>
 
-              <div className="pt-3.5 sm:pt-4 border-t border-[#EFB80D]/20 flex items-center justify-between font-mono text-[10px] sm:text-[11px]">
+              <div className="pt-3.5 sm:pt-4 border-t border-[#222222] flex items-center justify-between font-mono text-[10px] sm:text-[11px]">
                 <div>
                   <div className="text-white font-bold flex items-center gap-1.5">
                     <span>{rev.author}</span>
@@ -195,9 +195,9 @@ export default function ShipsLog() {
             href="https://maps.google.com/?q=Captain+Kunafa+Hyderabad"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffca28] text-[#050505] font-sans text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-full transition-all shadow-[0_0_20px_rgba(239,184,13,0.35)] active:scale-95 hover:scale-105"
+            className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#000000] font-sans text-xs font-black uppercase tracking-wider px-8 py-3.5 rounded-full transition-all active:scale-95 hover:scale-105"
           >
-            <MessageSquarePlus className="w-4 h-4 text-[#050505]" />
+            <MessageSquarePlus className="w-4 h-4 text-[#000000]" />
             <span>Leave a Review on Google</span>
           </a>
         </div>
