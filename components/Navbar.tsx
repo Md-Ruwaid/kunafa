@@ -9,7 +9,6 @@ const navLinks = [
   { label: "The Story", href: "#about" },
   { label: "Branches", href: "#locations" },
   { label: "Platters", href: "#menu" },
-  { label: "Logbook", href: "#reviews" },
 ];
 
 export default function Navbar() {

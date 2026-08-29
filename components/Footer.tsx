@@ -46,7 +46,6 @@ export default function Footer() {
                 { label: "Saud's Levantine Chronicle", href: "#about" },
                 { label: "Hyderabad Branches", href: "#locations" },
                 { label: "Copper Hearth Platters", href: "#menu" },
-                { label: "Ship's Logbook Reviews", href: "#reviews" },
               ].map((link, idx) => (
                 <li key={idx}>
                   <a

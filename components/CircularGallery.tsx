@@ -255,11 +255,11 @@ class Media {
     const isMobile = this.screen.width < 768;
     this.scale = this.screen.height / 1500;
     this.plane.scale.y =
-      (this.viewport.height * ((isMobile ? 1150 : 920) * this.scale)) / Math.max(1, this.screen.height);
+      (this.viewport.height * ((isMobile ? 1200 : 920) * this.scale)) / Math.max(1, this.screen.height);
     this.plane.scale.x =
-      (this.viewport.width * ((isMobile ? 920 : 720) * this.scale)) / Math.max(1, this.screen.width);
+      (this.viewport.width * ((isMobile ? 960 : 720) * this.scale)) / Math.max(1, this.screen.width);
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = isMobile ? 1.5 : 2.2;
+    this.padding = isMobile ? 1.4 : 2.2;
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
@@ -282,6 +282,9 @@ class App {
   viewport!: { width: number; height: number };
   isDown = false;
   start = 0;
+  lastTouchX = 0;
+  lastTouchTime = 0;
+  touchVelocity = 0;
   raf = 0;
   resizeObserver?: ResizeObserver;
   boundOnResize!: () => void;
@@ -297,8 +300,8 @@ class App {
       items,
       bend = 2.5,
       borderRadius = 0.06,
-      scrollSpeed = 2,
-      scrollEase = 0.05,
+      scrollSpeed = 3,
+      scrollEase = 0.06,
     }: {
       items?: GalleryItem[];
       bend?: number;
@@ -310,7 +313,7 @@ class App {
     this.container = container;
     this.scrollSpeed = scrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
-    this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
+    this.onCheckDebounce = debounce(this.onCheck.bind(this), 180);
     this.createRenderer();
     this.createCamera();
     this.createScene();
@@ -379,25 +382,49 @@ class App {
   onTouchDown(e: TouchEvent | MouseEvent) {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
-    this.start = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    this.start = clientX;
+    this.lastTouchX = clientX;
+    this.lastTouchTime = performance.now();
+    this.touchVelocity = 0;
   }
 
   onTouchMove(e: TouchEvent | MouseEvent) {
     if (!this.isDown) return;
     const x = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const distance = (this.start - x) * (this.scrollSpeed * 0.025);
+    const isMobile = this.screen ? this.screen.width < 768 : false;
+
+    // High drag sensitivity on mobile (tuned to 0.08 for effortless swipe control)
+    const dragSensitivity = isMobile ? this.scrollSpeed * 0.08 : this.scrollSpeed * 0.045;
+    const distance = (this.start - x) * dragSensitivity;
+
+    const now = performance.now();
+    const dt = Math.max(1, now - (this.lastTouchTime || now));
+    this.touchVelocity = (this.lastTouchX - x) / dt;
+    this.lastTouchX = x;
+    this.lastTouchTime = now;
+
     this.scroll.target = (this.scroll.position || 0) + distance;
   }
 
   onTouchUp() {
+    if (!this.isDown) return;
     this.isDown = false;
+
+    // Add flick momentum on release for silky inertia
+    if (Math.abs(this.touchVelocity) > 0.15) {
+      const isMobile = this.screen ? this.screen.width < 768 : false;
+      const momentumMultiplier = isMobile ? 35 : 20;
+      this.scroll.target += this.touchVelocity * this.scrollSpeed * momentumMultiplier;
+    }
+
     this.onCheck();
   }
 
   onWheel(e: WheelEvent) {
     const delta = e.deltaY || (e as unknown as { wheelDelta?: number }).wheelDelta || e.detail;
     if (Math.abs(delta) > 5) {
-      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.15;
+      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.25;
       this.onCheckDebounce();
     }
   }
@@ -406,13 +433,13 @@ class App {
     switch (e.key) {
       case "ArrowRight":
         e.preventDefault();
-        this.scroll.target += this.scrollSpeed * 4;
+        this.scroll.target += this.scrollSpeed * 5;
         this.onCheckDebounce();
         break;
 
       case "ArrowLeft":
         e.preventDefault();
-        this.scroll.target -= this.scrollSpeed * 4;
+        this.scroll.target -= this.scrollSpeed * 5;
         this.onCheckDebounce();
         break;
 
@@ -460,7 +487,9 @@ class App {
   }
 
   update() {
-    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
+    // Dynamic ease: direct tracking when dragging, fluid glide on momentum
+    const currentEase = this.isDown ? 0.18 : this.scroll.ease;
+    this.scroll.current = lerp(this.scroll.current, this.scroll.target, currentEase);
     const direction = this.scroll.current >= this.scroll.last ? "right" : "left";
     if (this.medias) {
       this.medias.forEach((media) => media.update(this.scroll, direction));
@@ -481,7 +510,7 @@ class App {
     window.addEventListener("resize", this.boundOnResize);
     window.addEventListener("orientationchange", this.boundOnResize);
     
-    // Attach mouse & touch listeners
+    // Attach mouse & touch listeners with high responsiveness
     this.container?.addEventListener("mousedown", this.boundOnTouchDown);
     window.addEventListener("mousemove", this.boundOnTouchMove);
     window.addEventListener("mouseup", this.boundOnTouchUp);
@@ -528,8 +557,8 @@ export default function CircularGallery({
   items,
   bend = 2.5,
   borderRadius = 0.06,
-  scrollSpeed = 2,
-  scrollEase = 0.05,
+  scrollSpeed = 3.2,
+  scrollEase = 0.06,
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 

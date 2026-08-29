@@ -3,7 +3,6 @@ import KunafaExplodeCanvas from "@/components/KunafaExplodeCanvas";
 import AboutSection from "@/components/AboutSection";
 import CaptainsChart from "@/components/CaptainsChart";
 import MenuPreview from "@/components/MenuPreview";
-import ShipsLog from "@/components/ShipsLog";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function HomePage() {
@@ -30,11 +29,6 @@ export default function HomePage() {
       {/* 4. The Artisanal Platters Menu */}
       <section id="menu">
         <MenuPreview />
-      </section>
-
-      {/* 5. Ship's Logbook — Verified Reviews */}
-      <section id="reviews">
-        <ShipsLog />
       </section>
     </main>
   );
