@@ -104,7 +104,7 @@ const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
 
 export default function CaptainsChart() {
   const [activeBranchIndex, setActiveBranchIndex] = useState(0);
-  const [mapMode, setMapMode] = useState<"nautical" | "google">("nautical");
+  const [mapMode, setMapMode] = useState<"google" | "nautical">("google");
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -119,7 +119,7 @@ export default function CaptainsChart() {
           obs.disconnect();
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -197,20 +197,8 @@ export default function CaptainsChart() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* View Mode Toggle: Nautical Route vs Google Maps Live Embed */}
+                {/* View Mode Toggle: Google Maps vs Route Chart */}
                 <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-lg border border-white/10 text-[10px] sm:text-xs font-mono">
-                  <button
-                    type="button"
-                    onClick={() => setMapMode("nautical")}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
-                      mapMode === "nautical"
-                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    <Layers className="w-3 h-3" />
-                    <span className="hidden xs:inline">Route</span>
-                  </button>
                   <button
                     type="button"
                     onClick={() => setMapMode("google")}
@@ -223,6 +211,18 @@ export default function CaptainsChart() {
                     <MapIcon className="w-3 h-3" />
                     <span>Google Maps</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setMapMode("nautical")}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                      mapMode === "nautical"
+                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
+                        : "text-white/70 hover:text-white"
+                    }`}
+                  >
+                    <Layers className="w-3 h-3" />
+                    <span className="hidden xs:inline">City Route</span>
+                  </button>
                 </div>
 
                 {/* Direct Google Maps Shortlink */}
@@ -231,7 +231,7 @@ export default function CaptainsChart() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Open in Google Maps application"
-                  className="hidden sm:inline-flex items-center gap-1 text-[#EFB80D] hover:text-white font-mono text-[11px] transition-colors"
+                  className="hidden sm:inline-flex items-center gap-1 text-[#EFB80D] hover:text-white font-mono text-[11px] font-bold transition-colors"
                 >
                   <span>Open App</span>
                   <ExternalLink className="w-3 h-3" />
@@ -241,25 +241,27 @@ export default function CaptainsChart() {
 
             {/* Main Interactive Map Viewport */}
             <div
-              className="relative w-full"
-              style={{ height: "min(440px, 56vw)", minHeight: 300 }}
+              className="relative w-full bg-[#111111]"
+              style={{ height: "min(460px, 58vw)", minHeight: 320 }}
             >
               {isVisible ? (
-                mapMode === "nautical" ? (
+                mapMode === "google" ? (
+                  <iframe
+                    key={activeBranch.id}
+                    title={`Real Google Maps Location for ${activeBranch.name}`}
+                    src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                    className="w-full h-full border-0"
+                    loading="eager"
+                    allowFullScreen
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                ) : (
                   <CaptainsMap
                     branches={BRANCHES}
                     activeBranchIndex={activeBranchIndex}
                     onSelectBranch={handleSelectBranch}
                     isVisible={isVisible}
                     routeLatLngs={ROUTE_LATLNGS}
-                  />
-                ) : (
-                  <iframe
-                    title={`Google Maps Location for ${activeBranch.name}`}
-                    src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
-                    className="w-full h-full border-0"
-                    loading="lazy"
-                    allowFullScreen
                   />
                 )
               ) : (
