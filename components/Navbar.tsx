@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
@@ -14,12 +14,41 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+
+          // Set background styling threshold
+          setScrolled(currentScrollY > 20);
+
+          // Auto-hide when scrolling down, show when scrolling up
+          if (currentScrollY <= 30) {
+            setVisible(true);
+          } else if (currentScrollY > lastScrollY.current + 8 && currentScrollY > 80) {
+            // Scrolling down
+            if (!mobileOpen) setVisible(false);
+          } else if (currentScrollY < lastScrollY.current - 8) {
+            // Scrolling up
+            setVisible(true);
+          }
+
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [mobileOpen]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -48,7 +77,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transition-all duration-300">
+    <header
+      className={`fixed top-0 inset-x-0 z-50 px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transform transition-transform duration-300 ease-in-out ${
+        visible ? "translate-y-0" : "-translate-y-full pointer-events-none"
+      }`}
+    >
       <div
         className={`max-w-7xl mx-auto flex items-center justify-between transition-all duration-300 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full ${
           scrolled
