@@ -7,7 +7,7 @@ import { ShipHelm } from "@/components/NauticalElements";
 const navLinks = [
   { label: "Voyage", href: "#story" },
   { label: "The Story", href: "#about" },
-  { label: "5 Outposts", href: "#locations" },
+  { label: "5 Branches", href: "#locations" },
   { label: "Platters", href: "#menu" },
   { label: "Logbook", href: "#reviews" },
 ];

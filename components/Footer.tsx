@@ -27,12 +27,12 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* 5 Hyderabad Outposts Grid */}
+        {/* 5 Hyderabad Branches Grid */}
         <div className="mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#EFB80D] flex items-center gap-2">
               <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DA7034]" />
-              <span>THE 5 PORTS OF CALL — HYDERABAD</span>
+              <span>THE 5 BRANCHES — HYDERABAD</span>
             </div>
             <span className="font-mono text-[9px] sm:text-[10px] text-[#B3A697] uppercase">
               17.3115° N, 78.4871° E · HYDERABAD
@@ -87,7 +87,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="font-sans text-xs sm:text-sm text-[#B3A697] leading-relaxed max-w-sm mb-5 sm:mb-6">
-              Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across 5 city outposts.
+              Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across 5 city branches.
             </p>
             <div className="font-mono text-[11px] sm:text-xs text-[#DA7034] space-y-1">
               <div>CENTRAL HEARTH &amp; HQ: BARKAS, HYDERABAD · 500005</div>
@@ -104,7 +104,7 @@ export default function Footer() {
               {[
                 { label: "The Scrollytelling Story", href: "#story" },
                 { label: "Saud's Levantine Chronicle", href: "#about" },
-                { label: "5 Hyderabad Outposts", href: "#locations" },
+                { label: "5 Hyderabad Branches", href: "#locations" },
                 { label: "Copper Hearth Platters", href: "#menu" },
                 { label: "Ship's Logbook Reviews", href: "#reviews" },
               ].map((link, idx) => (

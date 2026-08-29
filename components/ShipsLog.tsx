@@ -21,7 +21,7 @@ const REVIEWS = [
   {
     id: "rev-2",
     author: "Dr. Priya Reddy",
-    branch: "Jubilee Hills Outpost",
+    branch: "Jubilee Hills Branch",
     rating: 5,
     date: "1 week ago",
     verified: true,
@@ -69,7 +69,7 @@ const REVIEWS = [
   {
     id: "rev-6",
     author: "Syed Bilal Quadri",
-    branch: "Tolichowki Outpost",
+    branch: "Tolichowki Branch",
     rating: 5,
     date: "1 month ago",
     verified: true,

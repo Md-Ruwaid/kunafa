@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
   description:
-    "Hand-pressed on live copper pans with authentic Akawi cheese, cold-pressed ghee, and Aleppo pistachios. Visit our 5 Hyderabad outposts in Barkas, Jubilee Hills, Malakpet, Tolichowki & Aero City. Founded by Saud bin Nasar Khulagi.",
+    "Hand-pressed on live copper pans with authentic Akawi cheese, cold-pressed ghee, and Aleppo pistachios. Visit our 5 Hyderabad branches in Barkas, Jubilee Hills, Malakpet, Tolichowki & Aero City. Founded by Saud bin Nasar Khulagi.",
   keywords: [
     "Captain Kunafa",
     "Kunafa Hyderabad",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
     description:
-      "Handcrafted on live copper pans across 5 outposts in Hyderabad. Fresh-pressed every single order with 48 dB acoustic crunch.",
+      "Handcrafted on live copper pans across 5 branches in Hyderabad. Fresh-pressed every single order with 48 dB acoustic crunch.",
     url: "https://captainkunafa.com",
     siteName: "Captain Kunafa",
     locale: "en_IN",

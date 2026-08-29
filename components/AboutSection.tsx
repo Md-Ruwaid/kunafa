@@ -5,7 +5,7 @@ import { CompassRose, ShipHelm, CaptainSeal } from "@/components/NauticalElement
 
 export default function AboutSection() {
   const stats = [
-    { value: "5", label: "Active Outposts", sub: "Hyderabad Fleet", icon: MapPin },
+    { value: "5", label: "Active Branches", sub: "Hyderabad Fleet", icon: MapPin },
     { value: "205°C", label: "Copper Hearth", sub: "Precision Sear", icon: Flame },
     { value: "50K+", label: "Trays Served", sub: "Since 2021", icon: Users },
     { value: "4.8★", label: "Google Rating", sub: "520+ Reviews", icon: Star },
@@ -85,7 +85,7 @@ export default function AboutSection() {
                   Growing up in a household where the aroma of clarified ghee and simmering orange blossom syrup signaled celebrations, Saud learned the exacting alchemy of Levantine pastry from his family elders.
                 </p>
                 <p>
-                  In 2021, he brought the original shallow copper pans to the historic quarters of Barkas. Today, across 5 outposts in Hyderabad, every single tray is prepared from scratch — never pre-baked, never reheated.
+                  In 2021, he brought the original shallow copper pans to the historic quarters of Barkas. Today, across 5 branches in Hyderabad, every single tray is prepared from scratch — never pre-baked, never reheated.
                 </p>
                 <p className="italic text-[#2B1B12] font-display text-sm sm:text-base border-l-2 border-[#DA7034] pl-3 sm:pl-4">
                   "If the crunch doesn't echo when the knife cuts the disc, it doesn't leave our hearth."

@@ -72,8 +72,8 @@ const ACTS = [
         <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
       </>
     ),
-    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to 5 outposts — fresh-pressed, every time.",
-    metric: "SERVED FRESH ACROSS 5 OUTPOSTS IN HYDERABAD",
+    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to 5 branches — fresh-pressed, every time.",
+    metric: "SERVED FRESH ACROSS 5 BRANCHES IN HYDERABAD",
     coords: "HYDERABAD · EST. 2021",
   },
 ];

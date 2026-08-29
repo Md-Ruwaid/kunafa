@@ -27,7 +27,7 @@ export default function HomePage() {
         <AboutSection />
       </section>
 
-      {/* 3. The Captain's Chart — 5 Hyderabad Outposts */}
+      {/* 3. The Captain's Chart — 5 Hyderabad Branches */}
       <section id="locations">
         <CaptainsChart />
       </section>
