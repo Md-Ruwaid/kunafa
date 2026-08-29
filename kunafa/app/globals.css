@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-work-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-ibm-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-gold: #EFB80D;
+  --color-gold-hover: #ffc926;
+  --color-terracotta: #DA7034;
+  --color-void: #030303;
+}
+
+@layer base {
+  :root {
+    --bg-void: #030303;
+    --gold-captain: #EFB80D;
+    --gold-glow: rgba(239, 184, 13, 0.25);
+    --terracotta: #DA7034;
+    --terracotta-glow: rgba(218, 112, 52, 0.25);
+    --foam-white-90: rgba(255, 255, 255, 0.90);
+    --foam-white-60: rgba(255, 255, 255, 0.60);
+    --foam-white-30: rgba(255, 255, 255, 0.30);
+    --foam-white-10: rgba(255, 255, 255, 0.07);
+    --border-dark: rgba(255, 255, 255, 0.08);
+    --border-gold: rgba(239, 184, 13, 0.3);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #030303;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #030303;
+    color: var(--foam-white-90);
+    font-family: var(--font-work-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Custom Typography Utilities */
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-work-sans), sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-ibm-mono), monospace;
+}
+
+/* Accent Word Styling */
+.accent-italic {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  color: #EFB80D;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030303;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #222222;
+  border-radius: 3px;
+  border: 1px solid rgba(239, 184, 13, 0.15);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #EFB80D;
+}
+
+/* Glow & Glass Utilities */
+.glass-panel {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-gold {
+  background: rgba(15, 12, 5, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(239, 184, 13, 0.25);
+  box-shadow: 0 0 30px rgba(239, 184, 13, 0.08);
+}
+
+.gold-glow-text {
+  text-shadow: 0 0 25px rgba(239, 184, 13, 0.4);
+}
+
+.gold-glow-box {
+  box-shadow: 0 0 40px rgba(239, 184, 13, 0.18);
+}
+
+.terracotta-glow-box {
+  box-shadow: 0 0 40px rgba(218, 112, 52, 0.18);
+}
+
+/* Radar & Micro-animation utilities */
+@keyframes goldPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+.animate-gold-pulse {
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-subtle-float {
+  animation: subtleFloat 6s ease-in-out infinite;
+}
+
+/* Noise overlay */
+.bg-noise {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}
