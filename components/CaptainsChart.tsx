@@ -13,6 +13,7 @@ import { CompassRose, ShipHelm } from "@/components/NauticalElements";
 interface Branch {
   id: string;
   name: string;
+  shortName: string;
   area: string;
   code: string;
   address: string;
@@ -20,6 +21,11 @@ interface Branch {
   hours: string;
   x: number;
   y: number;
+  mobileX: number;
+  mobileY: number;
+  mobileLabelX: number;
+  mobileLabelY: number;
+  mobileTextAnchor: "start" | "end" | "middle";
   highlight: string;
   lat: string;
   lng: string;
@@ -30,6 +36,7 @@ const BRANCHES: Branch[] = [
   {
     id: "barkas",
     name: "Barkas Branch",
+    shortName: "Barkas Flagship",
     area: "Old City — Central Hearth & HQ",
     code: "HYD-01",
     address: "Main Road, Opp. Grand Mosque, Barkas, Hyderabad",
@@ -37,6 +44,11 @@ const BRANCHES: Branch[] = [
     hours: "12:00 PM – 01:30 AM",
     x: 140,
     y: 220,
+    mobileX: 70,
+    mobileY: 50,
+    mobileLabelX: 96,
+    mobileLabelY: 53,
+    mobileTextAnchor: "start",
     highlight: "Origin Flagship · Est. 2021",
     lat: "17.3115° N",
     lng: "78.4871° E",
@@ -46,6 +58,7 @@ const BRANCHES: Branch[] = [
   {
     id: "malakpet",
     name: "Malakpet Branch",
+    shortName: "Malakpet Haven",
     area: "South Hyderabad — Chanchalguda",
     code: "HYD-02",
     address: "Near Metro Pillar 1142, Chanchalguda Road, Malakpet",
@@ -53,6 +66,11 @@ const BRANCHES: Branch[] = [
     hours: "12:00 PM – 01:00 AM",
     x: 310,
     y: 130,
+    mobileX: 290,
+    mobileY: 145,
+    mobileLabelX: 264,
+    mobileLabelY: 148,
+    mobileTextAnchor: "end",
     highlight: "Live Seating & Takeaway",
     lat: "17.3753° N",
     lng: "78.4983° E",
@@ -62,6 +80,7 @@ const BRANCHES: Branch[] = [
   {
     id: "tolichowki",
     name: "Tolichowki Branch",
+    shortName: "Tolichowki Port",
     area: "West Hyderabad — Paramount Colony",
     code: "HYD-03",
     address: "Paramount Colony Main Road, Tolichowki, Hyderabad",
@@ -69,6 +88,11 @@ const BRANCHES: Branch[] = [
     hours: "12:00 PM – 01:30 AM",
     x: 480,
     y: 240,
+    mobileX: 70,
+    mobileY: 245,
+    mobileLabelX: 96,
+    mobileLabelY: 248,
+    mobileTextAnchor: "start",
     highlight: "Late-Night Family Hub",
     lat: "17.4042° N",
     lng: "78.4116° E",
@@ -78,6 +102,7 @@ const BRANCHES: Branch[] = [
   {
     id: "aerocity",
     name: "Aero City Branch",
+    shortName: "Aero City Anchor",
     area: "Airport Corridor — Shamshabad",
     code: "HYD-04",
     address: "Commercial Zone, Shamshabad International Airport Corridor",
@@ -85,6 +110,11 @@ const BRANCHES: Branch[] = [
     hours: "10:00 AM – 02:30 AM",
     x: 650,
     y: 100,
+    mobileX: 290,
+    mobileY: 345,
+    mobileLabelX: 264,
+    mobileLabelY: 348,
+    mobileTextAnchor: "end",
     highlight: "Airport Corridor Terminal",
     lat: "17.2403° N",
     lng: "78.4294° E",
@@ -94,6 +124,7 @@ const BRANCHES: Branch[] = [
   {
     id: "jubileehills",
     name: "Jubilee Hills Branch",
+    shortName: "Jubilee Hills",
     area: "HITEC Corridor — Road No. 36",
     code: "HYD-05",
     address: "Road No. 36, Near Peddamma Temple, Jubilee Hills, Hyderabad",
@@ -101,6 +132,11 @@ const BRANCHES: Branch[] = [
     hours: "12:00 PM – 01:30 AM",
     x: 820,
     y: 180,
+    mobileX: 180,
+    mobileY: 440,
+    mobileLabelX: 180,
+    mobileLabelY: 418,
+    mobileTextAnchor: "middle",
     highlight: "Artisanal Tasting Lounge",
     lat: "17.4325° N",
     lng: "78.4071° E",
@@ -109,21 +145,28 @@ const BRANCHES: Branch[] = [
   },
 ];
 
+// Horizontal Path for Desktop
 const ROUTE_PATH_D = "M 140 220 C 210 150, 240 130, 310 130 C 380 130, 410 240, 480 240 C 550 240, 580 100, 650 100 C 720 100, 750 180, 820 180";
+
+// Flowing Vertical S-Curve Path optimized for Mobile Portrait screens
+const ROUTE_PATH_VERTICAL_D = "M 70 50 C 180 50, 290 95, 290 145 C 290 195, 70 195, 70 245 C 70 295, 290 295, 290 345 C 290 395, 180 395, 180 440";
 
 export default function CaptainsChart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const shipGroupRef = useRef<SVGGElement>(null);
+  const pathRefMobile = useRef<SVGPathElement>(null);
+  const shipGroupMobileRef = useRef<SVGGElement>(null);
 
   const [activeBranchIndex, setActiveBranchIndex] = useState(0);
 
-  // High-precision RAF loop
+  // High-precision synchronized RAF loop for both Desktop & Mobile Vertical
   useEffect(() => {
     let animFrame: number;
     let targetProgress = 0;
     let currentProgress = 0;
     let totalPathLength = 1000;
+    let totalPathLengthMobile = 800;
     let lastBranchIdx = -1;
 
     const updatePathLength = () => {
@@ -131,6 +174,11 @@ export default function CaptainsChart() {
         totalPathLength = pathRef.current.getTotalLength() || 1000;
         pathRef.current.style.strokeDasharray = `${totalPathLength}`;
         pathRef.current.style.strokeDashoffset = `${totalPathLength * (1 - currentProgress)}`;
+      }
+      if (pathRefMobile.current) {
+        totalPathLengthMobile = pathRefMobile.current.getTotalLength() || 800;
+        pathRefMobile.current.style.strokeDasharray = `${totalPathLengthMobile}`;
+        pathRefMobile.current.style.strokeDashoffset = `${totalPathLengthMobile * (1 - currentProgress)}`;
       }
     };
 
@@ -153,13 +201,11 @@ export default function CaptainsChart() {
         currentProgress = targetProgress;
       }
 
-      // Update Path stroke-dashoffset
+      // Update Desktop Path & Ship
       if (pathRef.current) {
         const offset = totalPathLength * (1 - currentProgress);
         pathRef.current.style.strokeDashoffset = `${offset}`;
       }
-
-      // Update Ship Coordinates along spline
       if (pathRef.current && shipGroupRef.current) {
         const currentLen = currentProgress * totalPathLength;
         const pt = pathRef.current.getPointAtLength(currentLen);
@@ -170,6 +216,26 @@ export default function CaptainsChart() {
           (Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * 180) / Math.PI;
 
         shipGroupRef.current.setAttribute(
+          "transform",
+          `translate(${pt.x}, ${pt.y}) rotate(${angle})`
+        );
+      }
+
+      // Update Mobile Vertical Path & Ship
+      if (pathRefMobile.current) {
+        const offset = totalPathLengthMobile * (1 - currentProgress);
+        pathRefMobile.current.style.strokeDashoffset = `${offset}`;
+      }
+      if (pathRefMobile.current && shipGroupMobileRef.current) {
+        const currentLen = currentProgress * totalPathLengthMobile;
+        const pt = pathRefMobile.current.getPointAtLength(currentLen);
+        const nextPt = pathRefMobile.current.getPointAtLength(
+          Math.min(totalPathLengthMobile, currentLen + 2)
+        );
+        const angle =
+          (Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * 180) / Math.PI;
+
+        shipGroupMobileRef.current.setAttribute(
           "transform",
           `translate(${pt.x}, ${pt.y}) rotate(${angle})`
         );
@@ -196,6 +262,10 @@ export default function CaptainsChart() {
       updatePathLength();
       updateScrollMetrics();
     });
+    window.addEventListener("orientationchange", () => {
+      updatePathLength();
+      updateScrollMetrics();
+    });
 
     updateScrollMetrics();
     animFrame = requestAnimationFrame(renderLoop);
@@ -203,6 +273,7 @@ export default function CaptainsChart() {
     return () => {
       window.removeEventListener("scroll", updateScrollMetrics);
       window.removeEventListener("resize", updateScrollMetrics);
+      window.removeEventListener("orientationchange", updateScrollMetrics);
       cancelAnimationFrame(animFrame);
     };
   }, []);
@@ -250,11 +321,118 @@ export default function CaptainsChart() {
           </div>
         </div>
 
-        {/* 2. Main Center Section: Enlarged SVG Chart Animation on Mobile + Spotlight Card */}
+        {/* 2. Main Center Section: Vertical Mobile Chart + Horizontal Desktop Chart + Spotlight Card */}
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-6 items-center my-auto">
-          {/* Large, Prominent Map Chart Container */}
-          <div className="lg:col-span-7 bg-[#111111] rounded-[18px] sm:rounded-[24px] p-2.5 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-lg">
-            <div className="relative w-full h-[200px] xs:h-[220px] sm:h-[260px] lg:h-[300px] select-none">
+          
+          {/* Map Chart Container */}
+          <div className="lg:col-span-7 bg-[#111111] rounded-[20px] sm:rounded-[24px] p-3 sm:p-5 relative overflow-hidden flex flex-col justify-center border border-white/10 shadow-xl">
+            
+            {/* MOBILE ONLY: Vertical Serpentine Voyage Animation (viewBox: 0 0 360 480) */}
+            <div className="block lg:hidden relative w-full h-[240px] xs:h-[260px] sm:h-[300px] select-none">
+              <svg
+                viewBox="0 0 360 480"
+                preserveAspectRatio="xMidYMid meet"
+                className="w-full h-full absolute inset-0"
+              >
+                {/* Nautical Vertical Grid Lines */}
+                <line x1="70" y1="30" x2="70" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="180" y1="30" x2="180" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+                <line x1="290" y1="30" x2="290" y2="460" stroke="#222222" strokeWidth="1" strokeDasharray="4 4" />
+
+                {/* Ghost Path (Vertical) */}
+                <path
+                  d={ROUTE_PATH_VERTICAL_D}
+                  fill="none"
+                  stroke="#282828"
+                  strokeWidth="4"
+                  strokeDasharray="6 6"
+                />
+
+                {/* Active Animated Trail in Solid Captain Gold */}
+                <path
+                  ref={pathRefMobile}
+                  d={ROUTE_PATH_VERTICAL_D}
+                  fill="none"
+                  stroke="#EFB80D"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+
+                {/* Mobile Sailing Vessel with Halo & Nautical Helm */}
+                <g ref={shipGroupMobileRef}>
+                  <circle r="16" fill="#EFB80D" stroke="#FFFFFF" strokeWidth="3" />
+                  <g transform="scale(0.8) translate(-12, -12)">
+                    <path
+                      d="M12 2L15 8H9L12 2ZM4 13L12 11L20 13L17 19H7L4 13Z"
+                      fill="#000000"
+                    />
+                  </g>
+                </g>
+
+                {/* Mobile Branch Stops with Clear Side Labels */}
+                {BRANCHES.map((branch, idx) => {
+                  const isCurrent = idx === activeBranchIndex;
+
+                  return (
+                    <g
+                      key={`mobile-${branch.id}`}
+                      onClick={() => handleJumpToBranch(idx)}
+                      className="cursor-pointer"
+                    >
+                      {/* Outer Ring */}
+                      <circle
+                        cx={branch.mobileX}
+                        cy={branch.mobileY}
+                        r={isCurrent ? 15 : 10}
+                        fill={isCurrent ? "#EFB80D" : "#333333"}
+                        stroke="#FFFFFF"
+                        strokeWidth={isCurrent ? "3" : "2"}
+                      />
+                      {/* Inner Dot */}
+                      <circle
+                        cx={branch.mobileX}
+                        cy={branch.mobileY}
+                        r={isCurrent ? 6 : 4}
+                        fill={isCurrent ? "#000000" : "#EFB80D"}
+                      />
+
+                      {/* Branch Name Label */}
+                      <text
+                        x={branch.mobileLabelX}
+                        y={branch.mobileLabelY}
+                        textAnchor={branch.mobileTextAnchor}
+                        fill="#FFFFFF"
+                        fontFamily="var(--font-fraunces), serif"
+                        fontWeight={isCurrent ? "900" : "700"}
+                        fontSize={isCurrent ? "14.5" : "12.5"}
+                      >
+                        {branch.shortName}
+                      </text>
+
+                      {/* Code Tag */}
+                      <text
+                        x={branch.mobileLabelX}
+                        y={
+                          branch.mobileTextAnchor === "middle"
+                            ? branch.mobileY + 22
+                            : branch.mobileLabelY + 16
+                        }
+                        textAnchor={branch.mobileTextAnchor}
+                        fill={isCurrent ? "#EFB80D" : "#C4B5A5"}
+                        fontFamily="var(--font-ibm-mono), monospace"
+                        fontSize="10"
+                        fontWeight="700"
+                      >
+                        {branch.code}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+
+            {/* DESKTOP ONLY: Horizontal Maritime Chart Animation (viewBox: 0 0 960 320) */}
+            <div className="hidden lg:block relative w-full h-[280px] select-none">
               <svg
                 viewBox="0 0 960 320"
                 preserveAspectRatio="xMidYMid meet"
@@ -301,7 +479,7 @@ export default function CaptainsChart() {
 
                   return (
                     <g
-                      key={branch.id}
+                      key={`desktop-${branch.id}`}
                       onClick={() => handleJumpToBranch(idx)}
                       className="cursor-pointer"
                     >
@@ -335,7 +513,7 @@ export default function CaptainsChart() {
                         x={branch.x}
                         y={branch.y + 24}
                         textAnchor="middle"
-                        fill={isCurrent ? "#EFB80D" : "#CCCCCC"}
+                        fill={isCurrent ? "#EFB80D" : "#C4B5A5"}
                         fontFamily="var(--font-ibm-mono), monospace"
                         fontSize="11"
                         fontWeight="700"
