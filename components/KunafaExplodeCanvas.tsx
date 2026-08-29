@@ -12,10 +12,10 @@ const FRAME_HEIGHT = 720;
 
 // Official Captain Kunafa Platter Imagery to sit in the canvas animation frames
 const PRODUCT_IMAGES = [
-  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png", // Act 0: The Captain's Original Akawi
-  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png", // Act 1: Aleppo Emerald Pistachio Crown
-  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png", // Act 2: Molten Akawi / Dark Choco Lava
-  "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png", // Act 3: Lotus Biscoff Royale
+  "/platters/platter-original.png", // Act 0: The Captain's Original Akawi
+  "/platters/platter-pistachio.png", // Act 1: Aleppo Emerald Pistachio Crown
+  "/platters/platter-choco.png", // Act 2: Molten Akawi / Dark Choco Lava
+  "/platters/platter-biscoff.png", // Act 3: Lotus Biscoff Royale
 ];
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
@@ -154,7 +154,7 @@ export default function KunafaExplodeCanvas() {
   const drawFrame = useCallback((index: number, currentProgress = 0) => {
     const canvas = canvasRef.current;
     const img = imagesRef.current[index];
-    if (!canvas || !img || !img.complete) return;
+    if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
 
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
@@ -185,12 +185,24 @@ export default function KunafaExplodeCanvas() {
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+
+    try {
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    } catch {
+      // Safe fallback
+    }
 
     // Render official Captain Kunafa platter pictures directly on the canvas animation frames
     ACTS.forEach((act, actIdx) => {
       const prodImg = productImagesRef.current[actIdx];
-      if (!prodImg || !prodImg.complete) return;
+      if (
+        !prodImg ||
+        !prodImg.complete ||
+        prodImg.naturalWidth === 0 ||
+        prodImg.naturalHeight === 0
+      ) {
+        return;
+      }
 
       const actOpacity = getActOpacity(currentProgress, act.range);
       if (actOpacity <= 0) return;
@@ -199,7 +211,9 @@ export default function KunafaExplodeCanvas() {
       ctx.globalAlpha = Math.min(1, actOpacity * 0.95);
 
       const isMobile = width < 768;
-      const maxDim = isMobile ? Math.min(width * 0.44, height * 0.35, 240) : Math.min(width * 0.35, height * 0.48, 360);
+      const maxDim = isMobile
+        ? Math.min(width * 0.44, height * 0.35, 240)
+        : Math.min(width * 0.35, height * 0.48, 360);
 
       let prodX = width * 0.5;
       let prodY = height * 0.5;
@@ -226,10 +240,15 @@ export default function KunafaExplodeCanvas() {
       ctx.fill();
 
       // Draw the official platter image
-      const aspect = prodImg.naturalHeight / (prodImg.naturalWidth || 1);
-      const pWidth = maxDim;
-      const pHeight = maxDim * aspect;
-      ctx.drawImage(prodImg, prodX - pWidth / 2, prodY - pHeight / 2, pWidth, pHeight);
+      try {
+        const aspect = prodImg.naturalHeight / (prodImg.naturalWidth || 1);
+        const pWidth = maxDim;
+        const pHeight = maxDim * aspect;
+        ctx.drawImage(prodImg, prodX - pWidth / 2, prodY - pHeight / 2, pWidth, pHeight);
+      } catch {
+        // Safe fallback
+      }
+
       ctx.restore();
     });
 
@@ -243,15 +262,14 @@ export default function KunafaExplodeCanvas() {
     let count = 0;
     const pad = (n: number) => String(n).padStart(3, "0");
 
-    // Preload official product images
+    // Preload official product images locally
     PRODUCT_IMAGES.forEach((url, idx) => {
       const prodImg = new Image();
-      prodImg.crossOrigin = "anonymous";
-      prodImg.src = url;
       prodImg.onload = () => {
         if (!mounted) return;
         productImagesRef.current[idx] = prodImg;
       };
+      prodImg.src = url;
       productImagesRef.current[idx] = prodImg;
     });
 

@@ -10,19 +10,19 @@ type Category = "All" | "Best Sellers" | "Classic" | "Fusion";
 
 const GALLERY_ITEMS: GalleryItem[] = [
   {
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
+    image: "/platters/platter-original.png",
     text: "The Captain's Original Akawi",
   },
   {
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
+    image: "/platters/platter-pistachio.png",
     text: "Aleppo Emerald Pistachio Crown",
   },
   {
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png",
+    image: "/platters/platter-biscoff.png",
     text: "Lotus Biscoff Royale",
   },
   {
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png",
+    image: "/platters/platter-choco.png",
     text: "Dark Choco & Hazelnut Lava",
   },
 ];
@@ -37,7 +37,7 @@ const MENU_ITEMS = [
       "Clarified A2 ghee kataifi encasing molten 18-hr desalinated Akawi cheese, bathed in Damascus rose and orange blossom attar.",
     price: "₹180",
     bestSeller: true,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
+    image: "/platters/platter-original.png",
   },
   {
     id: "aleppo-pistachio",
@@ -48,7 +48,7 @@ const MENU_ITEMS = [
       "Double-loaded with raw first-harvest green Aleppo pistachios, crushed cardamom nectar, and rich buffalo clotted ashta cream.",
     price: "₹220",
     bestSeller: true,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
+    image: "/platters/platter-pistachio.png",
   },
   {
     id: "choco-kunafa",
@@ -59,7 +59,7 @@ const MENU_ITEMS = [
       "72% dark chocolate molten core enveloped by toasted kataifi strands and roasted hazelnut praline drizzle. Hyderabad's favourite dessert crossover.",
     price: "₹240",
     bestSeller: true,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104665.png",
+    image: "/platters/platter-choco.png",
   },
   {
     id: "lotus-biscoff",
@@ -70,7 +70,7 @@ const MENU_ITEMS = [
       "Warm spiced Belgian speculoos cream baked into the crispy pastry nest, filled with sweet cream cheese and topped with crunchy Biscoff crumble.",
     price: "₹250",
     bestSeller: true,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104664.png",
+    image: "/platters/platter-biscoff.png",
   },
   {
     id: "salted-caramel",
@@ -81,7 +81,7 @@ const MENU_ITEMS = [
       "Smoked sea-salt caramel drizzle infused into roasted kataifi nests, layered with molten Nablusi curd and crushed pecan crunch.",
     price: "₹230",
     bestSeller: false,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104666.png",
+    image: "/platters/platter-original.png",
   },
   {
     id: "mini-cups",
@@ -92,7 +92,7 @@ const MENU_ITEMS = [
       "Four individual mini copper-pan nests featuring Classic Akawi, Pistachio, Choco, and Biscoff. Ideal for family gifting and tasting.",
     price: "₹340",
     bestSeller: true,
-    image: "https://captainkunafa.com/wp-content/uploads/2024/01/Group-104667.png",
+    image: "/platters/platter-pistachio.png",
   },
 ];
 
