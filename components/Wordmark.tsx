@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Compass } from "lucide-react";
+import Image from "next/image";
 
 interface WordmarkProps {
   size?: "sm" | "md" | "lg";
@@ -14,9 +14,9 @@ export default function Wordmark({
   showSubtitle = true,
 }: WordmarkProps) {
   const iconSizes = {
-    sm: "w-7 h-7 text-xs",
-    md: "w-9 h-9 text-base",
-    lg: "w-12 h-12 text-xl",
+    sm: "w-8 h-10",
+    md: "w-10 h-12",
+    lg: "w-14 h-16",
   }[size];
 
   const titleSizes = {
@@ -30,12 +30,14 @@ export default function Wordmark({
       href="/"
       className={`inline-flex items-center gap-3 group focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 rounded-lg p-1 ${className}`}
     >
-      {/* Compass Mark */}
-      <div
-        className={`${iconSizes} rounded-full bg-[#1C120C] border border-[#EFB80D]/40 flex items-center justify-center text-[#EFB80D] shadow-[0_0_15px_rgba(239,184,13,0.2)] group-hover:border-[#EFB80D] group-hover:rotate-45 transition-all duration-500`}
-      >
-        <Compass className="w-5 h-5" />
-      </div>
+      {/* Official Captain Kunafa Mascot Logo */}
+      <Image
+        src="/logo.png"
+        alt="Captain Kunafa Mascot"
+        width={48}
+        height={58}
+        className={`${iconSizes} object-contain shrink-0 group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_2px_10px_rgba(239,184,13,0.35)]`}
+      />
 
       {/* Wordmark */}
       <div className="flex flex-col">

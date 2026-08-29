@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import { ShipHelm } from "@/components/NauticalElements";
 
 const navLinks = [
   { label: "Voyage", href: "#story" },
@@ -56,7 +56,7 @@ export default function Navbar() {
             : "bg-[#0a0a0a] border border-white/10"
         }`}
       >
-        {/* Wordmark with Solid Golden Nautical Helm */}
+        {/* Wordmark with Official Captain Kunafa Logo */}
         <button
           type="button"
           onClick={() => {
@@ -65,11 +65,16 @@ export default function Navbar() {
             if (lenis) lenis.scrollTo(0);
             else window.scrollTo({ top: 0, behavior: "smooth" });
           }}
-          className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] rounded-lg text-left"
+          className="flex items-center gap-2 sm:gap-3 group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] rounded-lg text-left"
         >
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shrink-0">
-            <ShipHelm size={18} className="text-[#000000] group-hover:rotate-45 transition-transform duration-700 sm:w-[22px] sm:h-[22px]" />
-          </div>
+          <Image
+            src="/logo.png"
+            alt="Captain Kunafa Logo"
+            width={38}
+            height={46}
+            className="h-8 sm:h-10 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_2px_8px_rgba(239,184,13,0.35)]"
+            priority
+          />
           <div className="flex flex-col">
             <span className="font-display font-bold text-base sm:text-lg text-white tracking-wide leading-tight">
               CAPTAIN <span className="italic font-semibold text-[#EFB80D]">KUNAFA</span>

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { Shield, Phone, ArrowUp } from "lucide-react";
-import { ShipHelm } from "@/components/NauticalElements";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -18,10 +18,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-white/10">
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
-            <div className="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0 shadow-md">
-                <ShipHelm size={22} className="text-[#000000] sm:w-[24px] sm:h-[24px]" />
-              </div>
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
+              <Image
+                src="/logo.png"
+                alt="Captain Kunafa"
+                width={52}
+                height={62}
+                className="h-12 sm:h-16 w-auto object-contain shrink-0 drop-shadow-[0_4px_16px_rgba(239,184,13,0.35)]"
+              />
               <span className="font-display font-bold text-lg sm:text-xl text-white">
                 CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
               </span>
