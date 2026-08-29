@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
 import { ShipHelm } from "@/components/NauticalElements";
+import FoldText from "@/components/FoldText";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
@@ -15,11 +16,22 @@ const ACTS = [
     range: [0, 0.22] as [number, number],
     align: "center" as const,
     headline: (
-      <>
-        Hyderabad's Most{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Talked-About</span>{" "}
-        Kunafa
-      </>
+      <FoldText
+        text="Hyderabad's Most Talked-About Kunafa"
+        splitBy="word"
+        hinge="left"
+        trigger="mount"
+        duration={0.7}
+        stagger={0.06}
+        ease="power3.out"
+        perspective={700}
+        creaseShading={0.55}
+        fontSize="inherit"
+        fontWeight="inherit"
+        color="#FFF8EC"
+        highlightWords={["Talked-About"]}
+        highlightColor="#EFB80D"
+      />
     ),
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
@@ -27,11 +39,22 @@ const ACTS = [
     range: [0.25, 0.50] as [number, number],
     align: "left" as const,
     headline: (
-      <>
-        Deconstructed{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Golden Crisp</span>{" "}
-        &amp; Heat
-      </>
+      <FoldText
+        text="Deconstructed Golden Crisp & Heat"
+        splitBy="word"
+        hinge="top"
+        trigger="mount"
+        duration={0.65}
+        stagger={0.05}
+        ease="power3.out"
+        perspective={700}
+        creaseShading={0.55}
+        fontSize="inherit"
+        fontWeight="inherit"
+        color="#FFF8EC"
+        highlightWords={["Golden", "Crisp"]}
+        highlightColor="#EFB80D"
+      />
     ),
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
@@ -39,11 +62,22 @@ const ACTS = [
     range: [0.53, 0.78] as [number, number],
     align: "right" as const,
     headline: (
-      <>
-        The Molten{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Akawi &amp; Nablusi</span>{" "}
-        Heart
-      </>
+      <FoldText
+        text="The Molten Akawi & Nablusi Heart"
+        splitBy="word"
+        hinge="bottom"
+        trigger="mount"
+        duration={0.65}
+        stagger={0.05}
+        ease="power3.out"
+        perspective={700}
+        creaseShading={0.55}
+        fontSize="inherit"
+        fontWeight="inherit"
+        color="#FFF8EC"
+        highlightWords={["Akawi", "Nablusi"]}
+        highlightColor="#EFB80D"
+      />
     ),
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
@@ -51,10 +85,22 @@ const ACTS = [
     range: [0.82, 1.0] as [number, number],
     align: "center" as const,
     headline: (
-      <>
-        Reassembled to{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
-      </>
+      <FoldText
+        text="Reassembled to Perfection"
+        splitBy="word"
+        hinge="left"
+        trigger="mount"
+        duration={0.7}
+        stagger={0.05}
+        ease="power3.out"
+        perspective={700}
+        creaseShading={0.55}
+        fontSize="inherit"
+        fontWeight="inherit"
+        color="#FFF8EC"
+        highlightWords={["Perfection"]}
+        highlightColor="#EFB80D"
+      />
     ),
     body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to our branches — fresh-pressed, every time.",
   },
