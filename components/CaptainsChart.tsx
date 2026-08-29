@@ -258,32 +258,30 @@ export default function CaptainsChart() {
             </div>
           ))}
 
-          {/* 6th Card: Expansion / Franchise Callout */}
+          {/* 6th Card: Live Tasting & Custom Gifting Experience */}
           <div className="bg-[#2B1B12] border-2 border-[#EFB80D]/40 rounded-[20px] p-6 flex flex-col justify-between text-[#FFF8EC] relative overflow-hidden shadow-lg">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFB80D]/10 rounded-full blur-2xl pointer-events-none" />
             <div>
               <span className="font-mono text-[10px] font-bold text-[#EFB80D] tracking-widest uppercase">
-                EXPANSION CALL
+                TASTING &amp; TAKEAWAY
               </span>
               <h3 className="font-display font-bold text-2xl text-white mt-1 mb-2">
-                Launch an Outpost in Your Locality
+                Fresh-Pressed at the Live Counter
               </h3>
               <p className="font-sans text-xs text-[#B3A697] leading-relaxed mb-4">
-                We are expanding across Secunderabad, Gachibowli, Kondapur, and beyond Telangana. Complete setup, equipment, and master recipe onboarding provided.
+                Walk into any of our 5 outposts to watch our master spinners roast your disc live in copper pans. Insulated thermal boxes available for warm takeaway.
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                const el = document.querySelector("#franchise");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}
+            <a
+              href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20a%20fresh%20takeaway%20platter."
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#2B1B12] font-sans font-bold text-xs py-3.5 rounded-full transition-all hover:scale-[1.02] cursor-pointer shadow-md"
             >
-              <span>Explore Franchise Program</span>
+              <span>Order Takeaway on WhatsApp</span>
               <ArrowUpRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
         </div>
       </div>

@@ -104,8 +104,6 @@ export default function Footer() {
                 { label: "Saud's Levantine Chronicle", href: "#about" },
                 { label: "5 Hyderabad Outposts", href: "#locations" },
                 { label: "Copper Hearth Platters", href: "#menu" },
-                { label: "Franchise Partnership Fleet", href: "#franchise" },
-                { label: "Live Wedding & Event Catering", href: "#catering" },
                 { label: "Ship's Logbook Reviews", href: "#reviews" },
               ].map((link, idx) => (
                 <li key={idx}>

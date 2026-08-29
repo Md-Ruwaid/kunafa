@@ -3,8 +3,6 @@ import KunafaExplodeCanvas from "@/components/KunafaExplodeCanvas";
 import AboutSection from "@/components/AboutSection";
 import CaptainsChart from "@/components/CaptainsChart";
 import MenuPreview from "@/components/MenuPreview";
-import FranchiseSection from "@/components/FranchiseSection";
-import CateringSection from "@/components/CateringSection";
 import ShipsLog from "@/components/ShipsLog";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { WaveDivider } from "@/components/NauticalElements";
@@ -39,13 +37,7 @@ export default function HomePage() {
         <MenuPreview />
       </section>
 
-      {/* 5. Franchise Partnership Fleet with 3 Tiers & WhatsApp Funnel */}
-      <FranchiseSection />
-
-      {/* 6. Live Copper Hearth Wedding & Event Catering */}
-      <CateringSection />
-
-      {/* 7. Ship's Logbook — 4.8★ Verified Google Reviews */}
+      {/* 5. Ship's Logbook — 4.8★ Verified Google Reviews */}
       <section id="reviews">
         <ShipsLog />
       </section>

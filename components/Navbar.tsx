@@ -9,8 +9,6 @@ const navLinks = [
   { label: "The Story", href: "#about" },
   { label: "5 Outposts", href: "#locations" },
   { label: "Platters", href: "#menu" },
-  { label: "Franchise", href: "#franchise" },
-  { label: "Catering", href: "#catering" },
   { label: "Logbook", href: "#reviews" },
 ];
 
@@ -59,13 +57,13 @@ export default function Navbar() {
         </button>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <button
               key={link.href}
               type="button"
               onClick={() => handleLink(link.href)}
-              className="font-sans text-xs uppercase tracking-wider px-3.5 py-2 rounded-full text-[#7A6A5B] hover:text-[#DA7034] hover:bg-[#FFF8EC] transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+              className="font-sans text-xs uppercase tracking-wider px-4 py-2 rounded-full text-[#7A6A5B] hover:text-[#DA7034] hover:bg-[#FFF8EC] transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
             >
               {link.label}
             </button>
@@ -89,7 +87,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden w-9 h-9 rounded-full bg-[#FFF8EC] border border-[#E7DCC9] text-[#2B1B12] flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+            className="md:hidden w-9 h-9 rounded-full bg-[#FFF8EC] border border-[#E7DCC9] text-[#2B1B12] flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
             aria-label="Toggle menu"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -99,7 +97,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileOpen && (
-        <div className="lg:hidden mt-3 max-w-sm mx-auto bg-white border border-[#E7DCC9] rounded-2xl p-5 shadow-2xl flex flex-col gap-1.5 animate-fadeIn">
+        <div className="md:hidden mt-3 max-w-sm mx-auto bg-white border border-[#E7DCC9] rounded-2xl p-5 shadow-2xl flex flex-col gap-1.5 animate-fadeIn">
           {navLinks.map((link) => (
             <button
               key={link.href}

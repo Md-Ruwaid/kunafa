@@ -45,14 +45,14 @@ const REVIEWS = [
   {
     id: "rev-4",
     author: "Sneha & Varun Nair",
-    branch: "Live Wedding Catering",
+    branch: "Jubilee Hills Flagship",
     rating: 5,
     date: "3 weeks ago",
     verified: true,
-    tag: "Weddings (120 Pax)",
-    title: "Live station at our reception was a showstopper",
+    tag: "Family Platter Box",
+    title: "The live copper pan show is a visual feast",
     quote:
-      "Booked the First Officer catering package for our reception in Gandipet. The chefs arrived 45 minutes early, set up the copper burners, and pressed every portion hot in front of our guests. Zero hassle, 100% praised.",
+      "Visited the Jubilee Hills outlet with our extended family. Watching the master spinners flip and caramelize the kataifi in front of our table was thrilling. The 48 dB acoustic crunch is real.",
   },
   {
     id: "rev-5",
@@ -85,7 +85,6 @@ export default function ShipsLog() {
 
   const filteredReviews = REVIEWS.filter((r) => {
     if (filter === "All") return true;
-    if (filter === "Catering") return r.branch.includes("Catering");
     return r.branch.includes(filter);
   });
 
@@ -136,7 +135,7 @@ export default function ShipsLog() {
 
         {/* Filter Pills */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Catering"].map((tab) => (
+          {["All", "Barkas", "Jubilee Hills", "Tolichowki", "Malakpet", "Aero City"].map((tab) => (
             <button
               key={tab}
               type="button"

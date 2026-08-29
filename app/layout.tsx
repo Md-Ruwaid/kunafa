@@ -43,8 +43,6 @@ export const metadata: Metadata = {
     "Kunafa Jubilee Hills",
     "Middle Eastern Dessert Hyderabad",
     "Saud bin Nasar Khulagi",
-    "Kunafa Catering Hyderabad",
-    "Kunafa Franchise India",
     "Live Kunafa Counter",
     "Akawi Cheese Kunafa",
   ],
