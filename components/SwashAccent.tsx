@@ -2,7 +2,7 @@ import React from "react";
 
 interface SwashAccentProps {
   children: React.ReactNode;
-  color?: "gold" | "terracotta";
+  color?: "gold" | "teal" | "crimson" | "terracotta";
   className?: string;
 }
 
@@ -11,8 +11,12 @@ export default function SwashAccent({
   color = "gold",
   className = "",
 }: SwashAccentProps) {
-  const colorClass =
-    color === "terracotta" ? "text-[#DA7034]" : "text-[#EFB80D]";
+  let colorClass = "text-[#EFB80D]";
+  if (color === "teal" || color === "terracotta") {
+    colorClass = "text-[#239BAF]";
+  } else if (color === "crimson") {
+    colorClass = "text-[#E05344]";
+  }
 
   return (
     <span

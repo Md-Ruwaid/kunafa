@@ -32,7 +32,7 @@ export default function Wordmark({
     >
       {/* Compass Mark */}
       <div
-        className={`${iconSizes} rounded-full bg-[#241509] border border-[#EFB80D]/40 flex items-center justify-center text-[#EFB80D] shadow-[0_0_15px_rgba(239,184,13,0.2)] group-hover:border-[#EFB80D] group-hover:rotate-45 transition-all duration-500`}
+        className={`${iconSizes} rounded-full bg-[#1C120C] border border-[#EFB80D]/40 flex items-center justify-center text-[#EFB80D] shadow-[0_0_15px_rgba(239,184,13,0.2)] group-hover:border-[#EFB80D] group-hover:rotate-45 transition-all duration-500`}
       >
         <Compass className="w-5 h-5" />
       </div>
@@ -43,7 +43,7 @@ export default function Wordmark({
           CAPTAIN <span className="font-display italic font-semibold text-[#EFB80D]">KUNAFA</span>
         </span>
         {showSubtitle && (
-          <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#B3A697]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#C4B5A5] font-bold">
             ROYAL LEVANTINE ATELIER
           </span>
         )}

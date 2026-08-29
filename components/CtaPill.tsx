@@ -32,13 +32,13 @@ export default function CtaPill({
   }[size];
 
   const variantClasses = {
-    primary: `bg-[#EFB80D] hover:bg-[#ffc926] text-[#2B1B12] font-semibold ${
+    primary: `bg-[#EFB80D] hover:bg-[#ffc926] text-[#1C120C] font-semibold ${
       withPulse ? "animate-pulse-gold" : ""
     } shadow-[0_0_20px_rgba(239,184,13,0.3)] hover:scale-105 active:scale-95`,
     ghost:
       "bg-transparent hover:bg-white/5 text-white/80 hover:text-[#EFB80D] border border-white/15 hover:border-[#EFB80D]/40",
     secondary:
-      "bg-[#241509] hover:bg-[#2B1B12] text-[#EFB80D] border border-[#EFB80D]/30 hover:border-[#EFB80D]",
+      "bg-[#241509] hover:bg-[#1C120C] text-[#EFB80D] border border-[#EFB80D]/30 hover:border-[#EFB80D]",
   }[variant];
 
   const baseClasses = `inline-flex items-center justify-center gap-2 rounded-full font-sans tracking-wide transition-all duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] focus-visible:outline-offset-2 ${sizeClasses} ${variantClasses} ${className}`;
@@ -46,7 +46,7 @@ export default function CtaPill({
   if (href) {
     return (
       <Link href={href} className={baseClasses} onClick={onClick}>
-        {icon && variant === "primary" && <Sparkles className="w-4 h-4 shrink-0 text-[#2B1B12]" />}
+        {icon && variant === "primary" && <Sparkles className="w-4 h-4 shrink-0 text-[#1C120C]" />}
         <span>{children}</span>
       </Link>
     );
@@ -54,7 +54,7 @@ export default function CtaPill({
 
   return (
     <button type="button" onClick={onClick} className={baseClasses}>
-      {icon && variant === "primary" && <Sparkles className="w-4 h-4 shrink-0 text-[#2B1B12]" />}
+      {icon && variant === "primary" && <Sparkles className="w-4 h-4 shrink-0 text-[#1C120C]" />}
       <span>{children}</span>
     </button>
   );

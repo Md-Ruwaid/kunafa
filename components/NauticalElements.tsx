@@ -61,9 +61,9 @@ export function CompassRose({
         cy="50"
         r="42"
         fill="none"
-        stroke="#DA7034"
+        stroke="#239BAF"
         strokeWidth="1"
-        opacity="0.5"
+        opacity="0.6"
       />
       <circle
         cx="50"
@@ -74,27 +74,27 @@ export function CompassRose({
         strokeWidth="1.5"
       />
 
-      {/* Cardinal Points */}
+      {/* Cardinal Points - Gold North/East, Aegean Teal South/West */}
       <polygon points="50,6 55,38 50,33 45,38" fill="#EFB80D" />
-      <polygon points="50,94 55,62 50,67 45,62" fill="#DA7034" />
+      <polygon points="50,94 55,62 50,67 45,62" fill="#239BAF" />
       <polygon points="94,50 62,55 67,50 62,45" fill="#EFB80D" />
-      <polygon points="6,50 38,55 33,50 38,45" fill="#DA7034" />
+      <polygon points="6,50 38,55 33,50 38,45" fill="#239BAF" />
 
       {/* Secondary Points */}
       <polygon points="78,22 58,42 54,38 68,28" fill="#EFB80D" opacity="0.7" />
-      <polygon points="22,78 42,58 38,54 28,68" fill="#DA7034" opacity="0.7" />
-      <polygon points="78,78 58,58 62,54 72,68" fill="#DA7034" opacity="0.7" />
+      <polygon points="22,78 42,58 38,54 28,68" fill="#239BAF" opacity="0.8" />
+      <polygon points="78,78 58,58 62,54 72,68" fill="#239BAF" opacity="0.8" />
       <polygon points="22,22 42,42 38,46 28,32" fill="#EFB80D" opacity="0.7" />
 
       {/* Center Pivot */}
-      <circle cx="50" cy="50" r="5" fill="#2B1B12" stroke="#EFB80D" strokeWidth="2" />
+      <circle cx="50" cy="50" r="5" fill="#1C120C" stroke="#EFB80D" strokeWidth="2" />
       <circle cx="50" cy="50" r="1.5" fill="#EFB80D" />
 
       {/* Degree ticks */}
       <text x="50" y="16" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#EFB80D" fontWeight="bold">N</text>
-      <text x="50" y="90" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#DA7034" fontWeight="bold">S</text>
+      <text x="50" y="90" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#239BAF" fontWeight="bold">S</text>
       <text x="88" y="52" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#EFB80D" fontWeight="bold">E</text>
-      <text x="12" y="52" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#DA7034" fontWeight="bold">W</text>
+      <text x="12" y="52" textAnchor="middle" fontSize="6" fontFamily="var(--font-ibm-mono)" fill="#239BAF" fontWeight="bold">W</text>
     </svg>
   );
 }
@@ -116,18 +116,18 @@ export function ShipHelm({
     >
       {/* Outer Rim */}
       <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" strokeWidth="4" />
-      <circle cx="50" cy="50" r="24" fill="none" stroke="#DA7034" strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="24" fill="none" stroke="#239BAF" strokeWidth="2.5" />
 
       {/* Spokes & Handles */}
       {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
         <g key={i} transform={`rotate(${angle} 50 50)`}>
           <line x1="50" y1="50" x2="50" y2="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="50" cy="8" r="4" fill="#DA7034" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="50" cy="8" r="4" fill="#239BAF" stroke="currentColor" strokeWidth="1.5" />
         </g>
       ))}
 
       {/* Hub */}
-      <circle cx="50" cy="50" r="10" fill="#2B1B12" stroke="currentColor" strokeWidth="3" />
+      <circle cx="50" cy="50" r="10" fill="#1C120C" stroke="currentColor" strokeWidth="3" />
       <circle cx="50" cy="50" r="4" fill="#EFB80D" />
     </svg>
   );
@@ -138,7 +138,7 @@ export function CaptainSeal({ className = "" }: { className?: string }) {
     <div
       className={`inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-white text-black font-bold shadow-sm ${className}`}
     >
-      <div className="w-7 h-7 rounded-full bg-[#000000] text-[#EFB80D] flex items-center justify-center shrink-0">
+      <div className="w-7 h-7 rounded-full bg-[#1C120C] text-[#EFB80D] flex items-center justify-center shrink-0">
         <ShipHelm size={16} className="text-[#EFB80D]" />
       </div>
       <div className="flex flex-col text-left">

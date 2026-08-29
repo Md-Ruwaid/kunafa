@@ -2,15 +2,17 @@
 
 @theme {
   --color-captain-gold: #EFB80D;
-  --color-toasted-terracotta: #DA7034;
+  --color-aegean-teal: #239BAF;
+  --color-damascus-rose: #E05344;
   --color-foam-white: #FFFFFF;
-  --color-anchor-ink: #2B1B12;
   --color-shell-cream: #FFF8EC;
   --color-rope-beige: #E7DCC9;
+  --color-mist: #C4B5A5;
+  --color-fog: #9A8B7D;
+  --color-anchor-ink: #1C120C;
   --color-deck-espresso: #241509;
-  --color-fog: #7A6A5B;
-  --color-mist: #B3A697;
   --color-void: #030303;
+  --color-deck-dark: #050505;
 
   --radius-card: 20px;
   --radius-photo: 16px;
@@ -24,15 +26,17 @@
 @layer base {
   :root {
     --captain-gold: #EFB80D;
-    --toasted-terracotta: #DA7034;
+    --aegean-teal: #239BAF;
+    --damascus-rose: #E05344;
     --foam-white: #FFFFFF;
-    --anchor-ink: #2B1B12;
     --shell-cream: #FFF8EC;
     --rope-beige: #E7DCC9;
+    --mist: #C4B5A5;
+    --fog: #9A8B7D;
+    --anchor-ink: #1C120C;
     --deck-espresso: #241509;
-    --fog: #7A6A5B;
-    --mist: #B3A697;
     --bg-void: #030303;
+    --bg-deck: #050505;
   }
 
   * {
