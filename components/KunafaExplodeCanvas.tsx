@@ -3,8 +3,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
-import { ShipHelm } from "@/components/NauticalElements";
-import FoldText from "@/components/FoldText";
 
 const TOTAL_FRAMES = 100;
 const FRAME_WIDTH = 1280;
@@ -16,22 +14,9 @@ const ACTS = [
     range: [0, 0.22] as [number, number],
     align: "center" as const,
     headline: (
-      <FoldText
-        text="Hyderabad's Most Talked-About Kunafa"
-        splitBy="word"
-        hinge="left"
-        trigger="mount"
-        duration={0.7}
-        stagger={0.06}
-        ease="power3.out"
-        perspective={700}
-        creaseShading={0.55}
-        fontSize="inherit"
-        fontWeight="inherit"
-        color="#FFF8EC"
-        highlightWords={["Talked-About"]}
-        highlightColor="#EFB80D"
-      />
+      <>
+        Hyderabad&apos;s Most <SwashAccent color="gold">Talked-About</SwashAccent> Kunafa
+      </>
     ),
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
@@ -39,22 +24,9 @@ const ACTS = [
     range: [0.25, 0.50] as [number, number],
     align: "left" as const,
     headline: (
-      <FoldText
-        text="Deconstructed Golden Crisp & Heat"
-        splitBy="word"
-        hinge="top"
-        trigger="mount"
-        duration={0.65}
-        stagger={0.05}
-        ease="power3.out"
-        perspective={700}
-        creaseShading={0.55}
-        fontSize="inherit"
-        fontWeight="inherit"
-        color="#FFF8EC"
-        highlightWords={["Golden", "Crisp"]}
-        highlightColor="#EFB80D"
-      />
+      <>
+        Deconstructed <SwashAccent color="gold">Golden Crisp</SwashAccent> &amp; Heat
+      </>
     ),
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
@@ -62,22 +34,9 @@ const ACTS = [
     range: [0.53, 0.78] as [number, number],
     align: "right" as const,
     headline: (
-      <FoldText
-        text="The Molten Akawi & Nablusi Heart"
-        splitBy="word"
-        hinge="bottom"
-        trigger="mount"
-        duration={0.65}
-        stagger={0.05}
-        ease="power3.out"
-        perspective={700}
-        creaseShading={0.55}
-        fontSize="inherit"
-        fontWeight="inherit"
-        color="#FFF8EC"
-        highlightWords={["Akawi", "Nablusi"]}
-        highlightColor="#EFB80D"
-      />
+      <>
+        The Molten <SwashAccent color="gold">Akawi &amp; Nablusi</SwashAccent> Heart
+      </>
     ),
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
@@ -85,22 +44,9 @@ const ACTS = [
     range: [0.82, 1.0] as [number, number],
     align: "center" as const,
     headline: (
-      <FoldText
-        text="Reassembled to Perfection"
-        splitBy="word"
-        hinge="left"
-        trigger="mount"
-        duration={0.7}
-        stagger={0.05}
-        ease="power3.out"
-        perspective={700}
-        creaseShading={0.55}
-        fontSize="inherit"
-        fontWeight="inherit"
-        color="#FFF8EC"
-        highlightWords={["Perfection"]}
-        highlightColor="#EFB80D"
-      />
+      <>
+        Reassembled to <SwashAccent color="gold">Perfection</SwashAccent>
+      </>
     ),
     body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to our branches — fresh-pressed, every time.",
   },
@@ -108,10 +54,16 @@ const ACTS = [
 
 function getActOpacity(progress: number, range: [number, number]): number {
   const [start, end] = range;
-  const fadeIn = 0.05;
-  const fadeOut = 0.05;
+  const fadeIn = 0.04;
+  const fadeOut = 0.04;
   if (progress < start) return 0;
   if (progress > end) return 0;
+
+  // First act should be fully visible at the start
+  if (start === 0 && progress < fadeIn) return 1;
+  // Last act should remain visible towards the bottom
+  if (end >= 0.99 && progress > end - fadeOut) return 1;
+
   if (progress < start + fadeIn) return (progress - start) / fadeIn;
   if (progress > end - fadeOut) return (end - progress) / fadeOut;
   return 1;
@@ -124,10 +76,10 @@ function getActX(
 ): number {
   if (align === "center") return 0;
   const [start] = range;
-  const fadeIn = 0.05;
+  const fadeIn = 0.04;
   if (progress < start + fadeIn) {
     const t = (progress - start) / fadeIn;
-    return align === "left" ? -20 * (1 - t) : 20 * (1 - t);
+    return align === "left" ? -16 * (1 - t) : 16 * (1 - t);
   }
   return 0;
 }
@@ -245,7 +197,7 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single scroll handler
+  // Single synchronized scroll handler with requestAnimationFrame
   useEffect(() => {
     let animFrame: number;
     let lastFrame = -1;
@@ -305,18 +257,15 @@ export default function KunafaExplodeCanvas() {
           >
             <div className="relative mb-6">
               <div className="w-16 h-16 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center">
-                <ShipHelm size={32} className="text-[#EFB80D]" />
+                <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
               </div>
             </div>
 
-            <div className="font-display font-bold text-xl tracking-wider mb-2">
-              CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
+            <div className="font-display font-bold text-xl sm:text-2xl text-white mb-3">
+              PREPARING THE HEARTH
             </div>
 
-            <div className="font-mono text-xs uppercase tracking-[0.25em] text-[#C4B5A5] mb-6">
-              HEATING COPPER HEARTHS
-            </div>
-
+            {/* Progress bar */}
             <div className="w-48 h-1 bg-[#111111] rounded-full overflow-hidden mb-3 border border-white/5">
               <div
                 className="h-full bg-[#EFB80D] transition-all duration-150 ease-out"
@@ -354,7 +303,7 @@ export default function KunafaExplodeCanvas() {
             const opacity = getActOpacity(progress, act.range);
             const translateX = getActX(progress, act.range, act.align);
 
-            if (opacity === 0) return null;
+            if (opacity <= 0.001) return null;
 
             return (
               <div
@@ -368,8 +317,8 @@ export default function KunafaExplodeCanvas() {
                 }`}
                 style={{
                   opacity,
-                  transform: `translateX(${translateX}px)`,
-                  transition: "none",
+                  transform: `translate3d(${translateX}px, 0, 0)`,
+                  willChange: "opacity, transform",
                 }}
               >
                 {/* Mobile-optimized typography container */}

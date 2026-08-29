@@ -88,9 +88,6 @@ const BRANCHES: BranchLocation[] = [
   },
 ];
 
-// Logical maritime route order: Barkas → Malakpet → Tolichowki → Jubilee Hills
-const ROUTE_LATLNGS: [number, number][] = BRANCHES.map((b) => [b.lat, b.lng]);
-
 // Dynamically imported Leaflet map (SSR disabled for window/DOM access)
 const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
   ssr: false,
@@ -261,7 +258,6 @@ export default function CaptainsChart() {
                     activeBranchIndex={activeBranchIndex}
                     onSelectBranch={handleSelectBranch}
                     isVisible={isVisible}
-                    routeLatLngs={ROUTE_LATLNGS}
                   />
                 )
               ) : (
