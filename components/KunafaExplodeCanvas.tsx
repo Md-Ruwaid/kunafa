@@ -141,11 +141,18 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const lastDrawnIndexRef = useRef(0);
+
   // Canvas drawing with subtle zoom-in and smooth center alignment
   const drawFrame = useCallback((index: number) => {
     const canvas = canvasRef.current;
-    const img = imagesRef.current[index];
-    if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
+    if (!canvas) return;
+
+    let targetImg = imagesRef.current[index];
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
+      targetImg = imagesRef.current[lastDrawnIndexRef.current];
+    }
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
 
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
@@ -154,10 +161,12 @@ export default function KunafaExplodeCanvas() {
     const dpr = Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
+    const targetW = Math.round(width * dpr);
+    const targetH = Math.round(height * dpr);
 
-    if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
     }
 
     ctx.save();
@@ -178,7 +187,8 @@ export default function KunafaExplodeCanvas() {
     ctx.imageSmoothingQuality = "high";
 
     try {
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
+      lastDrawnIndexRef.current = index;
     } catch {
       // Safe fallback
     }
