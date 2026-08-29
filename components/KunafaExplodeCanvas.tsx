@@ -16,32 +16,32 @@ const ACTS = [
     label: null,
     headline: (
       <>
-        The Royal Alchemy of{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Captain</span>{" "}
+        Hyderabad's Most{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Talked-About</span>{" "}
         Kunafa
       </>
     ),
-    body: "Hand-spun golden kataifi encasing molten artisanal Akawi cheese, drenched in orange blossom nectar.",
+    body: "Hand-pressed on copper. Fresh every single order. Five outposts across the city — one obsession.",
   },
   {
     range: [0.25, 0.50] as [number, number],
     align: "left" as const,
-    label: "01 / KATAIFI TENSION",
+    label: "01 / THE KATAIFI",
     labelColor: "#DA7034",
     headline: (
       <>
-        Deconstructed{" "}
+        Golden{" "}
         <span className="font-display italic font-semibold text-[#EFB80D]">Crisp</span>{" "}
-        &amp; Tension
+        That Echoes
       </>
     ),
-    body: "Individual strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C to deliver a resonant 48 dB audible crunch.",
-    metric: "ROAST METRIC: 205°C COPPER SEAR",
+    body: "Individual strands of clarified ghee pastry roasted in copper at 205°C. The snap is audible across the room — 48 dB and rising.",
+    metric: "ROAST: 205°C COPPER PAN · 48 dB CRUNCH",
   },
   {
     range: [0.53, 0.78] as [number, number],
     align: "right" as const,
-    label: "02 / ZERO-GRAVITY CORE",
+    label: "02 / THE FILLING",
     labelColor: "#EFB80D",
     headline: (
       <>
@@ -50,21 +50,22 @@ const ACTS = [
         Heart
       </>
     ),
-    body: "18-hour desalinated mountain Akawi curd unfurls with raw first-harvest Aleppo emerald pistachios and Damascus rosewater.",
-    metric: "CHEESE BLEND: 70% AKAWI / 30% NABLUSI",
+    body: "Authentic Akawi and Nablusi cheese, soaked and desalinated for 18 hours, then packed into every tray. No shortcuts. No substitutes.",
+    metric: "BLEND: 70% AKAWI / 30% NABLUSI",
   },
   {
     range: [0.82, 1.0] as [number, number],
     align: "center" as const,
-    label: "FINALE",
+    label: "CAPTAIN'S PROMISE",
     labelColor: "#EFB80D",
     headline: (
       <>
-        Reassembled to{" "}
-        <span className="font-display italic font-semibold text-[#EFB80D]">Perfection</span>
+        Fresh-Pressed.{" "}
+        <span className="font-display italic font-semibold text-[#EFB80D]">Every Order.</span>{" "}
+        Always.
       </>
     ),
-    body: "The golden disc unites into an unparalleled symphony of crunch, molten warmth, and floral sweetness.",
+    body: "Since 2021, we've served over 50,000 trays across Hyderabad. The recipe hasn't changed once.",
     metric: null,
   },
 ];
