@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
-import { CompassRose, CaptainSeal } from "@/components/NauticalElements";
+import { CaptainSeal, ShipHelm } from "@/components/NauticalElements";
 
 export default function AboutSection() {
   return (
@@ -9,56 +12,68 @@ export default function AboutSection() {
       className="py-20 sm:py-28 px-4 sm:px-8 bg-[#050505] text-[#FFF8EC] border-t border-[#222222] relative overflow-hidden"
     >
       <div className="max-w-4xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+        {/* Section Header with subtle pop animation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="text-center max-w-3xl mx-auto mb-10 sm:mb-14"
+        >
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
-            From the Levant to Hyderabad:{" "}
-            <SwashAccent color="gold">The Maestro's Craft</SwashAccent>
+            About <SwashAccent color="gold">Captain Kunafa</SwashAccent>
           </h2>
-
-          <p className="font-sans text-xs sm:text-base text-white/70 leading-relaxed">
-            The narrative of Captain Kunafa is not marketing rhetoric — it is an uncompromising heirloom journey charted by{" "}
-            <span className="text-[#EFB80D] font-bold">Saud bin Nasar Khulagi</span>.
+          <p className="font-sans text-xs sm:text-base text-white/70">
+            A sweet adventure rooted in heirloom Middle-Eastern heritage.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Founder Story - Solid #EFB80D Gold Filled Card */}
-        <div className="bg-[#EFB80D] text-[#000000] rounded-[24px] sm:rounded-[32px] p-6 sm:p-10 lg:p-12 relative overflow-hidden flex flex-col justify-between shadow-2xl">
+        {/* Pop-in Solid #EFB80D Gold About Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 30 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="bg-[#EFB80D] text-[#000000] rounded-[24px] sm:rounded-[32px] p-6 sm:p-10 lg:p-14 relative overflow-hidden flex flex-col justify-between"
+        >
           <div>
+            {/* Header Identity */}
             <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#000000] text-[#EFB80D] flex items-center justify-center font-display font-black text-3xl sm:text-4xl shrink-0">
-                S
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#000000] text-[#EFB80D] flex items-center justify-center shrink-0">
+                <ShipHelm size={28} className="text-[#EFB80D]" />
               </div>
               <div>
-                <div className="font-display font-black text-2xl sm:text-3xl text-[#000000]">
-                  Saud bin Nasar Khulagi
+                <div className="font-display font-black text-2xl sm:text-3xl text-[#000000] leading-tight">
+                  Welcome Aboard
                 </div>
-                <div className="inline-block bg-[#000000] text-[#EFB80D] font-mono text-xs uppercase tracking-wider font-black px-3 py-1 rounded-md mt-1">
-                  Founder &amp; Recipe Maestro
-                </div>
-                <div className="font-mono text-[10px] sm:text-xs text-[#000000]/75 font-bold mt-1">
-                  Barkas, Hyderabad · Est. 2021
+                <div className="font-mono text-[10px] sm:text-xs text-[#000000]/80 font-black uppercase tracking-wider mt-0.5">
+                  Hyderabad's Premier Levantine Haven
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4 font-sans text-sm sm:text-base text-[#000000] font-medium leading-relaxed border-t border-[#000000]/20 pt-6">
+            {/* Narrative requested by User */}
+            <div className="space-y-4 sm:space-y-5 font-sans text-sm sm:text-base lg:text-lg text-[#000000] font-semibold leading-relaxed border-t border-[#000000]/20 pt-6">
               <p>
-                Growing up in a household where the aroma of clarified ghee and simmering orange blossom syrup signaled celebrations, Saud learned the exacting alchemy of Levantine pastry from his family elders.
+                Welcome aboard <strong>Captain Kunafa</strong>, your ultimate destination for an exceptional journey through the delectable world of Kunafa in Hyderabad.
               </p>
               <p>
-                In 2021, he brought the original shallow copper pans to the historic quarters of Barkas. Today, across our branches in Hyderabad, every single tray is prepared from scratch — never pre-baked, never reheated.
+                Nestled in the heart of Hyderabad, Captain Kunafa is your haven for indulgence. Whether you’re a Kunafa enthusiast or a first-time explorer, our extensive menu has something for everyone.
               </p>
-              <p className="italic text-[#000000] font-display font-black text-base sm:text-lg border-l-4 border-[#000000] pl-4 sm:pl-5 my-4">
-                "If the crunch doesn't echo when the knife cuts the disc, it doesn't leave our hearth."
+              <p className="font-display font-black text-base sm:text-xl text-[#000000] italic border-l-4 border-[#000000] pl-4 sm:pl-5 my-2">
+                "Captain Kunafa invites you to embark on a sweet adventure like no other."
               </p>
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-[#000000]/20 flex items-center justify-between">
+          {/* Footer Seal & Founder Badge */}
+          <div className="mt-8 sm:mt-10 pt-6 border-t border-[#000000]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <CaptainSeal />
+            <div className="font-mono text-[10px] sm:text-[11px] text-[#000000] font-black uppercase tracking-wider">
+              Founded by Saud bin Nasar Khulagi · Barkas
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

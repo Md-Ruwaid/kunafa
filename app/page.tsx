@@ -5,39 +5,34 @@ import CaptainsChart from "@/components/CaptainsChart";
 import MenuPreview from "@/components/MenuPreview";
 import ShipsLog from "@/components/ShipsLog";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import { WaveDivider } from "@/components/NauticalElements";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-[#FFF8EC]">
+    <main className="relative min-h-screen bg-[#050505]">
       {/* Floating WhatsApp Quick Action */}
       <WhatsAppButton />
 
-      {/* 1. Scrollytelling Hero — 400vh Canvas with Alternating Text Acts */}
+      {/* 1. Scrollytelling Voyage Canvas */}
       <section id="story" className="relative">
         <KunafaExplodeCanvas />
-        {/* Seamless Nautical Wave Transition from Dark Void to Cream Sea */}
-        <div className="absolute -bottom-1 inset-x-0 z-30 pointer-events-none">
-          <WaveDivider fill="#FFF8EC" />
-        </div>
       </section>
 
-      {/* 2. The Founder's Chronicle & Craft Heritage (Saud bin Nasar Khulagi) */}
+      {/* 2. About Us — Pops in directly after the voyage scroll */}
       <section id="about">
         <AboutSection />
       </section>
 
-      {/* 3. The Captain's Chart — 5 Hyderabad Branches */}
+      {/* 3. The Captain's Chart — Hyderabad Branches */}
       <section id="locations">
         <CaptainsChart />
       </section>
 
-      {/* 4. The Artisanal Platters Menu with Category Filters & Pricing */}
+      {/* 4. The Artisanal Platters Menu */}
       <section id="menu">
         <MenuPreview />
       </section>
 
-      {/* 5. Ship's Logbook — 4.8★ Verified Google Reviews */}
+      {/* 5. Ship's Logbook — Verified Reviews */}
       <section id="reviews">
         <ShipsLog />
       </section>
