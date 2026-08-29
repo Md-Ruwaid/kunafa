@@ -22,7 +22,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#030303] text-[#FFF8EC] border-t border-[#222222] pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Hyderabad Branches Grid */}
+        {/* Hyderabad Branches Grid - Solid #EFB80D Filled Cards */}
         <div className="mb-12 sm:mb-16">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 mb-5 sm:mb-6">
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#000000] bg-[#EFB80D] px-3.5 py-1 rounded-full flex items-center gap-2 font-black">
@@ -38,31 +38,31 @@ export default function Footer() {
             {outlets.map((outlet, idx) => (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#111111] border border-[#222222] hover:border-[#EFB80D] transition-all flex flex-col justify-between"
+                className="p-4 sm:p-5 rounded-[16px] sm:rounded-[18px] bg-[#EFB80D] text-[#000000] transition-all flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-                    <span className="font-mono text-[10px] text-[#EFB80D] font-black">
+                    <span className="font-mono text-[10px] text-[#000000] font-black">
                       {outlet.code}
                     </span>
-                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#EFB80D] text-[#000000] font-black">
+                    <span className="font-mono text-[8.5px] sm:text-[9px] px-2.5 py-0.5 rounded-full bg-[#000000] text-[#EFB80D] font-black">
                       ACTIVE
                     </span>
                   </div>
-                  <div className="font-display font-bold text-sm text-white mb-0.5">
+                  <div className="font-display font-black text-sm text-[#000000] mb-0.5">
                     {outlet.city}
                   </div>
-                  <div className="font-sans text-xs text-white/70">
+                  <div className="font-sans text-xs text-[#000000]/80 font-bold">
                     {outlet.area}
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-white/10 font-mono text-[9.5px] sm:text-[10px] text-white/60 space-y-1">
-                  <div className="flex items-center gap-1 text-emerald-400 font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <div className="mt-3 pt-2.5 sm:mt-4 sm:pt-3 border-t border-[#000000]/20 font-mono text-[9.5px] sm:text-[10px] text-[#000000] font-bold space-y-1">
+                  <div className="flex items-center gap-1 text-[#000000] font-black">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#000000]" />
                     <span>{outlet.hours}</span>
                   </div>
-                  <div className="text-white/80">{outlet.phone}</div>
+                  <div className="text-[#000000]/85 font-bold">{outlet.phone}</div>
                 </div>
               </div>
             ))}

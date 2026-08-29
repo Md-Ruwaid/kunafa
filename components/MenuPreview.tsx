@@ -170,17 +170,17 @@ export default function MenuPreview() {
           ))}
         </div>
 
-        {/* Brand Promise Callout Strip in Solid Flat Style */}
-        <div className="p-6 sm:p-10 rounded-[20px] sm:rounded-[24px] bg-[#111111] text-[#FFF8EC] border-2 border-[#EFB80D] flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden text-center sm:text-left">
+        {/* Gathering / Bulk Platter Banner - Solid #EFB80D Filled Card */}
+        <div className="p-6 sm:p-10 rounded-[20px] sm:rounded-[24px] bg-[#EFB80D] text-[#000000] flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 relative overflow-hidden text-center sm:text-left">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 relative z-10">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0">
-              <ShipHelm size={26} className="text-[#000000]" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#000000] text-[#EFB80D] flex items-center justify-center shrink-0">
+              <ShipHelm size={26} className="text-[#EFB80D]" />
             </div>
             <div>
-              <div className="font-display font-bold text-lg sm:text-2xl text-white mb-1">
+              <div className="font-display font-black text-lg sm:text-2xl text-[#000000] mb-1">
                 Ordering for an Office, Gathering, or Celebration?
               </div>
-              <div className="font-sans text-xs sm:text-sm text-white/75">
+              <div className="font-sans text-xs sm:text-sm text-[#000000]/85 font-semibold">
                 We pack fresh party platters in insulated copper thermal cases for immediate delivery across Hyderabad.
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function MenuPreview() {
             href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20order%20bulk%20platters%20for%20a%20gathering."
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 bg-[#EFB80D] hover:bg-[#ffc926] text-[#000000] font-sans font-black text-xs px-8 py-3.5 rounded-full transition-all hover:scale-105 relative z-10"
+            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] text-[#EFB80D] font-sans font-black text-xs px-8 py-3.5 rounded-full transition-all hover:scale-105 relative z-10"
           >
             <span>Order Bulk Platters</span>
           </a>

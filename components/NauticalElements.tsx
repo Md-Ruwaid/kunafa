@@ -136,16 +136,16 @@ export function ShipHelm({
 export function CaptainSeal({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`inline-flex items-center gap-3 px-4 py-2 rounded-full border border-[#EFB80D]/40 bg-[#FFF8EC] shadow-sm ${className}`}
+      className={`inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#000000] text-[#EFB80D] font-bold ${className}`}
     >
-      <div className="w-6 h-6 rounded-full bg-[#EFB80D]/20 border border-[#EFB80D] flex items-center justify-center shrink-0">
-        <ShipHelm size={16} />
+      <div className="w-7 h-7 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0">
+        <ShipHelm size={16} className="text-[#000000]" />
       </div>
       <div className="flex flex-col text-left">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#DA7034] font-semibold">
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#EFB80D] font-black">
           ORIGINAL BARKAS RECIPE
         </span>
-        <span className="font-mono text-[8px] tracking-wider text-[#7A6A5B]">
+        <span className="font-mono text-[8.5px] tracking-wider text-white/70 font-bold">
           17.3115° N, 78.4871° E · EST. 2021
         </span>
       </div>
