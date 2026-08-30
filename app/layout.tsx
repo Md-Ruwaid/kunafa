@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Work_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Fraunces, Work_Sans, IBM_Plex_Mono, Luckiest_Guy } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -24,6 +24,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const luckiestGuy = Luckiest_Guy({
+  variable: "--font-brand",
+  subsets: ["latin"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -74,7 +81,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable}`}
+      className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable} ${luckiestGuy.variable}`}
     >
       <head>
         {/* Structured Data: LocalBusiness / Restaurant schema for local SEO */}

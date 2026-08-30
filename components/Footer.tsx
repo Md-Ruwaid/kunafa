@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Shield, Phone, ArrowUp } from "lucide-react";
+import BrandName from "@/components/BrandName";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -26,9 +27,9 @@ export default function Footer() {
                 height={62}
                 className="h-12 sm:h-16 w-auto object-contain shrink-0 drop-shadow-[0_4px_16px_rgba(239,184,13,0.35)]"
               />
-              <span className="font-display font-bold text-lg sm:text-xl text-white">
-                CAPTAIN <span className="italic text-[#EFB80D]">KUNAFA</span>
-              </span>
+              <BrandName className="text-lg sm:text-xl text-white">
+                CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
+              </BrandName>
             </div>
             <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed max-w-sm mb-5 sm:mb-6 font-medium">
               Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across our city branches.
@@ -100,7 +101,7 @@ export default function Footer() {
         {/* Copyright & Back to Top */}
         <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10px] sm:text-xs text-white/50 text-center sm:text-left">
           <div>
-            © {new Date().getFullYear()} CAPTAIN KUNAFA. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
+            © {new Date().getFullYear()} <BrandName className="text-white/70">CAPTAIN KUNAFA</BrandName>. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
           </div>
           <button
             type="button"

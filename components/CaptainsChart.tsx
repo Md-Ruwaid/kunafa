@@ -14,6 +14,7 @@ import {
   Map as MapIcon,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
+import BrandName from "@/components/BrandName";
 import type { BranchLocation } from "@/components/CaptainsMap";
 
 // ─── 4 Official Captain Kunafa Branches in Hyderabad ────────────────────────
@@ -280,7 +281,18 @@ export default function CaptainsChart() {
 
                   {/* Description */}
                   <p className="font-sans text-xs sm:text-sm text-white/90 leading-relaxed mb-4 font-medium">
-                    {activeBranch.description}
+                    {activeBranch.description.includes("Captain Kunafa") ? (
+                      <>
+                        {activeBranch.description.split("Captain Kunafa").map((part, i, arr) => (
+                          <React.Fragment key={i}>
+                            {part}
+                            {i < arr.length - 1 && <BrandName />}
+                          </React.Fragment>
+                        ))}
+                      </>
+                    ) : (
+                      activeBranch.description
+                    )}
                   </p>
 
                   {/* Meta details */}

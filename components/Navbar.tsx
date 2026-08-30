@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import BrandName from "@/components/BrandName";
 
 const navLinks = [
   { label: "Voyage", href: "#story" },
@@ -109,9 +110,9 @@ export default function Navbar() {
             priority
           />
           <div className="flex flex-col">
-            <span className="font-display font-bold text-base sm:text-lg text-white tracking-wide leading-tight">
-              CAPTAIN <span className="italic font-semibold text-[#EFB80D]">KUNAFA</span>
-            </span>
+            <BrandName className="text-sm sm:text-base md:text-lg text-white leading-tight">
+              CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
+            </BrandName>
           </div>
         </button>
 
