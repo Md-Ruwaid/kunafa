@@ -11,7 +11,7 @@ const FRAME_HEIGHT = 720;
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
-    range: [0, 0.22] as [number, number],
+    range: [0, 0.20] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -21,7 +21,7 @@ const ACTS = [
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
-    range: [0.25, 0.50] as [number, number],
+    range: [0.22, 0.44] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -31,7 +31,7 @@ const ACTS = [
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
   {
-    range: [0.53, 0.78] as [number, number],
+    range: [0.47, 0.68] as [number, number],
     align: "right" as const,
     headline: (
       <>
@@ -41,7 +41,7 @@ const ACTS = [
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
   {
-    range: [0.82, 1.0] as [number, number],
+    range: [0.72, 0.88] as [number, number],
     align: "center" as const,
     headline: (
       <>
