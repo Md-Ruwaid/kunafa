@@ -186,7 +186,8 @@ export default function KunafaExplodeCanvas() {
 
       // Redraw current frame at new size
       const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-      const targetFrame = Math.round(progressRef.current * (totalFrames - 1));
+      const frameProgress = isMobile ? Math.pow(progressRef.current, 1.75) : progressRef.current;
+      const targetFrame = Math.round(frameProgress * (totalFrames - 1));
       drawFrame(targetFrame, progressRef.current);
     };
 
@@ -312,7 +313,12 @@ export default function KunafaExplodeCanvas() {
           // Draw the correct frame for current device
           const isMobile = layoutRef.current.isMobile;
           const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-          const targetFrame = Math.round(p * (totalFrames - 1));
+
+          // Non-linear frame distribution for mobile:
+          // Spends ~80% of the scroll track savoring the slow levitation and initial lift (frames 1-85)
+          // and concentrates the fully exploded end frame to only the last 20% of scroll
+          const frameProgress = isMobile ? Math.pow(p, 1.75) : p;
+          const targetFrame = Math.round(frameProgress * (totalFrames - 1));
 
           if (targetFrame !== lastDrawnFrameRef.current) {
             drawFrame(targetFrame, p);
