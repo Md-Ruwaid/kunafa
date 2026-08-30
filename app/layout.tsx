@@ -98,6 +98,18 @@ export default function RootLayout({
       className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable} ${luckiestGuy.variable}`}
     >
       <head>
+        <link
+          rel="preload"
+          as="image"
+          href="/Kunafa-animations-v2/ezgif-frame-001.png"
+          media="(min-width: 768px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/mobile-view-kunafa/ezgif-frame-001.png"
+          media="(max-width: 767px)"
+        />
         {/* Structured Data: LocalBusiness / Restaurant schema for local SEO */}
         <script
           type="application/ld+json"

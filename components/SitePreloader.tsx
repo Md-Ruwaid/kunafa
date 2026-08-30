@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import BrandName from "@/components/BrandName";
+import { frameSrc, primeFrame } from "@/lib/heroFrameCache";
 
 interface SitePreloaderProps {
   onComplete?: () => void;
@@ -29,30 +30,35 @@ export default function SitePreloader({ onComplete }: SitePreloaderProps) {
     let mounted = true;
     let loadedAssets = 0;
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
-
-    // Build list of assets to preload: critical images + first 15 frames of hero
     const folder = isMobile ? "/mobile-view-kunafa" : "/Kunafa-animations-v2";
-    const pad = (n: number) => String(n).padStart(3, "0");
+
+    // Hero frame 1 is highest priority — shared cache with KunafaExplodeCanvas
+    const heroFramePromise = primeFrame(frameSrc(folder, 1), true);
+
     const frameUrls: string[] = [];
-    for (let i = 1; i <= 15; i++) {
-      frameUrls.push(`${folder}/ezgif-frame-${pad(i)}.png`);
+    for (let i = 2; i <= 12; i++) {
+      frameUrls.push(frameSrc(folder, i));
     }
 
     const allUrls = [...CRITICAL_IMAGES, ...frameUrls];
-    const totalAssets = allUrls.length;
+    const totalAssets = allUrls.length + 1;
+
+    heroFramePromise.then(onAssetDone).catch(onAssetDone);
 
     allUrls.forEach((url) => {
       const img = new window.Image();
+      img.decoding = "async";
       img.src = url;
-      const onAssetDone = () => {
-        if (!mounted) return;
-        loadedAssets++;
-        const targetPercent = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
-        setProgress((prev) => Math.max(prev, targetPercent));
-      };
       img.onload = onAssetDone;
       img.onerror = onAssetDone;
     });
+
+    function onAssetDone() {
+      if (!mounted) return;
+      loadedAssets++;
+      const targetPercent = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
+      setProgress((prev) => Math.max(prev, targetPercent));
+    }
 
     // Smooth progress incrementer to ensure fluid animation even on ultra-fast networks
     let currentVal = 0;
