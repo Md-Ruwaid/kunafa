@@ -8,7 +8,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 50;
+const MOBILE_FRAMES = 130;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -17,8 +17,9 @@ function pad(n: number): string {
 }
 
 // Mobile non-linear frame distribution curve:
+// Gives plenty of slow, smooth scroll time to the first two phrases / initial levitation
 function getFrameProgress(progress: number, isMobile: boolean): number {
-  return isMobile ? Math.pow(progress, 1.25) : progress;
+  return isMobile ? Math.pow(progress, 1.7) : progress;
 }
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
@@ -265,7 +266,6 @@ export default function KunafaExplodeCanvas() {
     let isRunning = true;
     let cachedTotalScrollable = 0;
     let smoothProgress = 0;
-    let targetProgress = 0;
 
     const measureLayout = () => {
       if (containerRef.current) {
@@ -304,12 +304,14 @@ export default function KunafaExplodeCanvas() {
       }
 
       if (cachedTotalScrollable > 0) {
-        targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
+        const targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
+        const isMobile = layoutRef.current.isMobile;
+        const lerpFactor = isMobile ? 0.08 : 0.14;
 
         // Continuous smooth lerp for buttery, stutter-free 60-120 FPS momentum
         const diff = targetProgress - smoothProgress;
         if (Math.abs(diff) > 0.00005) {
-          smoothProgress += diff * 0.14;
+          smoothProgress += diff * lerpFactor;
         } else {
           smoothProgress = targetProgress;
         }
@@ -317,7 +319,6 @@ export default function KunafaExplodeCanvas() {
         progressRef.current = smoothProgress;
 
         // Draw the correct frame for current device
-        const isMobile = layoutRef.current.isMobile;
         const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
         const frameProgress = getFrameProgress(smoothProgress, isMobile);
         const targetFrame = Math.round(frameProgress * (totalFrames - 1));
@@ -366,7 +367,7 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[450vh] sm:h-[550vh] bg-[#030303]"
+      className="relative w-full h-[850vh] sm:h-[550vh] bg-[#030303]"
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
