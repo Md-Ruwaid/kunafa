@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from "ogl";
-import React, { useEffect, useRef } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import "./CircularGallery.css";
 
 export interface GalleryItem {
@@ -16,6 +16,11 @@ export interface CircularGalleryProps {
   borderRadius?: number;
   scrollSpeed?: number;
   scrollEase?: number;
+  onActiveIndexChange?: (index: number) => void;
+}
+
+export interface CircularGalleryHandle {
+  goToIndex: (index: number) => void;
 }
 
 function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number) {
@@ -286,6 +291,9 @@ class App {
   boundOnTouchMove!: (e: TouchEvent | MouseEvent) => void;
   boundOnTouchUp!: () => void;
   boundOnKeyDown!: (e: KeyboardEvent) => void;
+  itemCount: number;
+  onActiveIndexChange?: (index: number) => void;
+  lastReportedIndex = -1;
 
   constructor(
     container: HTMLDivElement,
@@ -295,16 +303,20 @@ class App {
       borderRadius = 0.06,
       scrollSpeed = 3,
       scrollEase = 0.06,
+      onActiveIndexChange,
     }: {
       items: GalleryItem[];
       bend?: number;
       borderRadius?: number;
       scrollSpeed?: number;
       scrollEase?: number;
+      onActiveIndexChange?: (index: number) => void;
     }
   ) {
     this.container = container;
     this.scrollSpeed = scrollSpeed;
+    this.itemCount = items.length;
+    this.onActiveIndexChange = onActiveIndexChange;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 180);
     this.createRenderer();
@@ -462,6 +474,30 @@ class App {
     this.scroll.target = this.scroll.target < 0 ? -item : item;
   }
 
+  goToIndex(index: number) {
+    if (!this.medias?.[0] || this.itemCount <= 0) return;
+    const width = this.medias[0].width;
+    if (width <= 0) return;
+    const normalized =
+      ((index % this.itemCount) + this.itemCount) % this.itemCount;
+    this.scroll.target = -width * normalized;
+    this.onCheck();
+  }
+
+  reportActiveIndex() {
+    if (!this.onActiveIndexChange || !this.medias?.[0] || this.itemCount <= 0) {
+      return;
+    }
+    const width = this.medias[0].width;
+    if (width <= 0) return;
+    const idx =
+      Math.round(Math.abs(this.scroll.current) / width) % this.itemCount;
+    if (idx !== this.lastReportedIndex) {
+      this.lastReportedIndex = idx;
+      this.onActiveIndexChange(idx);
+    }
+  }
+
   onResize() {
     if (!this.container) return;
     const clientW = this.container.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800);
@@ -514,6 +550,7 @@ class App {
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
+    this.reportActiveIndex();
     this.raf = window.requestAnimationFrame(this.update.bind(this));
   }
 
@@ -568,56 +605,74 @@ class App {
   }
 }
 
-export default function CircularGallery({
-  items,
-  bend = 2.5,
-  borderRadius = 0.06,
-  scrollSpeed = 3.2,
-  scrollEase = 0.06,
-}: CircularGalleryProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    let app: App | null = null;
-
-    app = new App(containerRef.current, {
+export default forwardRef<CircularGalleryHandle, CircularGalleryProps>(
+  function CircularGallery(
+    {
       items,
-      bend,
-      borderRadius,
-      scrollSpeed,
-      scrollEase,
-    });
+      bend = 2.5,
+      borderRadius = 0.06,
+      scrollSpeed = 3.2,
+      scrollEase = 0.06,
+      onActiveIndexChange,
+    },
+    ref
+  ) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const appRef = useRef<App | null>(null);
+    const onChangeRef = useRef(onActiveIndexChange);
+    onChangeRef.current = onActiveIndexChange;
 
-    let observer: IntersectionObserver | null = null;
-    if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          if (!app) return;
-          if (entry.isIntersecting) {
-            app.resume();
-          } else {
-            app.pause();
-          }
-        },
-        { threshold: 0.02 }
-      );
-      observer.observe(containerRef.current);
-    }
+    useImperativeHandle(ref, () => ({
+      goToIndex: (index: number) => {
+        appRef.current?.goToIndex(index);
+      },
+    }));
 
-    return () => {
-      if (observer) observer.disconnect();
-      if (app) app.destroy();
-    };
-  }, [items, bend, borderRadius, scrollSpeed, scrollEase]);
+    useEffect(() => {
+      if (!containerRef.current) return;
+      let app: App | null = null;
 
-  return (
-    <div
-      className="circular-gallery"
-      ref={containerRef}
-      tabIndex={0}
-      role="region"
-      aria-label="Interactive 3D image gallery. Drag or scroll to rotate."
-    />
-  );
-}
+      app = new App(containerRef.current, {
+        items,
+        bend,
+        borderRadius,
+        scrollSpeed,
+        scrollEase,
+        onActiveIndexChange: (index) => onChangeRef.current?.(index),
+      });
+      appRef.current = app;
+
+      let observer: IntersectionObserver | null = null;
+      if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+        observer = new IntersectionObserver(
+          ([entry]) => {
+            if (!app) return;
+            if (entry.isIntersecting) {
+              app.resume();
+            } else {
+              app.pause();
+            }
+          },
+          { threshold: 0.02 }
+        );
+        observer.observe(containerRef.current);
+      }
+
+      return () => {
+        appRef.current = null;
+        if (observer) observer.disconnect();
+        if (app) app.destroy();
+      };
+    }, [items, bend, borderRadius, scrollSpeed, scrollEase]);
+
+    return (
+      <div
+        className="circular-gallery"
+        ref={containerRef}
+        tabIndex={0}
+        role="region"
+        aria-label="Interactive 3D image gallery. Drag or scroll to rotate."
+      />
+    );
+  }
+);
