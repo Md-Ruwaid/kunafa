@@ -2,58 +2,33 @@
 
 import React from "react";
 import SwashAccent from "@/components/SwashAccent";
-import { ShipHelm } from "@/components/NauticalElements";
 
 export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative z-30 -mt-16 sm:-mt-24 pt-16 sm:pt-24 pb-20 sm:pb-28 px-4 sm:px-8 bg-gradient-to-b from-transparent via-[#050505] to-[#050505] text-[#FFF8EC] overflow-hidden transform-gpu"
+      className="relative z-20 bg-[#050505] text-[#FFF8EC] py-16 sm:py-24 px-4 sm:px-6 lg:px-8"
     >
-      {/* Smooth gradient blend transition layer */}
-      <div className="absolute inset-x-0 top-0 h-32 sm:h-44 bg-gradient-to-b from-transparent via-[#050505]/80 to-transparent pointer-events-none" />
+      <div className="max-w-3xl mx-auto text-center space-y-6">
+        <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+          About <SwashAccent color="gold">Captain Kunafa</SwashAccent>
+        </h2>
 
-      <div className="max-w-4xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-          <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-2 sm:mb-3">
-            About <SwashAccent color="gold">Captain Kunafa</SwashAccent>
-          </h2>
-          <p className="font-sans text-xs sm:text-base text-white/70">
-            A sweet adventure rooted in heirloom Middle-Eastern heritage.
+        <div className="space-y-4 font-sans text-base sm:text-lg md:text-xl text-white/85 font-normal leading-relaxed">
+          <p>
+            Welcome aboard <strong className="text-white font-bold">Captain Kunafa</strong>, your ultimate destination for an exceptional journey through the delectable world of Kunafa in Hyderabad.
           </p>
-        </div>
-
-        {/* High-Performance About Card with crisp solid background and Captain Gold border */}
-        <div className="bg-[#111111] border-2 border-[#EFB80D] rounded-[24px] sm:rounded-[32px] p-6 sm:p-10 lg:p-14 relative overflow-hidden shadow-2xl transition-transform duration-300">
-          {/* Header Identity */}
-          <div className="flex items-center gap-4 sm:gap-5 mb-6 sm:mb-8">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#EFB80D] text-[#000000] flex items-center justify-center shrink-0 shadow-md">
-              <ShipHelm size={28} className="text-[#000000]" />
-            </div>
-            <div>
-              <div className="font-display font-bold text-2xl sm:text-3xl text-white leading-tight">
-                Welcome Aboard
-              </div>
-            </div>
-          </div>
-
-          {/* Narrative copy with high readability */}
-          <div className="space-y-4 sm:space-y-5 font-sans text-sm sm:text-base lg:text-lg text-white/90 font-medium leading-relaxed border-t border-white/10 pt-6">
-            <p>
-              Welcome aboard <strong className="text-white font-bold">Captain Kunafa</strong>, your ultimate destination for an exceptional journey through the delectable world of Kunafa in Hyderabad.
-            </p>
-            <p className="text-white/80">
-              Nestled in the heart of Hyderabad, Captain Kunafa is your haven for indulgence. Whether you’re a Kunafa enthusiast or a first-time explorer, our extensive menu has something for everyone.
-            </p>
-            <div className="bg-[#181818] border-l-4 border-[#EFB80D] p-4 sm:p-5 rounded-r-xl my-3">
-              <p className="font-display font-semibold text-base sm:text-xl text-white italic">
-                "Captain Kunafa invites you to embark on a sweet adventure like no other."
-              </p>
-            </div>
-          </div>
+          <p className="text-white/75">
+            Nestled in the heart of Hyderabad, Captain Kunafa is your haven for indulgence. Whether you’re a Kunafa enthusiast or a first-time explorer, our extensive menu has something for everyone.
+          </p>
+          <p className="font-display italic font-semibold text-lg sm:text-2xl text-[#EFB80D] pt-4">
+            &ldquo;Captain Kunafa invites you to embark on a sweet adventure like no other.&rdquo;
+          </p>
         </div>
       </div>
     </section>
   );
 }
+
+
+

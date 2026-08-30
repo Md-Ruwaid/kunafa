@@ -195,9 +195,50 @@
   padding: 2px 6px !important;
 }
 
-.leaflet-control-attribution a {
-  color: #EFB80D !important;
-  text-decoration: none !important;
+/* =========================================================================
+   Hero to About Smooth Transition & Scroll Animation
+   ========================================================================= */
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
+.transition-page-title {
+  text-align: center;
+  position: relative;
+}
+
+.transition-page-title::after {
+  content: '↓';
+  display: block;
+  font-size: 1.75rem;
+  opacity: 0;
+  transform: translateY(-16px);
+  animation: fadein 900ms 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  color: #EFB80D;
+  margin-top: 0.5rem;
+}
+
+.transition-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem 2.5rem;
+  text-align: center;
+}
+
+.about-card-glow {
+  box-shadow: 0 0 50px -15px rgba(239, 184, 13, 0.15), 0 25px 60px -15px rgba(0, 0, 0, 0.9);
+}
+
+
 
 

@@ -4,19 +4,16 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Compass,
   MapPin,
   Clock,
   Phone,
   Navigation,
-  Sparkles,
   MessageCircle,
   ExternalLink,
   Layers,
   Map as MapIcon,
 } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import { ShipHelm } from "@/components/NauticalElements";
 import type { BranchLocation } from "@/components/CaptainsMap";
 
 // ─── 4 Official Captain Kunafa Branches in Hyderabad ────────────────────────
@@ -138,18 +135,9 @@ export default function CaptainsChart() {
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFB80D]/15 border border-[#EFB80D]/30 text-[#EFB80D] font-mono text-[9px] sm:text-xs uppercase tracking-widest font-black mb-3">
-            <Compass className="w-3.5 h-3.5" />
-            <span>HYDERABAD VOYAGE MAP</span>
-          </div>
-
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-2 sm:mb-3">
             The Captain&apos;s <SwashAccent color="gold">Chart</SwashAccent>
           </h2>
-
-          <p className="font-sans text-xs sm:text-sm text-white/70">
-            Visit our 4 signature live copper hearths across Hyderabad.
-          </p>
         </div>
 
         {/* Branch Quick Select Tabs */}
@@ -281,30 +269,13 @@ export default function CaptainsChart() {
                   className="bg-[#121212] border-2 border-[#EFB80D] rounded-[20px] sm:rounded-[28px] p-5 sm:p-7 relative overflow-hidden shadow-2xl"
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-[#EFB80D] text-[#000000]">
-                          {activeBranch.code}
-                        </span>
-                        <span className="font-sans text-xs text-white/80 font-semibold">
-                          {activeBranch.area}
-                        </span>
-                      </div>
-                      <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
-                        {activeBranch.name}
-                      </h3>
+                  <div className="mb-3">
+                    <div className="text-xs text-white/80 font-semibold mb-1">
+                      {activeBranch.area}
                     </div>
-
-                    <div className="w-11 h-11 rounded-full bg-[#1c1c1c] border border-white/10 flex items-center justify-center shrink-0 shadow-sm">
-                      <ShipHelm size={22} className="text-[#EFB80D]" />
-                    </div>
-                  </div>
-
-                  {/* Highlight Banner */}
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#EFB80D]/15 border border-[#EFB80D]/30 text-[#EFB80D] font-mono text-[10.5px] sm:text-xs font-bold mb-3.5">
-                    <Sparkles className="w-3.5 h-3.5 text-[#EFB80D]" />
-                    <span>{activeBranch.highlight}</span>
+                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+                      {activeBranch.name}
+                    </h3>
                   </div>
 
                   {/* Description */}
