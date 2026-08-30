@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Shield, Phone, ArrowUp } from "lucide-react";
 import BrandName from "@/components/BrandName";
 import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
@@ -19,16 +18,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-white/10">
           {/* Brand Col (5 cols) */}
           <div className="md:col-span-5">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
-              <Image
-                src="/logo.png"
-                alt="Captain Kunafa"
-                width={52}
-                height={62}
-                className="h-12 sm:h-16 w-auto object-contain shrink-0 drop-shadow-[0_4px_16px_rgba(239,184,13,0.35)]"
-              />
-              <BrandName className="text-lg sm:text-xl text-white">
-                CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
+            <div className="mb-4 sm:mb-5">
+              <BrandName className="text-xl sm:text-2xl md:text-3xl text-white">
+                KUNAFA
               </BrandName>
             </div>
             <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed max-w-sm mb-5 sm:mb-6 font-medium">
@@ -86,7 +78,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-3">
               <a
-                href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi Captain Kunafa! I'd like to order fresh kunafa.")}
+                href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi! I'd like to order fresh kunafa.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-tactile-base btn-tactile-gold inline-flex items-center gap-2 font-sans text-xs font-bold px-6 py-2.5 rounded-lg"
@@ -101,7 +93,7 @@ export default function Footer() {
         {/* Copyright & Back to Top */}
         <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 font-mono text-[10px] sm:text-xs text-white/50 text-center sm:text-left">
           <div>
-            © {new Date().getFullYear()} <BrandName className="text-white/70">CAPTAIN KUNAFA</BrandName>. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
+            © {new Date().getFullYear()} <BrandName className="text-white/70">KUNAFA</BrandName>. ALL RIGHTS RESERVED. HYDERABAD, INDIA.
           </div>
           <button
             type="button"

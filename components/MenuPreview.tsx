@@ -65,7 +65,7 @@ export default function MenuPreview() {
         {/* Quick WhatsApp Order Callout Banner */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi Captain Kunafa! I'd like to place an order.")}
+            href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi! I'd like to place an order.")}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-tactile-base btn-tactile-gold flex items-center justify-center gap-2.5 font-sans font-bold text-xs sm:text-sm px-7 py-3 rounded-lg"

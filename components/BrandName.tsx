@@ -11,7 +11,7 @@ export default function BrandName({
 }: BrandNameProps) {
   return (
     <span className={`font-brand tracking-wider ${className}`}>
-      {children || "Captain Kunafa"}
+      {children || "Kunafa"}
     </span>
   );
 }

@@ -264,7 +264,8 @@ export default function KunafaExplodeCanvas() {
     let animFrame: number;
     let isRunning = true;
     let cachedTotalScrollable = 0;
-    let lastScrollY = -1;
+    let smoothProgress = 0;
+    let targetProgress = 0;
 
     const measureLayout = () => {
       if (containerRef.current) {
@@ -281,9 +282,6 @@ export default function KunafaExplodeCanvas() {
       observer = new IntersectionObserver(
         ([entry]) => {
           isInViewRef.current = entry.isIntersecting;
-          if (entry.isIntersecting) {
-            lastScrollY = -1; // Force immediate redraw upon re-entry
-          }
         },
         { rootMargin: "50% 0px 50% 0px" }
       );
@@ -301,48 +299,52 @@ export default function KunafaExplodeCanvas() {
 
       const currentScrollY = window.scrollY;
 
-      // Only perform layout/draw updates when scroll position actually changes
-      if (currentScrollY !== lastScrollY) {
-        lastScrollY = currentScrollY;
+      if (cachedTotalScrollable <= 0) {
+        measureLayout();
+      }
 
-        if (cachedTotalScrollable <= 0) {
-          measureLayout();
+      if (cachedTotalScrollable > 0) {
+        targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
+
+        // Continuous smooth lerp for buttery, stutter-free 60-120 FPS momentum
+        const diff = targetProgress - smoothProgress;
+        if (Math.abs(diff) > 0.00005) {
+          smoothProgress += diff * 0.14;
+        } else {
+          smoothProgress = targetProgress;
         }
 
-        if (cachedTotalScrollable > 0) {
-          const p = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
-          progressRef.current = p;
+        progressRef.current = smoothProgress;
 
-          // Draw the correct frame for current device
-          const isMobile = layoutRef.current.isMobile;
-          const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-          const frameProgress = getFrameProgress(p, isMobile);
-          const targetFrame = Math.round(frameProgress * (totalFrames - 1));
+        // Draw the correct frame for current device
+        const isMobile = layoutRef.current.isMobile;
+        const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
+        const frameProgress = getFrameProgress(smoothProgress, isMobile);
+        const targetFrame = Math.round(frameProgress * (totalFrames - 1));
 
-          if (targetFrame !== lastDrawnFrameRef.current) {
-            drawFrame(targetFrame);
-          }
+        if (targetFrame !== lastDrawnFrameRef.current) {
+          drawFrame(targetFrame);
+        }
 
-          // Update text overlay opacity/transforms directly via DOM — zero React re-renders
-          for (let i = 0; i < ACTS.length; i++) {
-            const el = overlayRefs.current[i];
-            if (!el) continue;
+        // Update text overlay opacity/transforms directly via DOM — zero React re-renders
+        for (let i = 0; i < ACTS.length; i++) {
+          const el = overlayRefs.current[i];
+          if (!el) continue;
 
-            const opacity = getActOpacity(p, ACTS[i].range);
-            const translateX = getActX(p, ACTS[i].range, ACTS[i].align);
+          const opacity = getActOpacity(smoothProgress, ACTS[i].range);
+          const translateX = getActX(smoothProgress, ACTS[i].range, ACTS[i].align);
 
-            if (opacity <= 0.001) {
-              if (el.style.visibility !== "hidden") {
-                el.style.opacity = "0";
-                el.style.visibility = "hidden";
-              }
-            } else {
-              el.style.opacity = String(opacity);
-              el.style.visibility = "visible";
-              const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
-              if (desktopInner) {
-                desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
-              }
+          if (opacity <= 0.001) {
+            if (el.style.visibility !== "hidden") {
+              el.style.opacity = "0";
+              el.style.visibility = "hidden";
+            }
+          } else {
+            el.style.opacity = String(opacity);
+            el.style.visibility = "visible";
+            const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
+            if (desktopInner) {
+              desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
             }
           }
         }
@@ -364,7 +366,7 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[900vh] sm:h-[750vh] bg-[#030303]"
+      className="relative w-full h-[450vh] sm:h-[550vh] bg-[#030303]"
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">

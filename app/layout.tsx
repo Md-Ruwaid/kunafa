@@ -39,11 +39,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
+  title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
   description:
     "Hand-pressed on live copper pans with authentic Akawi cheese, cold-pressed ghee, and Aleppo pistachios. Visit our branches in Barkas, Jubilee Hills, Malakpet, Tolichowki & Aero City. Founded by Saud bin Nasar Khulagi.",
   keywords: [
-    "Captain Kunafa",
+    "Kunafa",
     "Kunafa Hyderabad",
     "Best Kunafa Barkas",
     "Kunafa Jubilee Hills",
@@ -52,13 +52,13 @@ export const metadata: Metadata = {
     "Live Kunafa Counter",
     "Akawi Cheese Kunafa",
   ],
-  authors: [{ name: "Saud bin Nasar Khulagi" }, { name: "Captain Kunafa" }],
+  authors: [{ name: "Saud bin Nasar Khulagi" }, { name: "Kunafa" }],
   openGraph: {
-    title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
+    title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
     description:
       "Handcrafted on live copper pans across our branches in Hyderabad. Fresh-pressed every single order with 48 dB acoustic crunch.",
     url: "https://captainkunafa.com",
-    siteName: "Captain Kunafa",
+    siteName: "Kunafa",
     locale: "en_IN",
     type: "website",
     images: [
@@ -66,20 +66,16 @@ export const metadata: Metadata = {
         url: "https://captainkunafa.com/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Captain Kunafa - Authentic Levantine Kunafa in Hyderabad",
+        alt: "Kunafa - Authentic Levantine Kunafa in Hyderabad",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
+    title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
     description:
       "Handcrafted on live copper pans across our branches in Hyderabad. Fresh-pressed every single order.",
     images: ["https://captainkunafa.com/og-image.jpg"],
-  },
-  icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
   },
   alternates: {
     canonical: "https://captainkunafa.com",
@@ -104,7 +100,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Restaurant",
-              name: "Captain Kunafa",
+              name: "Kunafa",
               image: "https://captainkunafa.com/og-image.jpg",
               "@id": "https://captainkunafa.com",
               url: "https://captainkunafa.com",

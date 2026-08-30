@@ -152,7 +152,7 @@ export default function CaptainsChart() {
   const activeBranch = BRANCHES[activeBranchIndex];
   const branchWhatsAppUrl = buildWhatsAppLink(
     activeBranch.phone,
-    `Hi Captain Kunafa ${activeBranch.name}! I'd like to order.`
+    `Hi! I'd like to order from ${activeBranch.name}.`
   );
 
   return (
@@ -172,7 +172,7 @@ export default function CaptainsChart() {
         {/* Branch Quick Select Tabs */}
         <div
           role="group"
-          aria-label="Select a Captain Kunafa branch"
+          aria-label="Select a branch"
           className="flex flex-wrap justify-center gap-2 sm:gap-2.5 mb-6 sm:mb-8"
         >
           {BRANCHES.map((branch, idx) => {

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import BrandName from "@/components/BrandName";
 import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
@@ -110,7 +109,7 @@ export default function Navbar() {
 
   const orderWhatsAppUrl = buildWhatsAppLink(
     BRAND_PHONE_DISPLAY,
-    "Hi Captain Kunafa! I'd like to order fresh kunafa."
+    "Hi! I'd like to order fresh kunafa."
   );
 
   return (
@@ -126,28 +125,18 @@ export default function Navbar() {
             : "bg-[#0a0a0a] border border-white/10"
         }`}
       >
-        {/* Wordmark with Official Captain Kunafa Logo */}
+        {/* Wordmark */}
         <button
           type="button"
           onClick={() => {
             setMobileOpen(false);
             scrollToWithLenis(0);
           }}
-          className="flex items-center gap-2 sm:gap-3 group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] rounded-md text-left"
+          className="flex items-center gap-2 group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] rounded-md text-left"
         >
-          <Image
-            src="/logo.png"
-            alt="Captain Kunafa Logo"
-            width={38}
-            height={46}
-            className="h-8 sm:h-10 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_2px_8px_rgba(239,184,13,0.35)]"
-            priority
-          />
-          <div className="flex flex-col">
-            <BrandName className="text-sm sm:text-base md:text-lg text-white leading-tight">
-              CAPTAIN <span className="text-[#EFB80D]">KUNAFA</span>
-            </BrandName>
-          </div>
+          <BrandName className="text-xl sm:text-2xl md:text-3xl text-white leading-tight">
+            KUNAFA
+          </BrandName>
         </button>
 
         {/* Desktop Nav */}
