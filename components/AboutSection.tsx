@@ -16,13 +16,13 @@ export default function AboutSection() {
 
         <div className="space-y-5 sm:space-y-6 font-sans text-base sm:text-lg md:text-xl text-white/90 font-normal leading-relaxed">
           <p>
-            Welcome aboard <strong className="text-white font-bold"><BrandName /></strong>, your ultimate destination for an exceptional journey through the delectable world of Kunafa in Hyderabad.
+            Welcome to <strong className="text-white font-bold"><BrandName /></strong>, Hyderabad&apos;s premier destination for authentic Middle Eastern and Levantine desserts.
           </p>
           <p className="text-white/80">
-            Nestled in the heart of Hyderabad, <BrandName /> is your haven for indulgence. Whether you’re a Kunafa enthusiast or a first-time explorer, our extensive menu has something for everyone.
+            Crafted using time-honored recipes, premium clarified ghee, and authentic mountain Akawi cheese, our menu offers a refined dessert experience for every palate.
           </p>
           <p className="font-display italic font-semibold text-xl sm:text-3xl text-[#EFB80D] pt-4">
-            &ldquo;<BrandName className="text-[#EFB80D]" /> invites you to embark on a sweet adventure like no other.&rdquo;
+            &ldquo;Authentic Middle Eastern desserts, crafted with uncompromising quality and passion.&rdquo;
           </p>
         </div>
       </div>

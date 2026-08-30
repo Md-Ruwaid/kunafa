@@ -463,7 +463,7 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute bottom-5 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
           <div className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-widest text-[#EFB80D] bg-[#111111]/90 px-3.5 py-1.5 rounded-full border border-[#EFB80D]/30 shadow-lg backdrop-blur-md animate-bounce">
             <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
-            <span>SWIPE TO SAIL ↓</span>
+            <span>SWIPE TO EXPLORE ↓</span>
           </div>
         </div>
       </div>

@@ -32,10 +32,10 @@ export default function Footer() {
               </BrandName>
             </div>
             <p className="font-sans text-xs sm:text-sm text-white/80 leading-relaxed max-w-sm mb-5 sm:mb-6 font-medium">
-              Hyderabad's premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper hearths across our city branches.
+              Hyderabad&apos;s premier authentic Levantine dessert brand. Founded in 2021 by Saud bin Nasar Khulagi. Hand-pressed on live copper pans across our city branches.
             </p>
             <div className="font-mono text-[11px] sm:text-xs text-white font-bold space-y-1">
-              <div>CENTRAL HEARTH &amp; HQ: <span className="text-[#EFB80D]">BARKAS, HYDERABAD · 500005</span></div>
+              <div>CENTRAL KITCHEN &amp; HQ: <span className="text-[#EFB80D]">BARKAS, HYDERABAD · 500005</span></div>
               <div>HOTLINE: <span className="text-[#EFB80D]">+91 90000 00001</span></div>
             </div>
           </div>
@@ -43,14 +43,14 @@ export default function Footer() {
           {/* Quick Nav (3 cols) */}
           <div className="md:col-span-3">
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-white font-bold mb-3 sm:mb-4">
-              VOYAGE NAVIGATION
+              QUICK LINKS
             </div>
             <ul className="space-y-2 font-sans text-xs text-white/80 font-medium">
               {[
-                { label: "The Scrollytelling Story", href: "#story" },
-                { label: "Saud's Levantine Chronicle", href: "#about" },
-                { label: "Hyderabad Branches", href: "#locations" },
-                { label: "Copper Hearth Platters", href: "#menu" },
+                { label: "Home", href: "#story" },
+                { label: "About Us", href: "#about" },
+                { label: "Our Menu", href: "#menu" },
+                { label: "Our Locations", href: "#locations" },
               ].map((link, idx) => (
                 <li key={idx}>
                   <a
@@ -67,7 +67,7 @@ export default function Footer() {
           {/* Quality Standards & Inquiries (4 cols) */}
           <div className="md:col-span-4">
             <div className="font-mono text-[11px] sm:text-xs uppercase tracking-wider text-white font-bold mb-3 sm:mb-4">
-              THE CAPTAIN'S GUARANTEE
+              OUR QUALITY PROMISE
             </div>
             <div className="space-y-2.5 sm:space-y-3 font-sans text-xs text-white/85 mb-5 sm:mb-6 font-medium">
               <div className="flex items-start gap-2 sm:gap-2.5">
@@ -92,7 +92,7 @@ export default function Footer() {
                 className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 hover:scale-105 shadow-md"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>Direct WhatsApp Desk</span>
+                <span>Order on WhatsApp</span>
               </a>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function Footer() {
             onClick={scrollToTop}
             className="flex items-center gap-1 text-[#EFB80D] hover:text-white transition-colors cursor-pointer font-bold"
           >
-            <span>Back to Top of Voyage</span>
+            <span>Back to Top</span>
             <ArrowUp className="w-3.5 h-3.5" />
           </button>
         </div>

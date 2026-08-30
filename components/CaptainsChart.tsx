@@ -22,15 +22,15 @@ import type { BranchLocation } from "@/components/CaptainsMap";
 const BRANCHES: BranchLocation[] = [
   {
     id: "barkas",
-    name: "Barkas Flagship",
-    area: "Old City — Central Hearth",
+    name: "Barkas",
+    area: "Old City, Hyderabad",
     code: "HYD-01",
     address: "Main Road, Opp. Al-Jubail Hotel, Barkas, Hyderabad",
     phone: "+91 90000 00001",
     hours: "01:00 PM – 02:00 AM",
-    highlight: "The 2021 Founding Hearth",
+    highlight: "Original Location (Est. 2021)",
     description:
-      "Where Captain Kunafa began in 2021. Live open woodfire-style copper hearths roasting our signature 18-hr mountain Akawi recipe fresh for every voyager.",
+      "The founding location of Captain Kunafa. Freshly prepared on live copper pans with authentic mountain Akawi cheese and clarified ghee.",
     lat: 17.3115,
     lng: 78.4871,
     mapUrl: "https://maps.app.goo.gl/y5wwh2sxghvovp5n6",
@@ -38,15 +38,15 @@ const BRANCHES: BranchLocation[] = [
   },
   {
     id: "malakpet",
-    name: "Malakpet Haven",
-    area: "Moosarambagh Corridor",
+    name: "Malakpet",
+    area: "Main Road, Malakpet",
     code: "HYD-02",
     address: "Near Super Bazar, Main Road, Malakpet, Hyderabad",
     phone: "+91 90000 00002",
     hours: "02:00 PM – 01:30 AM",
-    highlight: "High-Volume Night Counter",
+    highlight: "Dine-in & Takeaway",
     description:
-      "A fast-paced evening dock serving steaming hot take-away platters, famous for double-pistachio loaded crispy crowns and instant rose-attar syrups.",
+      "Serving freshly prepared Kunafa with premium Aleppo pistachios, artisanal toppings, and authentic rose syrup.",
     lat: 17.3753,
     lng: 78.4983,
     mapUrl: "https://maps.app.goo.gl/MM6KRGcwqYmFpFAY7",
@@ -54,15 +54,15 @@ const BRANCHES: BranchLocation[] = [
   },
   {
     id: "tolichowki",
-    name: "Tolichowki Port",
-    area: "Paramount Colony — Qutb Shahi Belt",
+    name: "Tolichowki",
+    area: "Paramount Colony, Tolichowki",
     code: "HYD-03",
     address: "Paramount Colony Gate, Tolichowki, Hyderabad",
     phone: "+91 90000 00003",
     hours: "01:00 PM – 02:00 AM",
-    highlight: "Late-Night Gathering Spot",
+    highlight: "Late Night Dine-in",
     description:
-      "A bustling late-night dessert haven with multiple copper burners firing simultaneously. Renowned for Dark Choco Lava Kunafa and fresh buffalo ashta cream.",
+      "A popular late-night destination featuring live preparation counters, chocolate infusions, and traditional cream varieties.",
     lat: 17.4014,
     lng: 78.4111,
     mapUrl: "https://maps.app.goo.gl/Kd7TQcDZaQmBaMXt5",
@@ -70,15 +70,15 @@ const BRANCHES: BranchLocation[] = [
   },
   {
     id: "jubileehills",
-    name: "Jubilee Hills Branch",
-    area: "HITEC Corridor — Road No. 36",
+    name: "Jubilee Hills",
+    area: "Road No. 36, Jubilee Hills",
     code: "HYD-04",
     address: "Road No. 36, Near Peddamma Temple, Jubilee Hills, Hyderabad",
     phone: "+91 90000 00004",
     hours: "12:00 PM – 01:30 AM",
-    highlight: "Artisanal Tasting Lounge",
+    highlight: "Premium Dine-in Lounge",
     description:
-      "The premier destination tasting room. Premium table service, full dessert menu including Lotus Biscoff Royale and celebration sharing boxes.",
+      "Our flagship lounge featuring full table service, seasonal specialties, and sharing assortments.",
     lat: 17.4325,
     lng: 78.4071,
     mapUrl: "https://maps.app.goo.gl/oYpmAV1PJbHGApUB6",
@@ -92,7 +92,7 @@ const CaptainsMap = dynamic(() => import("@/components/CaptainsMap"), {
   loading: () => (
     <div className="w-full h-full bg-[#0a0a0a] flex flex-col items-center justify-center gap-3">
       <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
-      <span className="font-mono text-xs text-white/60">Loading Nautical Chart...</span>
+      <span className="font-mono text-xs text-white/60">Loading Map...</span>
     </div>
   ),
 });
@@ -137,7 +137,7 @@ export default function CaptainsChart() {
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-2 sm:mb-3">
-            The Captain&apos;s <SwashAccent color="gold">Chart</SwashAccent>
+            Our <SwashAccent color="gold">Locations</SwashAccent>
           </h2>
         </div>
 
@@ -164,8 +164,7 @@ export default function CaptainsChart() {
                       : "bg-[#141414] text-white/75 border-white/10 hover:border-[#EFB80D]/50 hover:text-white font-semibold"
                   }`}
               >
-                <span className="hidden sm:inline">{branch.code} · {branch.name}</span>
-                <span className="sm:hidden">{branch.code} · {branch.name.split(" ")[0]}</span>
+                <span>{branch.code} · {branch.name}</span>
               </button>
             );
           })}
@@ -183,7 +182,7 @@ export default function CaptainsChart() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* View Mode Toggle: Google Maps vs Route Chart */}
+                {/* View Mode Toggle */}
                 <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-lg border border-white/10 text-[10px] sm:text-xs font-mono">
                   <button
                     type="button"
@@ -207,7 +206,7 @@ export default function CaptainsChart() {
                     }`}
                   >
                     <Layers className="w-3 h-3" />
-                    <span className="hidden xs:inline">City Route</span>
+                    <span className="hidden xs:inline">Interactive Map</span>
                   </button>
                 </div>
 

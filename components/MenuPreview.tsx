@@ -30,7 +30,7 @@ export default function MenuPreview() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight mb-3 sm:mb-4">
-            Handcrafted with <SwashAccent color="gold">Uncompromising Precision</SwashAccent>
+            Our Signature <SwashAccent color="gold">Menu</SwashAccent>
           </h2>
         </div>
 
@@ -60,7 +60,7 @@ export default function MenuPreview() {
             className="flex items-center justify-center gap-2.5 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-xs sm:text-sm px-8 py-4 rounded-full transition-all cursor-pointer hover:scale-105 shadow-lg"
           >
             <MessageCircle className="w-4 h-4 text-[#000000]" />
-            <span>Order Fresh Platter on WhatsApp</span>
+            <span>Order on WhatsApp</span>
           </a>
         </div>
       </div>
