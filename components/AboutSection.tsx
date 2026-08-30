@@ -7,7 +7,7 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative z-20 bg-[#050505] text-[#FFF8EC] py-16 sm:py-24 px-4 sm:px-6 lg:px-8"
+      className="relative z-30 -mt-28 sm:-mt-44 lg:-mt-56 pt-20 sm:pt-28 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 bg-[#050505] text-[#FFF8EC] rounded-t-[36px] sm:rounded-t-[56px] border-t border-[#EFB80D]/30 shadow-[0_-30px_70px_rgba(0,0,0,0.95)]"
     >
       <div className="max-w-3xl mx-auto text-center space-y-6">
         <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
@@ -29,6 +29,7 @@ export default function AboutSection() {
     </section>
   );
 }
+
 
 
 
