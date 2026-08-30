@@ -127,13 +127,16 @@ export default function KunafaExplodeCanvas() {
     ctx.fillRect(0, 0, width, height);
 
     // Subtle zoom-in (1.14x) so the kunafa is prominent and delicious while preserving full explosion visibility
+    const isMobile = width < 768;
     const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
-    const scale = baseScale * 1.14;
+    const scale = isMobile ? baseScale * 1.05 : baseScale * 1.15;
 
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
     const offsetX = (width - drawWidth) / 2;
-    const offsetY = (height - drawHeight) / 2;
+    const offsetY = isMobile
+      ? Math.max(0, (height - drawHeight) / 2 + 55)
+      : (height - drawHeight) / 2;
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
@@ -287,7 +290,7 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything - Contained with subtle zoom */}
+        {/* Canvas behind everything */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -297,8 +300,8 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
-        {/* Text Overlay Layer — z-20, sits IN FRONT of canvas */}
-        <div className="absolute inset-0 z-20 pointer-events-none flex items-center">
+        {/* Text Overlay Layer — z-20, positioned without blocking the central visual */}
+        <div className="absolute inset-0 z-20 pointer-events-none">
           {ACTS.map((act, idx) => {
             const opacity = getActOpacity(progress, act.range);
             const translateX = getActX(progress, act.range, act.align);
@@ -308,42 +311,57 @@ export default function KunafaExplodeCanvas() {
             return (
               <div
                 key={idx}
-                className={`absolute inset-y-0 flex items-center px-4 sm:px-8 md:px-16 ${
-                  act.align === "left"
-                    ? "left-0 w-full md:w-[50%] justify-center md:justify-start"
-                    : act.align === "right"
-                    ? "right-0 w-full md:w-[50%] justify-center md:justify-end"
-                    : "inset-x-0 justify-center"
-                }`}
+                className="absolute inset-0 pointer-events-none"
                 style={{
                   opacity,
-                  transform: `translate3d(${translateX}px, 0, 0)`,
                   willChange: "opacity, transform",
                 }}
               >
-                {/* Mobile-optimized typography container */}
+                {/* ── MOBILE VIEW: Positioned strictly ABOVE the video at the top ── */}
+                <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
+                  <div className="max-w-md mx-auto py-2">
+                    <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
+                      {act.headline}
+                    </h2>
+                    <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
+                      {act.body}
+                    </p>
+                  </div>
+                </div>
+
+                {/* ── DESKTOP VIEW: Placed at top or flanked left/right leaving central video clear ── */}
                 <div
-                  className={`w-full max-w-lg ${
-                    act.align === "center"
-                      ? "text-center mx-auto"
-                      : "text-center md:text-left mx-auto md:mx-0 p-4 md:p-0"
+                  className={`hidden md:flex absolute inset-0 items-center ${
+                    act.align === "left"
+                      ? "justify-start pl-12 lg:pl-20 xl:pl-28"
+                      : act.align === "right"
+                      ? "justify-end pr-12 lg:pr-20 xl:pr-28"
+                      : "items-start pt-24 lg:pt-28 justify-center text-center"
                   }`}
+                  style={{
+                    transform: `translate3d(${translateX}px, 0, 0)`,
+                  }}
                 >
-                  {/* Headline */}
-                  <h2
-                    className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 sm:mb-4 ${
+                  <div
+                    className={`max-w-md lg:max-w-lg ${
                       act.align === "center"
-                        ? "text-3xl sm:text-5xl md:text-7xl"
-                        : "text-2xl sm:text-4xl md:text-5xl"
+                        ? "text-center mx-auto"
+                        : "text-left"
                     }`}
                   >
-                    {act.headline}
-                  </h2>
-
-                  {/* Body copy */}
-                  <p className="font-sans text-xs sm:text-sm md:text-base text-white/85 leading-relaxed max-w-lg mx-auto md:mx-0">
-                    {act.body}
-                  </p>
+                    <h2
+                      className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
+                        act.align === "center"
+                          ? "text-4xl lg:text-6xl"
+                          : "text-3xl lg:text-5xl"
+                      }`}
+                    >
+                      {act.headline}
+                    </h2>
+                    <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
+                      {act.body}
+                    </p>
+                  </div>
                 </div>
               </div>
             );
