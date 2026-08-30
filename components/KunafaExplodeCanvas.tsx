@@ -260,28 +260,21 @@ export default function KunafaExplodeCanvas() {
       ref={containerRef}
       className="relative w-full h-[700vh] sm:h-[750vh] bg-[#030303]"
     >
-      {/* Preloader / Initial Loading indicator — Clean, Textless Luxury Loader */}
+      {/* Preloader / Initial Loading indicator — Single Elegant Loading Line */}
       <AnimatePresence>
         {!isLoaded && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303]"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#030303]"
           >
-            <div className="relative flex flex-col items-center">
-              {/* Minimalist Captain Gold Spinner */}
-              <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center bg-[#0c0c0c] shadow-2xl mb-5">
-                <div className="w-7 h-7 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
-              </div>
-
-              {/* Ultra-slim progress indicator without text */}
-              <div className="w-36 h-0.5 bg-white/10 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_8px_#EFB80D]"
-                  style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
-                />
-              </div>
+            {/* Single Loading Line */}
+            <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden shadow-inner">
+              <div
+                className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_12px_#EFB80D]"
+                style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
+              />
             </div>
           </motion.div>
         )}
