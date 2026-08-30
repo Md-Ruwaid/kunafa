@@ -4,9 +4,15 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
 
-const TOTAL_FRAMES = 100;
-const FRAME_WIDTH = 1280;
-const FRAME_HEIGHT = 720;
+// Desktop configuration (16:9 landscape)
+const DESKTOP_FRAMES = 100;
+const DESKTOP_WIDTH = 1280;
+const DESKTOP_HEIGHT = 720;
+
+// Mobile configuration (9:16 portrait)
+const MOBILE_FRAMES = 130;
+const MOBILE_WIDTH = 720;
+const MOBILE_HEIGHT = 1280;
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
@@ -85,11 +91,13 @@ function getActX(
 export default function KunafaExplodeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const desktopImagesRef = useRef<HTMLImageElement[]>([]);
+  const mobileImagesRef = useRef<HTMLImageElement[]>([]);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [loadedCount, setLoadedCount] = useState(0);
+  const [totalTargetFrames, setTotalTargetFrames] = useState(DESKTOP_FRAMES);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // All scroll state lives in refs — zero React re-renders during scroll
@@ -97,7 +105,61 @@ export default function KunafaExplodeCanvas() {
   const lastDrawnFrameRef = useRef(-1);
   const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
-  const lastDrawnPRef = useRef(-1);
+  // High-performance frame draw supporting responsive portrait mobile (130 frames) & landscape desktop (100 frames)
+  const drawFrame = useCallback((frameIndex: number, currentProgress: number = 0) => {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+
+    const { width, height, dpr, isMobile } = layoutRef.current;
+    if (width === 0 || height === 0) return;
+
+    const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
+    const frameWidth = isMobile ? MOBILE_WIDTH : DESKTOP_WIDTH;
+    const frameHeight = isMobile ? MOBILE_HEIGHT : DESKTOP_HEIGHT;
+    const images = isMobile ? mobileImagesRef.current : desktopImagesRef.current;
+
+    const clampedIndex = Math.max(0, Math.min(totalFrames - 1, frameIndex));
+    let targetImg = images[clampedIndex];
+
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
+      if (lastDrawnFrameRef.current >= 0 && images[lastDrawnFrameRef.current]?.complete) {
+        targetImg = images[lastDrawnFrameRef.current];
+      }
+    }
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
+
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = "#030303";
+    ctx.fillRect(0, 0, width, height);
+
+    const baseScale = Math.min(width / frameWidth, height / frameHeight);
+
+    // Responsive scaling:
+    // Mobile (portrait 720x1280): fits phone aspect ratio naturally with subtle 1.05x framing
+    // Desktop (landscape 1280x720): crisp 1.15x cinematic framing
+    const scaleMultiplier = isMobile ? 1.05 : 1.15;
+    const scale = baseScale * scaleMultiplier;
+
+    const drawWidth = frameWidth * scale;
+    const drawHeight = frameHeight * scale;
+    const offsetX = (width - drawWidth) / 2;
+    const offsetY = isMobile
+      ? Math.max(0, (height - drawHeight) / 2 + 40)
+      : (height - drawHeight) / 2;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    try {
+      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
+      lastDrawnFrameRef.current = clampedIndex;
+    } catch {
+      // Safe fallback
+    }
+
+    ctx.restore();
+  }, []);
 
   // Cache canvas layout dimensions via ResizeObserver — runs only on resize
   useEffect(() => {
@@ -116,15 +178,16 @@ export default function KunafaExplodeCanvas() {
         canvas.height = targetH;
       }
 
-      layoutRef.current = { width, height, dpr, isMobile: width < 768 };
+      const isMobile = width < 768;
+      layoutRef.current = { width, height, dpr, isMobile };
 
       // Re-acquire context after resize
       ctxRef.current = canvas.getContext("2d", { alpha: false });
 
       // Redraw current frame at new size
-      if (lastDrawnFrameRef.current >= 0) {
-        drawFrame(lastDrawnFrameRef.current, progressRef.current);
-      }
+      const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
+      const targetFrame = Math.round(progressRef.current * (totalFrames - 1));
+      drawFrame(targetFrame, progressRef.current);
     };
 
     const ro = new ResizeObserver(updateLayout);
@@ -132,138 +195,102 @@ export default function KunafaExplodeCanvas() {
     updateLayout();
 
     return () => ro.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [drawFrame]);
 
-  // High-performance dynamic zoom frame draw — close-up on initial view, smoothly zooms out on scroll
-  const drawFrame = useCallback((frameIndex: number, currentProgress: number = 0) => {
-    const ctx = ctxRef.current;
-    if (!ctx) return;
-
-    const clampedIndex = Math.max(0, Math.min(TOTAL_FRAMES - 1, frameIndex));
-    let targetImg = imagesRef.current[clampedIndex];
-
-    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
-      if (lastDrawnFrameRef.current >= 0) {
-        targetImg = imagesRef.current[lastDrawnFrameRef.current];
-      }
-    }
-    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
-
-    const { width, height, dpr, isMobile } = layoutRef.current;
-    if (width === 0 || height === 0) return;
-
-    ctx.save();
-    ctx.scale(dpr, dpr);
-    ctx.fillStyle = "#030303";
-    ctx.fillRect(0, 0, width, height);
-
-    const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
-
-    // ── Dynamic Zoom Curve ──
-    // On Mobile: Starts dramatically zoomed in (1.75x) on initial view to fill the screen with mouth-watering detail
-    // and smoothly zooms out to 1.08x between p=0.0 and p=0.22 as the explosion begins.
-    // On Desktop: Starts at 1.30x cinematic close-up and eases out to 1.15x.
-    let zoomFactor = 1;
-    if (isMobile) {
-      const zoomProgress = Math.min(1, Math.max(0, currentProgress / 0.22));
-      const ease = 0.5 * (1 + Math.cos(Math.PI * zoomProgress)); // 1.0 at start -> 0.0 at end of zoom
-      zoomFactor = 1.08 + (1.75 - 1.08) * ease;
-    } else {
-      const zoomProgress = Math.min(1, Math.max(0, currentProgress / 0.20));
-      const ease = 0.5 * (1 + Math.cos(Math.PI * zoomProgress));
-      zoomFactor = 1.15 + (1.30 - 1.15) * ease;
-    }
-
-    const scale = baseScale * zoomFactor;
-    const drawWidth = FRAME_WIDTH * scale;
-    const drawHeight = FRAME_HEIGHT * scale;
-    const offsetX = (width - drawWidth) / 2;
-
-    // Dynamic vertical framing on mobile
-    let offsetY = (height - drawHeight) / 2;
-    if (isMobile) {
-      const posProgress = Math.min(1, Math.max(0, currentProgress / 0.22));
-      offsetY = (height - drawHeight) / 2 + 25 + posProgress * 30;
-    }
-
-    // Ambient warm golden hearth glow behind the kunafa at the beginning
-    if (currentProgress < 0.25) {
-      const glowOpacity = Math.max(0, 1 - currentProgress / 0.25) * 0.35;
-      const glowRadius = Math.min(width, height) * (isMobile ? 0.7 : 0.55);
-      const gradient = ctx.createRadialGradient(
-        width / 2,
-        offsetY + drawHeight / 2,
-        15,
-        width / 2,
-        offsetY + drawHeight / 2,
-        glowRadius
-      );
-      gradient.addColorStop(0, `rgba(239, 184, 13, ${glowOpacity})`);
-      gradient.addColorStop(0.5, `rgba(224, 83, 68, ${glowOpacity * 0.25})`);
-      gradient.addColorStop(1, "rgba(3, 3, 3, 0)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-
-    try {
-      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
-      lastDrawnFrameRef.current = clampedIndex;
-      lastDrawnPRef.current = currentProgress;
-    } catch {
-      // Safe fallback
-    }
-
-    ctx.restore();
-  }, []);
-
-  // Preload all frames
+  // Preload frame sequences (mobile 130 frames, desktop 100 frames)
   useEffect(() => {
     let mounted = true;
-    const loadedImages: HTMLImageElement[] = new Array(TOTAL_FRAMES);
-    let count = 0;
+    const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
+    const targetCount = isMobileInitial ? MOBILE_FRAMES : DESKTOP_FRAMES;
+    setTotalTargetFrames(targetCount);
+
     const pad = (n: number) => String(n).padStart(3, "0");
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    // Preload Mobile Frames (130 frames, 720x1280 portrait)
+    const mobileLoaded: HTMLImageElement[] = new Array(MOBILE_FRAMES);
+    let mobileCount = 0;
+
+    for (let i = 1; i <= MOBILE_FRAMES; i++) {
+      const img = new Image();
+      const idx = i - 1;
+      img.src = `/mobile-view-kunafa/ezgif-frame-${pad(i)}.png`;
+
+      img.onload = () => {
+        if (!mounted) return;
+        mobileLoaded[idx] = img;
+        mobileCount++;
+        if (isMobileInitial) {
+          setLoadedCount(mobileCount);
+          if (i === 1) {
+            mobileImagesRef.current[0] = img;
+            drawFrame(0, 0);
+          }
+          if (mobileCount >= MOBILE_FRAMES) {
+            mobileImagesRef.current = mobileLoaded;
+            setIsLoaded(true);
+            drawFrame(0, 0);
+          }
+        }
+      };
+
+      img.onerror = () => {
+        if (!mounted) return;
+        mobileCount++;
+        if (isMobileInitial && mobileCount >= MOBILE_FRAMES) {
+          mobileImagesRef.current = mobileLoaded;
+          setIsLoaded(true);
+          drawFrame(0, 0);
+        }
+      };
+
+      mobileLoaded[idx] = img;
+    }
+    mobileImagesRef.current = mobileLoaded;
+
+    // Preload Desktop Frames (100 frames, 1280x720 landscape)
+    const desktopLoaded: HTMLImageElement[] = new Array(DESKTOP_FRAMES);
+    let desktopCount = 0;
+
+    for (let i = 1; i <= DESKTOP_FRAMES; i++) {
       const img = new Image();
       const idx = i - 1;
       img.src = `/Kunafa-animations-v2/ezgif-frame-${pad(i)}.png`;
 
       img.onload = () => {
         if (!mounted) return;
-        loadedImages[idx] = img;
-        count++;
-        setLoadedCount(count);
-        if (i === 1) {
-          imagesRef.current[0] = img;
-          drawFrame(0, 0);
-        }
-        if (count >= TOTAL_FRAMES) {
-          imagesRef.current = loadedImages;
-          setIsLoaded(true);
-          drawFrame(0, 0);
+        desktopLoaded[idx] = img;
+        desktopCount++;
+        if (!isMobileInitial) {
+          setLoadedCount(desktopCount);
+          if (i === 1) {
+            desktopImagesRef.current[0] = img;
+            drawFrame(0, 0);
+          }
+          if (desktopCount >= DESKTOP_FRAMES) {
+            desktopImagesRef.current = desktopLoaded;
+            setIsLoaded(true);
+            drawFrame(0, 0);
+          }
         }
       };
 
       img.onerror = () => {
         if (!mounted) return;
-        count++;
-        setLoadedCount(count);
-        if (count >= TOTAL_FRAMES) {
-          imagesRef.current = loadedImages;
+        desktopCount++;
+        if (!isMobileInitial && desktopCount >= DESKTOP_FRAMES) {
+          desktopImagesRef.current = desktopLoaded;
           setIsLoaded(true);
           drawFrame(0, 0);
         }
       };
 
-      loadedImages[idx] = img;
+      desktopLoaded[idx] = img;
     }
+    desktopImagesRef.current = desktopLoaded;
 
-    imagesRef.current = loadedImages;
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [drawFrame]);
 
   // Single RAF loop — reads Lenis-smoothed scroll directly, updates canvas + text overlays via DOM
@@ -282,11 +309,12 @@ export default function KunafaExplodeCanvas() {
           const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
           progressRef.current = p;
 
-          // Draw the correct frame & update dynamic zoom during scroll
-          const targetFrame = Math.round(p * (TOTAL_FRAMES - 1));
-          const shouldRedrawZoom = p < 0.25 && Math.abs(p - lastDrawnPRef.current) > 0.001;
+          // Draw the correct frame for current device
+          const isMobile = layoutRef.current.isMobile;
+          const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
+          const targetFrame = Math.round(p * (totalFrames - 1));
 
-          if (targetFrame !== lastDrawnFrameRef.current || shouldRedrawZoom) {
+          if (targetFrame !== lastDrawnFrameRef.current) {
             drawFrame(targetFrame, p);
           }
 
@@ -304,7 +332,6 @@ export default function KunafaExplodeCanvas() {
             } else {
               el.style.opacity = String(opacity);
               el.style.visibility = "visible";
-              // Apply translateX to the desktop inner container
               const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
               if (desktopInner) {
                 desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
@@ -342,7 +369,7 @@ export default function KunafaExplodeCanvas() {
             <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden shadow-inner">
               <div
                 className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_12px_#EFB80D]"
-                style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
+                style={{ width: `${(loadedCount / totalTargetFrames) * 100}%` }}
               />
             </div>
           </motion.div>
@@ -370,7 +397,7 @@ export default function KunafaExplodeCanvas() {
               className="absolute inset-0 pointer-events-none"
               style={{ opacity: 0, visibility: "hidden", willChange: "opacity" }}
             >
-              {/* Mobile */}
+              {/* Mobile Typography — Placed above the canvas visual */}
               <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
                 <div className="max-w-md mx-auto py-2">
                   <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
@@ -382,7 +409,7 @@ export default function KunafaExplodeCanvas() {
                 </div>
               </div>
 
-              {/* Desktop */}
+              {/* Desktop Typography — Positioned at top or flanked left/right */}
               <div
                 data-desktop
                 className={`hidden md:flex absolute inset-0 items-center ${
