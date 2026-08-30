@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useRef, useCallback } from "react";
 import SwashAccent from "@/components/SwashAccent";
 
 // Frame Sequence Config
@@ -108,14 +107,6 @@ export default function KunafaExplodeCanvas() {
   const hasPreloadedDesktopRef = useRef(false);
   const isInViewRef = useRef(true);
 
-  const [loadedCount, setLoadedCount] = useState(0);
-  const [totalTargetFrames] = useState<number>(() =>
-    typeof window !== "undefined" && window.innerWidth < 768
-      ? MOBILE_FRAMES
-      : DESKTOP_FRAMES
-  );
-  const [isLoaded, setIsLoaded] = useState(false);
-
   // All scroll state lives in refs — zero React re-renders during scroll
   const progressRef = useRef(0);
   const lastDrawnFrameRef = useRef(-1);
@@ -200,8 +191,6 @@ export default function KunafaExplodeCanvas() {
       const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const folder = isMob ? "/mobile-view-kunafa" : "/Kunafa-animations-v2";
       const loadedArr: HTMLImageElement[] = new Array(count);
-      let loadedCounter = 0;
-      const UNLOCK_THRESHOLD = 3;
 
       for (let i = 1; i <= count; i++) {
         const img = new Image();
@@ -210,23 +199,9 @@ export default function KunafaExplodeCanvas() {
         loadedArr[idx] = img;
 
         img.onload = () => {
-          loadedCounter++;
-          setLoadedCount((prev) => Math.max(prev, loadedCounter));
           if (i === 1) {
             if (isMob) mobileImagesRef.current[0] = img;
             else desktopImagesRef.current[0] = img;
-            drawFrame(0);
-          }
-          if (loadedCounter >= UNLOCK_THRESHOLD) {
-            setIsLoaded(true);
-            drawFrame(0);
-          }
-        };
-
-        img.onerror = () => {
-          loadedCounter++;
-          if (loadedCounter >= UNLOCK_THRESHOLD) {
-            setIsLoaded(true);
             drawFrame(0);
           }
         };
@@ -279,27 +254,11 @@ export default function KunafaExplodeCanvas() {
     return () => ro.disconnect();
   }, [drawFrame, preloadFrameSet]);
 
-  // Initial preload of active viewport frame sequence with safety timer
+  // Initial preload of active viewport frame sequence
   useEffect(() => {
-    let mounted = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
-
-    // Preload only the initial viewport frame sequence
     preloadFrameSet(isMobileInitial ? "mobile" : "desktop");
-
-    // Maximum wait of 250ms to ensure near-zero loading screen delay
-    const safetyTimer = setTimeout(() => {
-      if (mounted) {
-        setIsLoaded(true);
-        drawFrame(0);
-      }
-    }, 250);
-
-    return () => {
-      mounted = false;
-      clearTimeout(safetyTimer);
-    };
-  }, [drawFrame, preloadFrameSet]);
+  }, [preloadFrameSet]);
 
   // Single high-performance RAF loop — paused when offscreen via IntersectionObserver
   useEffect(() => {
@@ -408,25 +367,6 @@ export default function KunafaExplodeCanvas() {
       ref={containerRef}
       className="relative w-full h-[900vh] sm:h-[750vh] bg-[#030303]"
     >
-      {/* Preloader — Single Elegant Loading Line */}
-      <AnimatePresence>
-        {!isLoaded && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#030303]"
-          >
-            <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden shadow-inner">
-              <div
-                className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_12px_#EFB80D]"
-                style={{ width: `${(loadedCount / totalTargetFrames) * 100}%` }}
-              />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
         {/* Canvas */}

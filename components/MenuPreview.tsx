@@ -1,10 +1,20 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { MessageCircle } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
-import CircularGallery, { GalleryItem } from "@/components/CircularGallery";
+import type { GalleryItem } from "@/components/CircularGallery";
 import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
+
+const CircularGallery = dynamic(() => import("@/components/CircularGallery"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-[#0c0c0c]">
+      <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+    </div>
+  ),
+});
 
 const GALLERY_ITEMS: GalleryItem[] = [
   {
@@ -68,4 +78,3 @@ export default function MenuPreview() {
     </section>
   );
 }
-
