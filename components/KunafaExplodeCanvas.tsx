@@ -17,7 +17,7 @@ const MOBILE_HEIGHT = 1280;
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
-    range: [0, 0.20] as [number, number],
+    range: [0, 0.23] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -27,7 +27,7 @@ const ACTS = [
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
-    range: [0.22, 0.44] as [number, number],
+    range: [0.25, 0.46] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -37,7 +37,7 @@ const ACTS = [
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
   {
-    range: [0.47, 0.68] as [number, number],
+    range: [0.49, 0.70] as [number, number],
     align: "right" as const,
     headline: (
       <>
@@ -47,7 +47,7 @@ const ACTS = [
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
   {
-    range: [0.72, 0.88] as [number, number],
+    range: [0.73, 0.89] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -355,7 +355,7 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[700vh] sm:h-[750vh] bg-[#030303]"
+      className="relative w-full h-[900vh] sm:h-[750vh] bg-[#030303]"
     >
       {/* Preloader — Single Elegant Loading Line */}
       <AnimatePresence>
