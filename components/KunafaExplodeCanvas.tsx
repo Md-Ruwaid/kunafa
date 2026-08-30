@@ -188,12 +188,13 @@ export default function KunafaExplodeCanvas() {
 
       const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const folder = isMob ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
+      const ext = isMob ? "webp" : "png";
       const loadedArr: HTMLImageElement[] = new Array(count);
 
       for (let i = 1; i <= count; i++) {
         const img = new Image();
         const idx = i - 1;
-        img.src = `${folder}/ezgif-frame-${pad(i)}.png`;
+        img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
         loadedArr[idx] = img;
 
         img.onload = () => {

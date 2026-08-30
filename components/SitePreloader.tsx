@@ -32,10 +32,11 @@ export default function SitePreloader({ onComplete }: SitePreloaderProps) {
 
     // Build list of assets to preload: critical images + first 15 frames of hero
     const folder = isMobile ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
+    const ext = isMobile ? "webp" : "png";
     const pad = (n: number) => String(n).padStart(3, "0");
     const frameUrls: string[] = [];
     for (let i = 1; i <= 15; i++) {
-      frameUrls.push(`${folder}/ezgif-frame-${pad(i)}.png`);
+      frameUrls.push(`${folder}/ezgif-frame-${pad(i)}.${ext}`);
     }
 
     const allUrls = [...CRITICAL_IMAGES, ...frameUrls];
