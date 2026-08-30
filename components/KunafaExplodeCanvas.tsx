@@ -159,7 +159,7 @@ export default function KunafaExplodeCanvas() {
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
       const idx = i - 1;
-      img.src = `/kunafa-frames/ezgif-frame-${pad(i)}.webp`;
+      img.src = `/Kunafa-animations-v2/ezgif-frame-${pad(i)}.png`;
 
       img.onload = () => {
         if (!mounted) return;
