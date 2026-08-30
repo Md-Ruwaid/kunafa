@@ -8,7 +8,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 50;
+const MOBILE_FRAMES = 130;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -17,15 +17,33 @@ function pad(n: number): string {
 }
 
 // Mobile non-linear frame distribution curve:
-// Gives plenty of slow, smooth scroll time to the first two phrases / initial levitation
+// Stage 1 (0 -> 0.32 scroll): Ultra-slow, steady initial levitation (frames 0 to 10) for Phrase 1
+// Stage 2 (0.32 -> 0.60 scroll): Gentle separation (frames 10 to 35) for Phrase 2
+// Stage 3 (0.60 -> 0.82 scroll): Molten cheese heart explosion (frames 35 to 90) for Phrase 3
+// Stage 4 (0.82 -> 1.00 scroll): Smooth crisp reassembly (frames 90 to 130) for Phrase 4
 function getFrameProgress(progress: number, isMobile: boolean): number {
-  return isMobile ? Math.pow(progress, 1.7) : progress;
+  if (!isMobile) return progress;
+
+  if (progress <= 0.32) {
+    const t = progress / 0.32;
+    return Math.pow(t, 2.0) * 0.08;
+  }
+  if (progress <= 0.60) {
+    const t = (progress - 0.32) / 0.28;
+    return 0.08 + Math.pow(t, 1.3) * 0.20;
+  }
+  if (progress <= 0.82) {
+    const t = (progress - 0.60) / 0.22;
+    return 0.28 + t * 0.42;
+  }
+  const t = (progress - 0.82) / 0.18;
+  return 0.70 + Math.pow(t, 0.9) * 0.30;
 }
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
-    range: [0, 0.23] as [number, number],
+    range: [0, 0.28] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -35,7 +53,7 @@ const ACTS = [
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
-    range: [0.25, 0.46] as [number, number],
+    range: [0.32, 0.56] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -45,7 +63,7 @@ const ACTS = [
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
   {
-    range: [0.49, 0.70] as [number, number],
+    range: [0.60, 0.80] as [number, number],
     align: "right" as const,
     headline: (
       <>
@@ -55,7 +73,7 @@ const ACTS = [
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
   {
-    range: [0.73, 0.89] as [number, number],
+    range: [0.84, 0.98] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -78,11 +96,11 @@ function getActOpacity(progress: number, range: [number, number]): number {
   return 1;
 }
 
-// Helper: Calculate subtle parallax horizontal entry translate
+// Helper: Calculate subtle parallax horizontal drift
 function getActX(
   progress: number,
   range: [number, number],
-  align: "left" | "right" | "center"
+  align: "center" | "left" | "right"
 ): number {
   if (align === "center") return 0;
   const [start] = range;
@@ -238,18 +256,22 @@ export default function KunafaExplodeCanvas() {
       else preloadFrameSet("desktop");
 
       // Re-acquire context after resize
-      ctxRef.current = canvas.getContext("2d", { alpha: false });
+      const ctx = canvas.getContext("2d", { alpha: false });
+      if (ctx) ctxRef.current = ctx;
 
-      // Redraw current frame at new size
+      // Redraw current frame
       const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const frameProgress = getFrameProgress(progressRef.current, isMobile);
-      const targetFrame = Math.round(frameProgress * (totalFrames - 1));
-      drawFrame(targetFrame);
+      const frame = Math.round(frameProgress * (totalFrames - 1));
+      drawFrame(frame);
     };
 
-    const ro = new ResizeObserver(updateLayout);
-    ro.observe(canvas);
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (ctx) ctxRef.current = ctx;
     updateLayout();
+
+    const ro = new ResizeObserver(() => updateLayout());
+    ro.observe(canvas);
 
     return () => ro.disconnect();
   }, [drawFrame, preloadFrameSet]);
@@ -306,7 +328,8 @@ export default function KunafaExplodeCanvas() {
       if (cachedTotalScrollable > 0) {
         const targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
         const isMobile = layoutRef.current.isMobile;
-        const lerpFactor = isMobile ? 0.08 : 0.14;
+        // Gentler lerp on mobile to completely absorb touch spikes
+        const lerpFactor = isMobile ? 0.055 : 0.14;
 
         // Continuous smooth lerp for buttery, stutter-free 60-120 FPS momentum
         const diff = targetProgress - smoothProgress;
@@ -367,7 +390,7 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[850vh] sm:h-[550vh] bg-[#030303]"
+      className="relative w-full h-[1200vh] sm:h-[550vh] bg-[#030303]"
     >
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
@@ -381,75 +404,47 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
-        {/* Text Overlay Layer — DOM-driven, zero React re-renders */}
-        <div className="absolute inset-0 z-20 pointer-events-none">
-          {ACTS.map((act, idx) => (
+        {/* Text Story Overlays — Styled with Tailwind, transforms managed via RAF ref updates */}
+        {ACTS.map((act, i) => (
+          <div
+            key={i}
+            ref={(el) => {
+              overlayRefs.current[i] = el;
+            }}
+            style={{ opacity: 0, visibility: "hidden" }}
+            className={`absolute inset-x-0 top-0 h-screen flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
+              act.align === "center"
+                ? "items-center justify-start pt-20 sm:pt-24 text-center"
+                : act.align === "left"
+                ? "items-start justify-center text-left"
+                : "items-end justify-center text-right"
+            }`}
+          >
+            {/* Desktop Inner Container for Parallax Slide */}
             <div
-              key={idx}
-              ref={(el) => { overlayRefs.current[idx] = el; }}
-              className="absolute inset-0 pointer-events-none"
-              style={{ opacity: 0, visibility: "hidden", willChange: "opacity" }}
+              data-desktop
+              className={`max-w-xl flex flex-col ${
+                act.align === "center"
+                  ? "items-center text-center"
+                  : act.align === "left"
+                  ? "items-start text-left"
+                  : "items-end text-right"
+              }`}
             >
-              {/* Mobile Typography — Placed above the canvas visual */}
-              <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
-                <div className="max-w-md mx-auto py-2">
-                  <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
-                    {act.headline}
-                  </h2>
-                  {act.body && (
-                    <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
-                      {act.body}
-                    </p>
-                  )}
-                </div>
-              </div>
+              {/* Act Heading */}
+              <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+                {act.headline}
+              </h2>
 
-              {/* Desktop Typography */}
-              <div
-                className={`hidden md:flex absolute inset-0 items-center px-8 lg:px-16 ${
-                  act.align === "left"
-                    ? "justify-start"
-                    : act.align === "right"
-                    ? "justify-end"
-                    : "justify-center"
-                }`}
-              >
-                <div
-                  data-desktop
-                  className={`max-w-xl transition-transform duration-75 ease-out ${
-                    act.align === "center" ? "text-center max-w-2xl" : ""
-                  }`}
-                >
-                  <h2
-                    className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
-                      act.align === "center"
-                        ? "text-4xl lg:text-6xl"
-                        : "text-3xl lg:text-5xl"
-                    }`}
-                  >
-                    {act.headline}
-                  </h2>
-                  {act.body && (
-                    <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
-                      {act.body}
-                    </p>
-                  )}
-                </div>
-              </div>
+              {/* Act Body Narrative */}
+              {act.body && (
+                <p className="mt-3 sm:mt-4 font-sans text-xs sm:text-base text-white/85 leading-relaxed font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] max-w-lg">
+                  {act.body}
+                </p>
+              )}
             </div>
-          ))}
-        </div>
-
-        {/* Bottom fade */}
-        <div className="absolute inset-x-0 bottom-0 h-32 sm:h-48 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10" />
-
-        {/* Mobile scroll hint */}
-        <div className="absolute bottom-5 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
-          <div className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-widest text-[#EFB80D] bg-[#111111]/90 px-3.5 py-1.5 rounded-full border border-[#EFB80D]/30 shadow-lg backdrop-blur-md animate-bounce">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
-            <span>SWIPE TO EXPLORE ↓</span>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
