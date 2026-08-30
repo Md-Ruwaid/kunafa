@@ -26,7 +26,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     animFrame = requestAnimationFrame(raf);
 
     // Make lenis accessible globally for any components that need to trigger scroll jumps
-    (window as unknown as { lenis?: Lenis }).lenis = lenis;
+    (window as unknown as { lenis: unknown }).lenis = lenis;
 
     return () => {
       cancelAnimationFrame(animFrame);

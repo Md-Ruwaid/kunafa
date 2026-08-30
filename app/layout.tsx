@@ -28,7 +28,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 const luckiestGuy = Luckiest_Guy({
-  variable: "--font-brand",
+  variable: "--font-luckiest-guy",
   subsets: ["latin"],
   weight: ["400"],
   display: "swap",
@@ -63,6 +63,21 @@ export const metadata: Metadata = {
     siteName: "Captain Kunafa",
     locale: "en_IN",
     type: "website",
+    images: [
+      {
+        url: "https://captainkunafa.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Captain Kunafa - Authentic Levantine Kunafa in Hyderabad",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Captain Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
+    description:
+      "Handcrafted on live copper pans across our branches in Hyderabad. Fresh-pressed every single order.",
+    images: ["https://captainkunafa.com/og-image.jpg"],
   },
   icons: {
     icon: "/logo.png",
@@ -115,11 +130,8 @@ export default function RootLayout({
                 latitude: 17.3115,
                 longitude: 78.4871,
               },
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.8",
-                reviewCount: "520",
-              },
+              // NOTE: aggregateRating removed to comply with Google Structured Data guidelines.
+              // Re-add only with dynamically-sourced real customer reviews from Google Business Profile or verified feed.
             }),
           }}
         />

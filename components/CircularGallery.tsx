@@ -10,7 +10,7 @@ export interface GalleryItem {
 }
 
 export interface CircularGalleryProps {
-  items?: GalleryItem[];
+  items: GalleryItem[];
   bend?: number;
   textColor?: string;
   borderRadius?: number;
@@ -132,15 +132,9 @@ class Media {
         }
         
         void main() {
-          vec2 imgSize = max(uImageSizes, vec2(1.0, 1.0));
-          vec2 plnSize = max(uPlaneSizes, vec2(1.0, 1.0));
-          
-          float imgAspect = imgSize.x / imgSize.y;
-          float plnAspect = plnSize.x / plnSize.y;
-          
           vec2 ratio = vec2(
-            min(plnAspect / imgAspect, 1.0),
-            min(imgAspect / plnAspect, 1.0)
+            min((uPlaneSizes.x / uPlaneSizes.y) / (uImageSizes.x / uImageSizes.y), 1.0),
+            min((uPlaneSizes.y / uPlaneSizes.x) / (uImageSizes.y / uImageSizes.x), 1.0)
           );
           vec2 uv = vec2(
             vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
@@ -148,31 +142,30 @@ class Media {
           );
           vec4 color = texture2D(tMap, uv);
           
-          float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
+          vec2 p = vUv - vec2(0.5);
+          vec2 b = vec2(0.5) - vec2(uBorderRadius);
+          float dist = roundedBoxSDF(p, b, uBorderRadius);
+          float alpha = 1.0 - smoothstep(0.0, 0.005, dist);
           
-          float edgeSmooth = 0.003;
-          float alpha = 1.0 - smoothstep(-edgeSmooth, edgeSmooth, d);
-          
-          gl_FragColor = vec4(color.rgb, color.a * alpha);
+          gl_FragColor = vec4(color.rgb, alpha * color.a);
         }
       `,
       uniforms: {
         tMap: { value: texture },
-        uPlaneSizes: { value: [500, 500] },
-        uImageSizes: { value: [500, 500] },
+        uPlaneSizes: { value: [0, 0] },
+        uImageSizes: { value: [0, 0] },
         uSpeed: { value: 0 },
-        uTime: { value: 100 * Math.random() },
+        uTime: { value: 0 },
         uBorderRadius: { value: this.borderRadius },
+        uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
       },
       transparent: true,
     });
     const img = new Image();
     img.src = this.image;
     img.onload = () => {
-      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-        texture.image = img;
-        this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-      }
+      texture.image = img;
+      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
     };
   }
 
@@ -185,13 +178,13 @@ class Media {
   }
 
   update(
-    scroll: { current: number; last: number; ease: number; target: number },
-    direction: "left" | "right"
+    scroll: { current: number; last: number },
+    direction: "right" | "left"
   ) {
     this.plane.position.x = this.x - scroll.current - this.extra;
 
     const x = this.plane.position.x;
-    const H = Math.max(1, this.viewport.width / 2);
+    const H = this.viewport.width / 2;
 
     if (this.bend === 0) {
       this.plane.position.y = 0;
@@ -303,12 +296,12 @@ class App {
       scrollSpeed = 3,
       scrollEase = 0.06,
     }: {
-      items?: GalleryItem[];
+      items: GalleryItem[];
       bend?: number;
       borderRadius?: number;
       scrollSpeed?: number;
       scrollEase?: number;
-    } = {}
+    }
   ) {
     this.container = container;
     this.scrollSpeed = scrollSpeed;
@@ -346,22 +339,16 @@ class App {
   }
 
   createGeometry() {
+    // Optimized tessellation: 10x20 segments provides smooth low-frequency bending with minimal vertex overhead
     this.planeGeometry = new Plane(this.gl, {
-      heightSegments: 40,
-      widthSegments: 80,
+      heightSegments: 10,
+      widthSegments: 20,
     });
   }
 
-  createMedias(items?: GalleryItem[], bend = 2.5, borderRadius = 0.06) {
-    const defaultItems: GalleryItem[] = [
-      { image: "/platters/platter-original.png" },
-      { image: "/platters/platter-pistachio.png" },
-      { image: "/platters/platter-biscoff.png" },
-      { image: "/platters/platter-choco.png" },
-    ];
-    const baseItems = items && items.length ? items : defaultItems;
+  createMedias(items: GalleryItem[], bend = 2.5, borderRadius = 0.06) {
     // Repeat items 4 times (16 items) for completely smooth, infinite wrapping without popping
-    this.mediasImages = [...baseItems, ...baseItems, ...baseItems, ...baseItems];
+    this.mediasImages = [...items, ...items, ...items, ...items];
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
@@ -387,6 +374,12 @@ class App {
     this.lastTouchX = clientX;
     this.lastTouchTime = performance.now();
     this.touchVelocity = 0;
+
+    // Attach active drag listeners to window only when drag begins (Item 2.2)
+    if (!("touches" in e)) {
+      window.addEventListener("mousemove", this.boundOnTouchMove);
+      window.addEventListener("mouseup", this.boundOnTouchUp);
+    }
   }
 
   onTouchMove(e: TouchEvent | MouseEvent) {
@@ -410,6 +403,10 @@ class App {
   onTouchUp() {
     if (!this.isDown) return;
     this.isDown = false;
+
+    // Remove active drag listeners from window when drag completes (Item 2.2)
+    window.removeEventListener("mousemove", this.boundOnTouchMove);
+    window.removeEventListener("mouseup", this.boundOnTouchUp);
 
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
@@ -531,11 +528,8 @@ class App {
     window.addEventListener("resize", this.boundOnResize);
     window.addEventListener("orientationchange", this.boundOnResize);
     
-    // Attach mouse & touch listeners with high responsiveness
+    // Attach initial mousedown & touchstart handlers to container
     this.container?.addEventListener("mousedown", this.boundOnTouchDown);
-    window.addEventListener("mousemove", this.boundOnTouchMove);
-    window.addEventListener("mouseup", this.boundOnTouchUp);
-    
     this.container?.addEventListener("touchstart", this.boundOnTouchDown, { passive: true });
     window.addEventListener("touchmove", this.boundOnTouchMove, { passive: true });
     window.addEventListener("touchend", this.boundOnTouchUp);
@@ -586,7 +580,6 @@ export default function CircularGallery({
   useEffect(() => {
     if (!containerRef.current) return;
     let app: App | null = null;
-    let isMounted = true;
 
     app = new App(containerRef.current, {
       items,
@@ -613,7 +606,6 @@ export default function CircularGallery({
     }
 
     return () => {
-      isMounted = false;
       if (observer) observer.disconnect();
       if (app) app.destroy();
     };

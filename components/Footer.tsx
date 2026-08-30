@@ -4,12 +4,12 @@ import React from "react";
 import Image from "next/image";
 import { Shield, Phone, ArrowUp } from "lucide-react";
 import BrandName from "@/components/BrandName";
+import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
+import { scrollToWithLenis } from "@/lib/lenis";
 
 export default function Footer() {
   const scrollToTop = () => {
-    const lenis = (window as unknown as { lenis?: { scrollTo: (n: number) => void } }).lenis;
-    if (lenis) lenis.scrollTo(0);
-    else window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToWithLenis(0);
   };
 
   return (
@@ -36,7 +36,7 @@ export default function Footer() {
             </p>
             <div className="font-mono text-[11px] sm:text-xs text-white font-bold space-y-1">
               <div>CENTRAL KITCHEN &amp; HQ: <span className="text-[#EFB80D]">BARKAS, HYDERABAD · 500005</span></div>
-              <div>HOTLINE: <span className="text-[#EFB80D]">+91 90000 00001</span></div>
+              <div>HOTLINE: <span className="text-[#EFB80D]">{BRAND_PHONE_DISPLAY}</span></div>
             </div>
           </div>
 
@@ -86,10 +86,10 @@ export default function Footer() {
 
             <div className="flex items-center gap-3">
               <a
-                href="https://wa.me/919000000000"
+                href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi Captain Kunafa! I'd like to order fresh kunafa.")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-tactile-gold inline-flex items-center gap-2 font-sans text-xs font-bold px-6 py-2.5 rounded-lg"
+                className="btn-tactile-base btn-tactile-gold inline-flex items-center gap-2 font-sans text-xs font-bold px-6 py-2.5 rounded-lg"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Order on WhatsApp</span>

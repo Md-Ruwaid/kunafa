@@ -4,15 +4,25 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SwashAccent from "@/components/SwashAccent";
 
-// Desktop configuration (16:9 landscape)
+// Frame Sequence Config
 const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-// Mobile configuration (9:16 portrait)
 const MOBILE_FRAMES = 130;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
+
+function pad(n: number): string {
+  return String(n).padStart(3, "0");
+}
+
+// Mobile non-linear frame distribution curve:
+// Spends ~80% of the scroll track savoring the slow levitation and initial lift (frames 1-85)
+// and concentrates the fully exploded end frame to only the last 20% of scroll
+function getFrameProgress(progress: number, isMobile: boolean): number {
+  return isMobile ? Math.pow(progress, 1.75) : progress;
+}
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
@@ -58,21 +68,19 @@ const ACTS = [
   },
 ];
 
+// Helper: Calculate opacity with smooth fade in / hold / fade out
 function getActOpacity(progress: number, range: [number, number]): number {
   const [start, end] = range;
   const fadeIn = 0.04;
   const fadeOut = 0.04;
-  if (progress < start) return 0;
-  if (progress > end) return 0;
 
-  // First act fully visible at the start
-  if (start === 0 && progress < fadeIn) return 1;
-
+  if (progress < start || progress > end) return 0;
   if (progress < start + fadeIn) return (progress - start) / fadeIn;
   if (progress > end - fadeOut) return (end - progress) / fadeOut;
   return 1;
 }
 
+// Helper: Calculate subtle parallax horizontal entry translate
 function getActX(
   progress: number,
   range: [number, number],
@@ -96,8 +104,16 @@ export default function KunafaExplodeCanvas() {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  const hasPreloadedMobileRef = useRef(false);
+  const hasPreloadedDesktopRef = useRef(false);
+  const isInViewRef = useRef(true);
+
   const [loadedCount, setLoadedCount] = useState(0);
-  const [totalTargetFrames, setTotalTargetFrames] = useState(DESKTOP_FRAMES);
+  const [totalTargetFrames] = useState<number>(() =>
+    typeof window !== "undefined" && window.innerWidth < 768
+      ? MOBILE_FRAMES
+      : DESKTOP_FRAMES
+  );
   const [isLoaded, setIsLoaded] = useState(false);
 
   // All scroll state lives in refs — zero React re-renders during scroll
@@ -106,7 +122,7 @@ export default function KunafaExplodeCanvas() {
   const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
   // High-performance frame draw supporting responsive portrait mobile (130 frames) & landscape desktop (100 frames)
-  const drawFrame = useCallback((frameIndex: number, currentProgress: number = 0) => {
+  const drawFrame = useCallback((frameIndex: number) => {
     const ctx = ctxRef.current;
     if (!ctx) return;
 
@@ -171,6 +187,57 @@ export default function KunafaExplodeCanvas() {
     ctx.restore();
   }, []);
 
+  // Frame preloader function guarded to only download required sequence
+  const preloadFrameSet = useCallback(
+    (kind: "mobile" | "desktop") => {
+      const isMob = kind === "mobile";
+      if (isMob && hasPreloadedMobileRef.current) return;
+      if (!isMob && hasPreloadedDesktopRef.current) return;
+
+      if (isMob) hasPreloadedMobileRef.current = true;
+      else hasPreloadedDesktopRef.current = true;
+
+      const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
+      const folder = isMob ? "/mobile-view-kunafa" : "/Kunafa-animations-v2";
+      const loadedArr: HTMLImageElement[] = new Array(count);
+      let loadedCounter = 0;
+      const UNLOCK_THRESHOLD = 3;
+
+      for (let i = 1; i <= count; i++) {
+        const img = new Image();
+        const idx = i - 1;
+        img.src = `${folder}/ezgif-frame-${pad(i)}.png`;
+        loadedArr[idx] = img;
+
+        img.onload = () => {
+          loadedCounter++;
+          setLoadedCount((prev) => Math.max(prev, loadedCounter));
+          if (i === 1) {
+            if (isMob) mobileImagesRef.current[0] = img;
+            else desktopImagesRef.current[0] = img;
+            drawFrame(0);
+          }
+          if (loadedCounter >= UNLOCK_THRESHOLD) {
+            setIsLoaded(true);
+            drawFrame(0);
+          }
+        };
+
+        img.onerror = () => {
+          loadedCounter++;
+          if (loadedCounter >= UNLOCK_THRESHOLD) {
+            setIsLoaded(true);
+            drawFrame(0);
+          }
+        };
+      }
+
+      if (isMob) mobileImagesRef.current = loadedArr;
+      else desktopImagesRef.current = loadedArr;
+    },
+    [drawFrame]
+  );
+
   // Cache canvas layout dimensions via ResizeObserver — runs only on resize
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -191,14 +258,18 @@ export default function KunafaExplodeCanvas() {
       const isMobile = width < 768;
       layoutRef.current = { width, height, dpr, isMobile };
 
+      // Lazily preload opposite frame sequence if user crosses 768px breakpoint
+      if (isMobile) preloadFrameSet("mobile");
+      else preloadFrameSet("desktop");
+
       // Re-acquire context after resize
       ctxRef.current = canvas.getContext("2d", { alpha: false });
 
       // Redraw current frame at new size
       const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-      const frameProgress = isMobile ? Math.pow(progressRef.current, 1.75) : progressRef.current;
+      const frameProgress = getFrameProgress(progressRef.current, isMobile);
       const targetFrame = Math.round(frameProgress * (totalFrames - 1));
-      drawFrame(targetFrame, progressRef.current);
+      drawFrame(targetFrame);
     };
 
     const ro = new ResizeObserver(updateLayout);
@@ -206,111 +277,31 @@ export default function KunafaExplodeCanvas() {
     updateLayout();
 
     return () => ro.disconnect();
-  }, [drawFrame]);
+  }, [drawFrame, preloadFrameSet]);
 
-  // Progressive frame preloading with instant unlock
+  // Initial preload of active viewport frame sequence with safety timer
   useEffect(() => {
     let mounted = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
-    const targetCount = isMobileInitial ? MOBILE_FRAMES : DESKTOP_FRAMES;
-    setTotalTargetFrames(targetCount);
 
-    const pad = (n: number) => String(n).padStart(3, "0");
-    const UNLOCK_THRESHOLD = 3; // Unlock instantly once initial frame + 2 buffer frames load
+    // Preload only the initial viewport frame sequence
+    preloadFrameSet(isMobileInitial ? "mobile" : "desktop");
 
     // Maximum wait of 250ms to ensure near-zero loading screen delay
     const safetyTimer = setTimeout(() => {
       if (mounted) {
         setIsLoaded(true);
-        drawFrame(0, 0);
+        drawFrame(0);
       }
     }, 250);
-
-    // Preload Mobile Frames (130 frames, 720x1280 portrait)
-    const mobileLoaded: HTMLImageElement[] = new Array(MOBILE_FRAMES);
-    let mobileCount = 0;
-
-    for (let i = 1; i <= MOBILE_FRAMES; i++) {
-      const img = new Image();
-      const idx = i - 1;
-      img.src = `/mobile-view-kunafa/ezgif-frame-${pad(i)}.png`;
-
-      img.onload = () => {
-        if (!mounted) return;
-        mobileLoaded[idx] = img;
-        mobileCount++;
-        if (isMobileInitial) {
-          setLoadedCount(mobileCount);
-          if (i === 1) {
-            mobileImagesRef.current[0] = img;
-            drawFrame(0, 0);
-          }
-          if (mobileCount >= UNLOCK_THRESHOLD) {
-            setIsLoaded(true);
-            drawFrame(0, 0);
-          }
-        }
-      };
-
-      img.onerror = () => {
-        if (!mounted) return;
-        mobileCount++;
-        if (isMobileInitial && mobileCount >= UNLOCK_THRESHOLD) {
-          setIsLoaded(true);
-          drawFrame(0, 0);
-        }
-      };
-
-      mobileLoaded[idx] = img;
-    }
-    mobileImagesRef.current = mobileLoaded;
-
-    // Preload Desktop Frames (100 frames, 1280x720 landscape)
-    const desktopLoaded: HTMLImageElement[] = new Array(DESKTOP_FRAMES);
-    let desktopCount = 0;
-
-    for (let i = 1; i <= DESKTOP_FRAMES; i++) {
-      const img = new Image();
-      const idx = i - 1;
-      img.src = `/Kunafa-animations-v2/ezgif-frame-${pad(i)}.png`;
-
-      img.onload = () => {
-        if (!mounted) return;
-        desktopLoaded[idx] = img;
-        desktopCount++;
-        if (!isMobileInitial) {
-          setLoadedCount(desktopCount);
-          if (i === 1) {
-            desktopImagesRef.current[0] = img;
-            drawFrame(0, 0);
-          }
-          if (desktopCount >= UNLOCK_THRESHOLD) {
-            setIsLoaded(true);
-            drawFrame(0, 0);
-          }
-        }
-      };
-
-      img.onerror = () => {
-        if (!mounted) return;
-        desktopCount++;
-        if (!isMobileInitial && desktopCount >= UNLOCK_THRESHOLD) {
-          setIsLoaded(true);
-          drawFrame(0, 0);
-        }
-      };
-
-      desktopLoaded[idx] = img;
-    }
-    desktopImagesRef.current = desktopLoaded;
 
     return () => {
       mounted = false;
       clearTimeout(safetyTimer);
     };
-  }, [drawFrame]);
+  }, [drawFrame, preloadFrameSet]);
 
-  // Single high-performance RAF loop — reads scroll with zero layout thrashing
+  // Single high-performance RAF loop — paused when offscreen via IntersectionObserver
   useEffect(() => {
     let animFrame: number;
     let isRunning = true;
@@ -326,8 +317,29 @@ export default function KunafaExplodeCanvas() {
     measureLayout();
     window.addEventListener("resize", measureLayout, { passive: true });
 
+    // IntersectionObserver to pause loop when container is off-screen
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          isInViewRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            lastScrollY = -1; // Force immediate redraw upon re-entry
+          }
+        },
+        { rootMargin: "50% 0px 50% 0px" }
+      );
+      observer.observe(containerRef.current);
+    }
+
     const tick = () => {
       if (!isRunning) return;
+
+      // Skip processing when scrolled far outside the hero viewport
+      if (!isInViewRef.current) {
+        animFrame = requestAnimationFrame(tick);
+        return;
+      }
 
       const currentScrollY = window.scrollY;
 
@@ -346,15 +358,11 @@ export default function KunafaExplodeCanvas() {
           // Draw the correct frame for current device
           const isMobile = layoutRef.current.isMobile;
           const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-
-          // Non-linear frame distribution for mobile:
-          // Spends ~80% of the scroll track savoring the slow levitation and initial lift (frames 1-85)
-          // and concentrates the fully exploded end frame to only the last 20% of scroll
-          const frameProgress = isMobile ? Math.pow(p, 1.75) : p;
+          const frameProgress = getFrameProgress(p, isMobile);
           const targetFrame = Math.round(frameProgress * (totalFrames - 1));
 
           if (targetFrame !== lastDrawnFrameRef.current) {
-            drawFrame(targetFrame, p);
+            drawFrame(targetFrame);
           }
 
           // Update text overlay opacity/transforms directly via DOM — zero React re-renders
@@ -389,6 +397,7 @@ export default function KunafaExplodeCanvas() {
 
     return () => {
       isRunning = false;
+      if (observer) observer.disconnect();
       window.removeEventListener("resize", measureLayout);
       cancelAnimationFrame(animFrame);
     };
@@ -453,23 +462,20 @@ export default function KunafaExplodeCanvas() {
                 </div>
               </div>
 
-              {/* Desktop Typography — Positioned at top or flanked left/right */}
+              {/* Desktop Typography */}
               <div
-                data-desktop
-                className={`hidden md:flex absolute inset-0 items-center ${
+                className={`hidden md:flex absolute inset-0 items-center px-8 lg:px-16 ${
                   act.align === "left"
-                    ? "justify-start pl-12 lg:pl-20 xl:pl-28"
+                    ? "justify-start"
                     : act.align === "right"
-                    ? "justify-end pr-12 lg:pr-20 xl:pr-28"
-                    : "items-start pt-24 lg:pt-28 justify-center text-center"
+                    ? "justify-end"
+                    : "justify-center"
                 }`}
-                style={{ willChange: "transform" }}
               >
                 <div
-                  className={`max-w-md lg:max-w-lg ${
-                    act.align === "center"
-                      ? "text-center mx-auto"
-                      : "text-left"
+                  data-desktop
+                  className={`max-w-xl transition-transform duration-75 ease-out ${
+                    act.align === "center" ? "text-center max-w-2xl" : ""
                   }`}
                 >
                   <h2

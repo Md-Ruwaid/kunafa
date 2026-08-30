@@ -14,7 +14,7 @@ export interface BranchLocation {
   phone: string;
   hours: string;
   highlight: string;
-  description: string;
+  description: (string | "BRAND")[];
   lat: number;
   lng: number;
   mapUrl: string;
@@ -72,7 +72,6 @@ interface CaptainsMapProps {
   branches: BranchLocation[];
   activeBranchIndex: number;
   onSelectBranch: (idx: number) => void;
-  isVisible: boolean;
 }
 
 const HYD_CENTER: [number, number] = [17.37, 78.45];
@@ -100,7 +99,7 @@ function CaptainsMap({
         zoomControl={true}
         attributionControl={true}
       >
-        {/* Seamless Dark Base Tile Layer — 100% Free, Zero Watermark */}
+        {/* Seamless Dark Base Tile Layer — Free, Zero Watermark */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com" target="_blank" rel="noopener noreferrer">Esri</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
@@ -113,7 +112,7 @@ function CaptainsMap({
           maxZoom={16}
         />
 
-        {/* 4 Official Branch Markers */}
+        {/* Branch markers, one per entry in BRANCHES */}
         {branches.map((branch, idx) => {
           const isActive = idx === activeBranchIndex;
           return (

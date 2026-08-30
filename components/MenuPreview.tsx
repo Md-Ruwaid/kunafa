@@ -4,6 +4,7 @@ import React from "react";
 import { MessageCircle } from "lucide-react";
 import SwashAccent from "@/components/SwashAccent";
 import CircularGallery, { GalleryItem } from "@/components/CircularGallery";
+import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
 
 const GALLERY_ITEMS: GalleryItem[] = [
   {
@@ -54,10 +55,10 @@ export default function MenuPreview() {
         {/* Quick WhatsApp Order Callout Banner */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20place%20an%20order."
+            href={buildWhatsAppLink(BRAND_PHONE_DISPLAY, "Hi Captain Kunafa! I'd like to place an order.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-tactile-gold flex items-center justify-center gap-2.5 font-sans font-bold text-xs sm:text-sm px-7 py-3 rounded-lg"
+            className="btn-tactile-base btn-tactile-gold flex items-center justify-center gap-2.5 font-sans font-bold text-xs sm:text-sm px-7 py-3 rounded-lg"
           >
             <MessageCircle className="w-4 h-4 text-[#000000]" />
             <span>Order on WhatsApp</span>

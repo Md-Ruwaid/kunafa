@@ -16,8 +16,10 @@ import {
 import SwashAccent from "@/components/SwashAccent";
 import BrandName from "@/components/BrandName";
 import type { BranchLocation } from "@/components/CaptainsMap";
+import { buildWhatsAppLink } from "@/lib/contact";
 
-// ─── 4 Official Captain Kunafa Branches in Hyderabad ────────────────────────
+// ─── 5 Official Captain Kunafa Branches in Hyderabad ────────────────────────
+// PLACEHOLDER — Verify branch phone numbers, addresses, and hours with client before launch
 
 const BRANCHES: BranchLocation[] = [
   {
@@ -26,11 +28,14 @@ const BRANCHES: BranchLocation[] = [
     area: "Old City, Hyderabad",
     code: "HYD-01",
     address: "Main Road, Opp. Al-Jubail Hotel, Barkas, Hyderabad",
-    phone: "+91 90000 00001",
+    phone: "+91 90000 00001", // Central HQ / Hotline
     hours: "01:00 PM – 02:00 AM",
     highlight: "Original Location (Est. 2021)",
-    description:
-      "The founding location of Captain Kunafa. Freshly prepared on live copper pans with authentic mountain Akawi cheese and clarified ghee.",
+    description: [
+      "The founding location of ",
+      "BRAND",
+      ". Freshly prepared on live copper pans with authentic mountain Akawi cheese and clarified ghee.",
+    ],
     lat: 17.3115,
     lng: 78.4871,
     mapUrl: "https://maps.app.goo.gl/y5wwh2sxghvovp5n6",
@@ -42,11 +47,12 @@ const BRANCHES: BranchLocation[] = [
     area: "Main Road, Malakpet",
     code: "HYD-02",
     address: "Near Super Bazar, Main Road, Malakpet, Hyderabad",
-    phone: "+91 90000 00002",
+    phone: "+91 90000 00002", // PLACEHOLDER
     hours: "02:00 PM – 01:30 AM",
     highlight: "Dine-in & Takeaway",
-    description:
+    description: [
       "Serving freshly prepared Kunafa with premium Aleppo pistachios, artisanal toppings, and authentic rose syrup.",
+    ],
     lat: 17.3753,
     lng: 78.4983,
     mapUrl: "https://maps.app.goo.gl/MM6KRGcwqYmFpFAY7",
@@ -58,11 +64,12 @@ const BRANCHES: BranchLocation[] = [
     area: "Paramount Colony, Tolichowki",
     code: "HYD-03",
     address: "Paramount Colony Gate, Tolichowki, Hyderabad",
-    phone: "+91 90000 00003",
+    phone: "+91 90000 00003", // PLACEHOLDER
     hours: "01:00 PM – 02:00 AM",
     highlight: "Late Night Dine-in",
-    description:
+    description: [
       "A popular late-night destination featuring live preparation counters, chocolate infusions, and traditional cream varieties.",
+    ],
     lat: 17.4014,
     lng: 78.4111,
     mapUrl: "https://maps.app.goo.gl/Kd7TQcDZaQmBaMXt5",
@@ -74,15 +81,33 @@ const BRANCHES: BranchLocation[] = [
     area: "Road No. 36, Jubilee Hills",
     code: "HYD-04",
     address: "Road No. 36, Near Peddamma Temple, Jubilee Hills, Hyderabad",
-    phone: "+91 90000 00004",
+    phone: "+91 90000 00004", // PLACEHOLDER
     hours: "12:00 PM – 01:30 AM",
     highlight: "Premium Dine-in Lounge",
-    description:
+    description: [
       "Our flagship lounge featuring full table service, seasonal specialties, and sharing assortments.",
+    ],
     lat: 17.4325,
     lng: 78.4071,
     mapUrl: "https://maps.app.goo.gl/oYpmAV1PJbHGApUB6",
     embedQuery: "Captain+Kunafa+Jubilee+Hills+Hyderabad",
+  },
+  {
+    id: "aerocity",
+    name: "Aero City",
+    area: "Aero City, Shamshabad",
+    code: "HYD-05",
+    address: "PLACEHOLDER — Aero City, Shamshabad Road, Hyderabad", // PLACEHOLDER — confirm real address before launch
+    phone: "+91 90000 00005", // PLACEHOLDER
+    hours: "12:00 PM – 01:00 AM",
+    highlight: "Airport Corridor Outlet",
+    description: [
+      "Conveniently situated along the airport corridor, offering fresh-pressed Kunafa to travelers and dessert lovers across South Hyderabad.",
+    ],
+    lat: 17.2403,
+    lng: 78.4294,
+    mapUrl: "https://maps.google.com/?q=Captain+Kunafa+Aero+City+Hyderabad",
+    embedQuery: "Captain+Kunafa+Aero+City+Hyderabad",
   },
 ];
 
@@ -125,7 +150,10 @@ export default function CaptainsChart() {
   }, []);
 
   const activeBranch = BRANCHES[activeBranchIndex];
-  const waNumber = activeBranch.phone.replace(/\D/g, "");
+  const branchWhatsAppUrl = buildWhatsAppLink(
+    activeBranch.phone,
+    `Hi Captain Kunafa ${activeBranch.name}! I'd like to order.`
+  );
 
   return (
     <section
@@ -160,8 +188,8 @@ export default function CaptainsChart() {
                 className={`font-mono text-[10.5px] sm:text-xs px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg border transition-all duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]
                   ${
                     isCurrent
-                      ? "btn-tactile-gold font-black shadow-[0_0_20px_rgba(239,184,13,0.3)]"
-                      : "btn-tactile-dark text-white/80 font-semibold"
+                      ? "btn-tactile-base btn-tactile-gold font-black shadow-[0_0_20px_rgba(239,184,13,0.3)]"
+                      : "btn-tactile-base btn-tactile-dark text-white/80 font-semibold"
                   }`}
               >
                 <span>{branch.name}</span>
@@ -245,7 +273,6 @@ export default function CaptainsChart() {
                     branches={BRANCHES}
                     activeBranchIndex={activeBranchIndex}
                     onSelectBranch={handleSelectBranch}
-                    isVisible={isVisible}
                   />
                 )
               ) : (
@@ -278,19 +305,10 @@ export default function CaptainsChart() {
                     </h3>
                   </div>
 
-                  {/* Description */}
+                  {/* Description with structured BrandName formatting (Item 4.4) */}
                   <p className="font-sans text-xs sm:text-sm text-white/90 leading-relaxed mb-4 font-medium">
-                    {activeBranch.description.includes("Captain Kunafa") ? (
-                      <>
-                        {activeBranch.description.split("Captain Kunafa").map((part, i, arr) => (
-                          <React.Fragment key={i}>
-                            {part}
-                            {i < arr.length - 1 && <BrandName />}
-                          </React.Fragment>
-                        ))}
-                      </>
-                    ) : (
-                      activeBranch.description
+                    {activeBranch.description.map((chunk, i) =>
+                      chunk === "BRAND" ? <BrandName key={i} /> : chunk
                     )}
                   </p>
 
@@ -318,7 +336,7 @@ export default function CaptainsChart() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
-                      className="btn-tactile-gold flex flex-col items-center justify-center gap-1 font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-lg"
+                      className="btn-tactile-base btn-tactile-gold flex flex-col items-center justify-center gap-1 font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-lg"
                     >
                       <Navigation className="w-3.5 h-3.5" />
                       <span>Directions</span>
@@ -326,11 +344,11 @@ export default function CaptainsChart() {
 
                     {/* WhatsApp */}
                     <a
-                      href={`https://wa.me/91${waNumber.slice(-10)}?text=Hi%20Captain%20Kunafa%20${encodeURIComponent(activeBranch.name)}!%20I'd%20like%20to%20order.`}
+                      href={branchWhatsAppUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`WhatsApp ${activeBranch.name}`}
-                      className="btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-[#25D366]"
+                      className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-[#25D366]"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       <span>WhatsApp</span>
@@ -340,7 +358,7 @@ export default function CaptainsChart() {
                     <a
                       href={`tel:${activeBranch.phone.replace(/\s/g, "")}`}
                       aria-label={`Call ${activeBranch.name}`}
-                      className="btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-white"
+                      className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-white"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call</span>

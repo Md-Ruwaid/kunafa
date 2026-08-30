@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Captain Kunafa — Official Website
 
-## Getting Started
+Modern, high-performance web experience for **Captain Kunafa**, Hyderabad's premier authentic Middle Eastern kunafa brand founded in 2021 by Saud bin Nasar Khulagi.
 
-First, run the development server:
+Built with Next.js 16 (App Router), React 19, Tailwind CSS v4, Framer Motion, Lenis smooth scrolling, OGL WebGL 3D carousel, and an interactive Leaflet branch locator.
+
+---
+
+## 🛠️ Tech & Typography Stack
+
+- **Framework**: Next.js 16.3 (Turbopack) & React 19
+- **Styling**: Tailwind CSS v4 with custom tactile 3D theme tokens
+- **Motion & 3D**:
+  - Lenis inertial momentum smooth scroll
+  - OGL (WebGL) 3D curved cylinder image gallery (`CircularGallery.tsx`)
+  - 60–120 FPS canvas scrollytelling engine (`KunafaExplodeCanvas.tsx`)
+  - Leaflet map with ArcGIS Dark Canvas vector tiles (`CaptainsMap.tsx`)
+- **Typography** (optimized via `next/font/google`):
+  - **Display**: Fraunces (`--font-display`)
+  - **Body / Sans**: Work Sans (`--font-sans`)
+  - **Monospace**: IBM Plex Mono (`--font-mono`)
+  - **Brand Wordmark**: Luckiest Guy (`--font-brand` / `--font-luckiest-guy`)
+
+---
+
+## 🚀 Getting Started
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build production bundle
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎬 Scrollytelling Frame Sequences
 
-## Learn More
+The repository contains two high-resolution frame sequences under `public/`:
+- `public/Kunafa-animations-v2/` (100 widescreen frames, `1280x720`): Desktop scrollytelling explosion sequence.
+- `public/mobile-view-kunafa/` (130 portrait frames, `720x1280`): Mobile-optimized vertical levitation and explosion sequence.
 
-To learn more about Next.js, take a look at the following resources:
+The engine (`KunafaExplodeCanvas.tsx`) dynamically detects the active viewport, preloading only the necessary frame sequence on demand to minimize network payload and bandwidth usage.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⚠️ Pre-Launch Checklist & Placeholders
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The following placeholders should be verified with the client before production launch:
+1. **Branch Phone Numbers & WhatsApp Hotline**: Defined in `lib/contact.ts` and `BRANCHES` array in `components/CaptainsChart.tsx`.
+2. **Aero City Branch Details**: Real street address, operating hours, and exact coordinates in `components/CaptainsChart.tsx`.
+3. **Open Graph Social Card**: Final 1200×630 banner asset at `public/og-image.jpg`.
