@@ -122,8 +122,18 @@ export default function KunafaExplodeCanvas() {
     let targetImg = images[clampedIndex];
 
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
-      if (lastDrawnFrameRef.current >= 0 && images[lastDrawnFrameRef.current]?.complete) {
-        targetImg = images[lastDrawnFrameRef.current];
+      // Rapid fallback: find the nearest loaded frame in either direction
+      for (let dist = 1; dist < totalFrames; dist++) {
+        const prev = clampedIndex - dist;
+        const next = clampedIndex + dist;
+        if (prev >= 0 && images[prev]?.complete && images[prev]?.naturalWidth > 0) {
+          targetImg = images[prev];
+          break;
+        }
+        if (next < totalFrames && images[next]?.complete && images[next]?.naturalWidth > 0) {
+          targetImg = images[next];
+          break;
+        }
       }
     }
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
@@ -198,7 +208,7 @@ export default function KunafaExplodeCanvas() {
     return () => ro.disconnect();
   }, [drawFrame]);
 
-  // Preload frame sequences (mobile 130 frames, desktop 100 frames)
+  // Progressive frame preloading with instant unlock
   useEffect(() => {
     let mounted = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
@@ -206,6 +216,15 @@ export default function KunafaExplodeCanvas() {
     setTotalTargetFrames(targetCount);
 
     const pad = (n: number) => String(n).padStart(3, "0");
+    const UNLOCK_THRESHOLD = 3; // Unlock instantly once initial frame + 2 buffer frames load
+
+    // Maximum wait of 250ms to ensure near-zero loading screen delay
+    const safetyTimer = setTimeout(() => {
+      if (mounted) {
+        setIsLoaded(true);
+        drawFrame(0, 0);
+      }
+    }, 250);
 
     // Preload Mobile Frames (130 frames, 720x1280 portrait)
     const mobileLoaded: HTMLImageElement[] = new Array(MOBILE_FRAMES);
@@ -226,8 +245,7 @@ export default function KunafaExplodeCanvas() {
             mobileImagesRef.current[0] = img;
             drawFrame(0, 0);
           }
-          if (mobileCount >= MOBILE_FRAMES) {
-            mobileImagesRef.current = mobileLoaded;
+          if (mobileCount >= UNLOCK_THRESHOLD) {
             setIsLoaded(true);
             drawFrame(0, 0);
           }
@@ -237,8 +255,7 @@ export default function KunafaExplodeCanvas() {
       img.onerror = () => {
         if (!mounted) return;
         mobileCount++;
-        if (isMobileInitial && mobileCount >= MOBILE_FRAMES) {
-          mobileImagesRef.current = mobileLoaded;
+        if (isMobileInitial && mobileCount >= UNLOCK_THRESHOLD) {
           setIsLoaded(true);
           drawFrame(0, 0);
         }
@@ -267,8 +284,7 @@ export default function KunafaExplodeCanvas() {
             desktopImagesRef.current[0] = img;
             drawFrame(0, 0);
           }
-          if (desktopCount >= DESKTOP_FRAMES) {
-            desktopImagesRef.current = desktopLoaded;
+          if (desktopCount >= UNLOCK_THRESHOLD) {
             setIsLoaded(true);
             drawFrame(0, 0);
           }
@@ -278,8 +294,7 @@ export default function KunafaExplodeCanvas() {
       img.onerror = () => {
         if (!mounted) return;
         desktopCount++;
-        if (!isMobileInitial && desktopCount >= DESKTOP_FRAMES) {
-          desktopImagesRef.current = desktopLoaded;
+        if (!isMobileInitial && desktopCount >= UNLOCK_THRESHOLD) {
           setIsLoaded(true);
           drawFrame(0, 0);
         }
@@ -291,6 +306,7 @@ export default function KunafaExplodeCanvas() {
 
     return () => {
       mounted = false;
+      clearTimeout(safetyTimer);
     };
   }, [drawFrame]);
 
