@@ -93,27 +93,25 @@ export default function KunafaExplodeCanvas() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const lastDrawnIndexRef = useRef(0);
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
+  const lastDrawnFrameRef = useRef(-1);
 
-  // Continuous sub-frame rendering with dual-frame blending for maximum smoothness
-  const drawFrame = useCallback((exactIndex: number) => {
+  // Razor-sharp single frame drawing with high performance & no ghosting
+  const drawFrame = useCallback((frameIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    const clampedIndex = Math.max(0, Math.min(TOTAL_FRAMES - 1, frameIndex));
+    let targetImg = imagesRef.current[clampedIndex];
+
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
+      targetImg = imagesRef.current[lastDrawnFrameRef.current];
+    }
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
+
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
-
-    const frameFloor = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.floor(exactIndex)));
-    const frameCeil = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.ceil(exactIndex)));
-    const blend = exactIndex - frameFloor;
-
-    let img1 = imagesRef.current[frameFloor];
-    let img2 = imagesRef.current[frameCeil];
-
-    if (!img1 || !img1.complete || img1.naturalWidth === 0) {
-      img1 = imagesRef.current[lastDrawnIndexRef.current];
-    }
-    if (!img1 || !img1.complete || img1.naturalWidth === 0) return;
 
     // Cap DPR at 2 for mobile GPU efficiency
     const dpr = Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1);
@@ -147,16 +145,8 @@ export default function KunafaExplodeCanvas() {
     ctx.imageSmoothingQuality = "high";
 
     try {
-      ctx.drawImage(img1, offsetX, offsetY, drawWidth, drawHeight);
-
-      // Micro-blend next frame for seamless sub-frame continuous animation
-      if (blend > 0.02 && img2 && img2.complete && img2.naturalWidth > 0 && frameFloor !== frameCeil) {
-        ctx.globalAlpha = blend;
-        ctx.drawImage(img2, offsetX, offsetY, drawWidth, drawHeight);
-        ctx.globalAlpha = 1.0;
-      }
-
-      lastDrawnIndexRef.current = frameFloor;
+      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
+      lastDrawnFrameRef.current = clampedIndex;
     } catch {
       // Safe fallback
     }
@@ -213,44 +203,53 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single synchronized scroll handler with requestAnimationFrame
+  // Inertial LERP continuous animation loop for ultra-smooth 60/120fps motion
   useEffect(() => {
     let animFrame: number;
-    let lastProgress = -1;
+    let isRunning = true;
 
-    const handleScroll = () => {
+    const updateTarget = () => {
       if (!containerRef.current) return;
-
       const rect = containerRef.current.getBoundingClientRect();
       const totalScrollable = rect.height - window.innerHeight;
       if (totalScrollable <= 0) return;
-
       const scrolled = -rect.top;
       const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      targetProgressRef.current = p;
+    };
+
+    const renderLoop = () => {
+      if (!isRunning) return;
+
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.0001) {
+        currentProgressRef.current += diff * 0.18;
+      } else {
+        currentProgressRef.current = targetProgressRef.current;
+      }
+
+      const p = currentProgressRef.current;
       setProgress(p);
 
-      // Smooth continuous floating frame index
-      const exactFrame = p * (TOTAL_FRAMES - 1);
-      if (Math.abs(p - lastProgress) > 0.0005) {
-        lastProgress = p;
-        drawFrame(exactFrame);
+      const targetFrame = Math.round(p * (TOTAL_FRAMES - 1));
+      if (targetFrame !== lastDrawnFrameRef.current) {
+        drawFrame(targetFrame);
       }
+
+      animFrame = requestAnimationFrame(renderLoop);
     };
 
-    const onScroll = () => {
-      cancelAnimationFrame(animFrame);
-      animFrame = requestAnimationFrame(handleScroll);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    window.addEventListener("orientationchange", onScroll, { passive: true });
-    handleScroll();
+    window.addEventListener("scroll", updateTarget, { passive: true });
+    window.addEventListener("resize", updateTarget, { passive: true });
+    window.addEventListener("orientationchange", updateTarget, { passive: true });
+    updateTarget();
+    animFrame = requestAnimationFrame(renderLoop);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      window.removeEventListener("orientationchange", onScroll);
+      isRunning = false;
+      window.removeEventListener("scroll", updateTarget);
+      window.removeEventListener("resize", updateTarget);
+      window.removeEventListener("orientationchange", updateTarget);
       cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);
