@@ -89,7 +89,7 @@ export default function Footer() {
                 href="https://wa.me/919000000000"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans text-xs font-black px-6 py-3 rounded-full transition-all active:scale-95 hover:scale-105 shadow-md"
+                className="btn-tactile-gold inline-flex items-center gap-2 font-sans text-xs font-bold px-6 py-2.5 rounded-lg"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Order on WhatsApp</span>

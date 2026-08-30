@@ -36,7 +36,7 @@ export default function MenuPreview() {
 
         {/* 3D WebGL CircularGallery Showcase from React Bits - Mobile Optimized */}
         <div className="relative w-full mb-12 sm:mb-16">
-          <div className="relative h-[320px] xs:h-[360px] sm:h-[460px] lg:h-[520px] w-full rounded-[24px] sm:rounded-[32px] bg-[#0c0c0c] border border-white/10 shadow-2xl overflow-hidden">
+          <div className="relative h-[320px] xs:h-[360px] sm:h-[460px] lg:h-[520px] w-full rounded-xl bg-[#0c0c0c] border border-white/10 shadow-2xl overflow-hidden">
             <CircularGallery
               items={GALLERY_ITEMS}
               bend={2.5}
@@ -57,7 +57,7 @@ export default function MenuPreview() {
             href="https://wa.me/919000000000?text=Hi%20Captain%20Kunafa!%20I'd%20like%20to%20place%20an%20order."
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2.5 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-xs sm:text-sm px-8 py-4 rounded-full transition-all cursor-pointer hover:scale-105 shadow-lg"
+            className="btn-tactile-gold flex items-center justify-center gap-2.5 font-sans font-bold text-xs sm:text-sm px-7 py-3 rounded-lg"
           >
             <MessageCircle className="w-4 h-4 text-[#000000]" />
             <span>Order on WhatsApp</span>

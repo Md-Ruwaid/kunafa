@@ -157,11 +157,11 @@ export default function CaptainsChart() {
                 aria-label={`View ${branch.name} on map`}
                 aria-pressed={isCurrent}
                 onClick={() => handleSelectBranch(idx)}
-                className={`font-mono text-[10.5px] sm:text-xs px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]
+                className={`font-mono text-[10.5px] sm:text-xs px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg border transition-all duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D]
                   ${
                     isCurrent
-                      ? "bg-[#EFB80D] text-[#000000] border-[#EFB80D] font-black scale-105 shadow-[0_0_20px_rgba(239,184,13,0.4)]"
-                      : "bg-[#141414] text-white/75 border-white/10 hover:border-[#EFB80D]/50 hover:text-white font-semibold"
+                      ? "btn-tactile-gold font-black shadow-[0_0_20px_rgba(239,184,13,0.3)]"
+                      : "btn-tactile-dark text-white/80 font-semibold"
                   }`}
               >
                 <span>{branch.code} · {branch.name}</span>
@@ -173,7 +173,7 @@ export default function CaptainsChart() {
         {/* Map & Active Branch Spotlight Card Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
           {/* Map Container with Mode Controls */}
-          <div className="lg:col-span-7 flex flex-col rounded-[20px] sm:rounded-[28px] overflow-hidden border border-white/10 shadow-2xl bg-[#0c0c0c]">
+          <div className="lg:col-span-7 flex flex-col rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-[#0c0c0c]">
             {/* Map Top Bar with Live Mode Toggle & Google Maps Direct Link */}
             <div className="flex items-center justify-between px-3.5 sm:px-5 py-2.5 bg-[#121212] border-b border-white/10 z-20">
               <div className="flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-white/80 font-bold">
@@ -183,11 +183,11 @@ export default function CaptainsChart() {
 
               <div className="flex items-center gap-2">
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-lg border border-white/10 text-[10px] sm:text-xs font-mono">
+                <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-md border border-white/10 text-[10px] sm:text-xs font-mono">
                   <button
                     type="button"
                     onClick={() => setMapMode("google")}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                       mapMode === "google"
                         ? "bg-[#EFB80D] text-black font-black shadow-sm"
                         : "text-white/70 hover:text-white"
@@ -199,7 +199,7 @@ export default function CaptainsChart() {
                   <button
                     type="button"
                     onClick={() => setMapMode("nautical")}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                       mapMode === "nautical"
                         ? "bg-[#EFB80D] text-black font-black shadow-sm"
                         : "text-white/70 hover:text-white"
@@ -266,7 +266,7 @@ export default function CaptainsChart() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.15 }}
-                  className="bg-[#121212] border-2 border-[#EFB80D] rounded-[20px] sm:rounded-[28px] p-5 sm:p-7 relative overflow-hidden shadow-2xl"
+                  className="bg-[#121212] border-2 border-[#EFB80D] rounded-xl p-5 sm:p-7 relative overflow-hidden shadow-2xl"
                 >
                   {/* Header */}
                   <div className="mb-3">
@@ -318,7 +318,7 @@ export default function CaptainsChart() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
-                      className="flex flex-col items-center justify-center gap-1 bg-[#EFB80D] hover:bg-white text-[#000000] font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-xl transition-all cursor-pointer active:scale-95 shadow-sm focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+                      className="btn-tactile-gold flex flex-col items-center justify-center gap-1 font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-lg"
                     >
                       <Navigation className="w-3.5 h-3.5" />
                       <span>Directions</span>
@@ -330,7 +330,7 @@ export default function CaptainsChart() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`WhatsApp ${activeBranch.name}`}
-                      className="flex flex-col items-center justify-center gap-1 bg-[#1c1c1c] hover:bg-[#25D366] hover:text-white text-white font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-xl border border-white/10 transition-all cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+                      className="btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-[#25D366]"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       <span>WhatsApp</span>
@@ -340,7 +340,7 @@ export default function CaptainsChart() {
                     <a
                       href={`tel:${activeBranch.phone.replace(/\s/g, "")}`}
                       aria-label={`Call ${activeBranch.name}`}
-                      className="flex flex-col items-center justify-center gap-1 bg-[#1c1c1c] hover:bg-white hover:text-black text-white font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-xl border border-white/10 transition-all cursor-pointer active:scale-95 focus-visible:outline-2 focus-visible:outline-[#EFB80D]"
+                      className="btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-white"
                     >
                       <Phone className="w-3.5 h-3.5" />
                       <span>Call</span>

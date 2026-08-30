@@ -14,9 +14,9 @@
   --color-void: #030303;
   --color-deck-dark: #050505;
 
-  --radius-card: 20px;
-  --radius-photo: 16px;
-  --radius-pill: 9999px;
+  --radius-card: 10px;
+  --radius-photo: 8px;
+  --radius-pill: 8px;
 
   --font-display: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-work-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -168,6 +168,166 @@
   border-radius: 6px !important;
   margin: 4px !important;
   padding: 2px 6px !important;
+}
+
+/* =========================================================================
+   Tactile 3D Buttons (from Uiverse.io by TCdesign-dev)
+   ========================================================================= */
+
+.button-name,
+.btn-tactile {
+  align-items: center;
+  appearance: none;
+  background-color: #fcfcfd;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow:
+    rgba(45, 35, 66, 0.2) 0 2px 4px,
+    rgba(45, 35, 66, 0.15) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #1a1a24;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s,
+    transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+}
+
+.button-name:focus-visible,
+.btn-tactile:focus-visible {
+  box-shadow:
+    #d6d6e7 0 0 0 1.5px inset,
+    rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  outline: none !important;
+}
+
+.button-name:hover,
+.btn-tactile:hover {
+  box-shadow:
+    rgba(45, 35, 66, 0.3) 0 4px 8px,
+    rgba(45, 35, 66, 0.2) 0 7px 13px -3px,
+    #d6d6e7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-name:active,
+.btn-tactile:active {
+  box-shadow: #d6d6e7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Gold Variant for Primary CTAs */
+.btn-tactile-gold {
+  align-items: center;
+  appearance: none;
+  background-color: #EFB80D;
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow:
+    rgba(0, 0, 0, 0.35) 0 2px 4px,
+    rgba(239, 184, 13, 0.3) 0 7px 13px -3px,
+    #b88a03 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #000000;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
+  position: relative;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease,
+    background-color 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+}
+
+.btn-tactile-gold:focus-visible {
+  box-shadow:
+    #b88a03 0 0 0 1.5px inset,
+    rgba(0, 0, 0, 0.4) 0 2px 4px,
+    rgba(239, 184, 13, 0.4) 0 7px 13px -3px,
+    #b88a03 0 -3px 0 inset;
+  outline: none !important;
+}
+
+.btn-tactile-gold:hover {
+  background-color: #f7c525;
+  box-shadow:
+    rgba(0, 0, 0, 0.4) 0 4px 8px,
+    rgba(239, 184, 13, 0.4) 0 8px 16px -2px,
+    #b88a03 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.btn-tactile-gold:active {
+  box-shadow: #b88a03 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* Dark Variant for Branch Actions */
+.btn-tactile-dark {
+  align-items: center;
+  appearance: none;
+  background-color: #1a1a1a;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    rgba(0, 0, 0, 0.5) 0 2px 4px,
+    rgba(0, 0, 0, 0.3) 0 6px 12px -3px,
+    #111111 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #FFF8EC;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
+  position: relative;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+}
+
+.btn-tactile-dark:hover {
+  background-color: #262626;
+  border-color: rgba(239, 184, 13, 0.5);
+  box-shadow:
+    rgba(0, 0, 0, 0.6) 0 4px 8px,
+    rgba(0, 0, 0, 0.4) 0 8px 14px -3px,
+    #111111 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.btn-tactile-dark:active {
+  box-shadow: #111111 0 3px 7px inset;
+  transform: translateY(2px);
 }
 
 
