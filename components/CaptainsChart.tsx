@@ -164,7 +164,7 @@ export default function CaptainsChart() {
                       : "btn-tactile-dark text-white/80 font-semibold"
                   }`}
               >
-                <span>{branch.code} · {branch.name}</span>
+                <span>{branch.name}</span>
               </button>
             );
           })}

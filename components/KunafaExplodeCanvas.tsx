@@ -294,20 +294,37 @@ export default function KunafaExplodeCanvas() {
     };
   }, [drawFrame]);
 
-  // Single RAF loop — reads Lenis-smoothed scroll directly, updates canvas + text overlays via DOM
+  // Single high-performance RAF loop — reads scroll with zero layout thrashing
   useEffect(() => {
     let animFrame: number;
     let isRunning = true;
+    let cachedTotalScrollable = 0;
+    let lastScrollY = -1;
+
+    const measureLayout = () => {
+      if (containerRef.current) {
+        cachedTotalScrollable = containerRef.current.offsetHeight - window.innerHeight;
+      }
+    };
+
+    measureLayout();
+    window.addEventListener("resize", measureLayout, { passive: true });
 
     const tick = () => {
       if (!isRunning) return;
 
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const totalScrollable = rect.height - window.innerHeight;
-        if (totalScrollable > 0) {
-          const scrolled = -rect.top;
-          const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
+      const currentScrollY = window.scrollY;
+
+      // Only perform layout/draw updates when scroll position actually changes
+      if (currentScrollY !== lastScrollY) {
+        lastScrollY = currentScrollY;
+
+        if (cachedTotalScrollable <= 0) {
+          measureLayout();
+        }
+
+        if (cachedTotalScrollable > 0) {
+          const p = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
           progressRef.current = p;
 
           // Draw the correct frame for current device
@@ -333,8 +350,10 @@ export default function KunafaExplodeCanvas() {
             const translateX = getActX(p, ACTS[i].range, ACTS[i].align);
 
             if (opacity <= 0.001) {
-              el.style.opacity = "0";
-              el.style.visibility = "hidden";
+              if (el.style.visibility !== "hidden") {
+                el.style.opacity = "0";
+                el.style.visibility = "hidden";
+              }
             } else {
               el.style.opacity = String(opacity);
               el.style.visibility = "visible";
@@ -354,6 +373,7 @@ export default function KunafaExplodeCanvas() {
 
     return () => {
       isRunning = false;
+      window.removeEventListener("resize", measureLayout);
       cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);

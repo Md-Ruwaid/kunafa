@@ -125,7 +125,7 @@ function CaptainsMap({
                 click: () => onSelectBranch(idx),
               }}
               keyboard={true}
-              title={`${branch.code}: ${branch.name}`}
+              title={branch.name}
               alt={branch.name}
             />
           );

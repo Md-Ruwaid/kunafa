@@ -488,7 +488,26 @@ class App {
     }
   }
 
+  isPaused = false;
+
+  pause() {
+    this.isPaused = true;
+    if (this.raf) {
+      window.cancelAnimationFrame(this.raf);
+      this.raf = 0;
+    }
+  }
+
+  resume() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    if (!this.raf) {
+      this.update();
+    }
+  }
+
   update() {
+    if (this.isPaused) return;
     // Dynamic ease: direct tracking when dragging, fluid glide on momentum
     const currentEase = this.isDown ? 0.18 : this.scroll.ease;
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, currentEase);
@@ -569,7 +588,6 @@ export default function CircularGallery({
     let app: App | null = null;
     let isMounted = true;
 
-    if (!isMounted || !containerRef.current) return;
     app = new App(containerRef.current, {
       items,
       bend,
@@ -578,8 +596,25 @@ export default function CircularGallery({
       scrollEase,
     });
 
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!app) return;
+          if (entry.isIntersecting) {
+            app.resume();
+          } else {
+            app.pause();
+          }
+        },
+        { threshold: 0.02 }
+      );
+      observer.observe(containerRef.current);
+    }
+
     return () => {
       isMounted = false;
+      if (observer) observer.disconnect();
       if (app) app.destroy();
     };
   }, [items, bend, borderRadius, scrollSpeed, scrollEase]);
