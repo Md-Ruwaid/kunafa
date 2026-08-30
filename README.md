@@ -44,7 +44,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 The repository contains two high-resolution frame sequences under `public/`:
 - `public/Kunafa-animations-v2/` (100 widescreen frames, `1280x720`): Desktop scrollytelling explosion sequence.
-- `public/mobile-view-kunafa/` (130 portrait frames, `720x1280`): Mobile-optimized vertical levitation and explosion sequence.
+- `public/mobile-view-framesv2/` (50 portrait frames, `720x1280`): Mobile-optimized vertical levitation and explosion sequence.
 
 The engine (`KunafaExplodeCanvas.tsx`) dynamically detects the active viewport, preloading only the necessary frame sequence on demand to minimize network payload and bandwidth usage.
 

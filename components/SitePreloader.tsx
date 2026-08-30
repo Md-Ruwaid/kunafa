@@ -31,7 +31,7 @@ export default function SitePreloader({ onComplete }: SitePreloaderProps) {
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
     // Build list of assets to preload: critical images + first 15 frames of hero
-    const folder = isMobile ? "/mobile-view-kunafa" : "/Kunafa-animations-v2";
+    const folder = isMobile ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
     const pad = (n: number) => String(n).padStart(3, "0");
     const frameUrls: string[] = [];
     for (let i = 1; i <= 15; i++) {

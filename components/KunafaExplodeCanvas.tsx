@@ -8,7 +8,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 130;
+const MOBILE_FRAMES = 50;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -17,10 +17,8 @@ function pad(n: number): string {
 }
 
 // Mobile non-linear frame distribution curve:
-// Spends ~80% of the scroll track savoring the slow levitation and initial lift (frames 1-85)
-// and concentrates the fully exploded end frame to only the last 20% of scroll
 function getFrameProgress(progress: number, isMobile: boolean): number {
-  return isMobile ? Math.pow(progress, 1.75) : progress;
+  return isMobile ? Math.pow(progress, 1.25) : progress;
 }
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
@@ -189,7 +187,7 @@ export default function KunafaExplodeCanvas() {
       else hasPreloadedDesktopRef.current = true;
 
       const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
-      const folder = isMob ? "/mobile-view-kunafa" : "/Kunafa-animations-v2";
+      const folder = isMob ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
       const loadedArr: HTMLImageElement[] = new Array(count);
 
       for (let i = 1; i <= count; i++) {
