@@ -365,10 +365,10 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[900vh] sm:h-[750vh] bg-[#030303]"
+      className="relative w-full h-[900vh] sm:h-[750vh] bg-transparent"
     >
       {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-transparent">
         {/* Canvas */}
         <canvas
           ref={canvasRef}

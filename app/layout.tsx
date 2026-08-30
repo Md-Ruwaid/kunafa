@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import RadiantBackground from "@/components/RadiantBackground";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -134,7 +135,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="bg-[#050505] text-[#FFF8EC] font-sans selection:bg-[#EFB80D]/30 selection:text-[#EFB80D] min-h-screen flex flex-col antialiased">
+      <body className="relative bg-[#030303] text-[#FFF8EC] font-sans selection:bg-[#EFB80D]/30 selection:text-[#EFB80D] min-h-screen flex flex-col antialiased">
+        <RadiantBackground />
         <SmoothScroll>
           <Navbar />
           <div className="grow">{children}</div>

@@ -13,7 +13,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#030303] text-[#FFF8EC] border-t border-[#222222] pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
+    <footer className="bg-[#030303]/80 backdrop-blur-md text-[#FFF8EC] border-t border-white/10 pt-16 sm:pt-20 pb-10 sm:pb-12 px-4 sm:px-8 relative overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Main Footer Row */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 pb-12 sm:pb-16 border-b border-white/10">

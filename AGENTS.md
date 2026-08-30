@@ -7,3 +7,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:caveman-agent-rules -->
+
+# Caveman Agent Skill Setup
+
+This repository has **Caveman** skills installed (`JuliusBrussee/caveman`).
+- Skills location: `.agents/skills/`, `.claude/skills/`, and `agent/skills/`.
+- Available skills: `caveman`, `cavecrew`, `caveman-commit`, `caveman-compress`, `caveman-discover`, `caveman-evidence-review`, `caveman-explore`, `caveman-help`, `caveman-learn`, `caveman-manage`, `caveman-optimize`, `caveman-review`, `caveman-setup`, `caveman-stats`, `investigate-first`, `lean-build`, `migration`, `safe-refactor`, `surgical-patch`, `verify-and-stop`.
+- Mode controls: `/caveman` (full), `/caveman lite`, `/caveman ultra`, `/caveman off`.
+- Ultra-compressed communication mode reduces output tokens while maintaining technical precision, code accuracy, and safety constraints.
+
+<!-- END:caveman-agent-rules -->
+

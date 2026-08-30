@@ -298,7 +298,50 @@
   transform: translateY(2px);
 }
 
+/* =========================================================================
+   Radiant Magical Ambient Background Animations
+   ========================================================================= */
 
+@keyframes radiantPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.18) translate(15px, -20px);
+  }
+}
 
+@keyframes radiantFloatSlow {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(35px, -40px) rotate(5deg);
+  }
+  66% {
+    transform: translate(-25px, 25px) rotate(-5deg);
+  }
+}
 
+@keyframes radiantFloatReverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-40px, 45px) scale(1.22);
+  }
+}
 
+.animate-radiant-pulse {
+  animation: radiantPulse 9s ease-in-out infinite;
+}
+
+.animate-radiant-float-1 {
+  animation: radiantFloatSlow 18s ease-in-out infinite;
+}
+
+.animate-radiant-float-2 {
+  animation: radiantFloatReverse 22s ease-in-out infinite;
+}

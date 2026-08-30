@@ -7,7 +7,7 @@ import CaptainsChart from "@/components/CaptainsChart";
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-[#050505]">
+    <main className="relative min-h-screen bg-transparent">
       {/* Global Site Loading Page (locks website until loading complete) */}
       <SitePreloader />
 
