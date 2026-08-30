@@ -17,43 +17,19 @@ const navLinks = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [visible, setVisible] = useState(true);
   const [activeSection, setActiveSection] = useState<string>("story");
-  const lastScrollY = useRef(0);
+  const storySectionRef = useRef<HTMLElement | null>(null);
 
-  // Auto-hide on scroll down, reveal on scroll up
+  // Navbar background on scroll — always stays fixed at top
   useEffect(() => {
-    let ticking = false;
-
     const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-
-          // Set background styling threshold
-          setScrolled(currentScrollY > 20);
-
-          // Auto-hide when scrolling down, show when scrolling up
-          if (currentScrollY <= 30) {
-            setVisible(true);
-          } else if (currentScrollY > lastScrollY.current + 8 && currentScrollY > 80) {
-            // Scrolling down
-            if (!mobileOpen) setVisible(false);
-          } else if (currentScrollY < lastScrollY.current - 8) {
-            // Scrolling up
-            setVisible(true);
-          }
-
-          lastScrollY.current = currentScrollY;
-          ticking = false;
-        });
-        ticking = true;
-      }
+      setScrolled(window.scrollY > 20);
     };
 
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [mobileOpen]);
+  }, []);
 
   // Lock body scroll when mobile drawer is open (5.1)
   useEffect(() => {
@@ -83,28 +59,61 @@ export default function Navbar() {
     };
   }, []);
 
-  // Track active section for desktop nav highlighting (5.2)
+  // Track active section for nav highlighting
   useEffect(() => {
-    const sections = navLinks.map((l) => document.getElementById(l.id)).filter(Boolean) as HTMLElement[];
+    const storyEl = document.getElementById("story");
+    storySectionRef.current = storyEl;
+
+    const sections = navLinks
+      .map((l) => document.getElementById(l.id))
+      .filter(Boolean) as HTMLElement[];
     if (sections.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-20% 0px -70% 0px" }
-    );
+    const updateActiveSection = () => {
+      const story = storySectionRef.current;
+      if (!story) return;
 
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+      const storyBottom = story.offsetTop + story.offsetHeight;
+      const scrollBottom = window.scrollY + window.innerHeight;
+
+      // Keep Home active while inside the hero scrollytelling track
+      if (scrollBottom < storyBottom - window.innerHeight * 0.15) {
+        setActiveSection("story");
+        return;
+      }
+
+      // Otherwise pick the section with the largest visible area
+      let bestId = "story";
+      let bestRatio = 0;
+
+      for (const section of sections) {
+        if (section.id === "story") continue;
+        const rect = section.getBoundingClientRect();
+        const visible = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+        if (visible <= 0) continue;
+        const ratio = visible / window.innerHeight;
+        if (ratio > bestRatio) {
+          bestRatio = ratio;
+          bestId = section.id;
+        }
+      }
+
+      setActiveSection(bestId);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
   }, []);
 
-  const handleLink = (href: string) => {
+  const handleLink = (href: string, sectionId: string) => {
     setMobileOpen(false);
+    setActiveSection(sectionId);
     scrollToWithLenis(href);
   };
 
@@ -114,11 +123,7 @@ export default function Navbar() {
   );
 
   return (
-    <header
-      className={`fixed top-0 inset-x-0 z-50 px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5 transform transition-transform duration-300 ease-in-out ${
-        visible ? "translate-y-0" : "-translate-y-full pointer-events-none"
-      }`}
-    >
+    <header className="fixed top-0 inset-x-0 z-50 px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-3.5">
       <div
         className={`max-w-7xl mx-auto flex items-center justify-between transition-all duration-300 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl ${
           scrolled
@@ -131,6 +136,7 @@ export default function Navbar() {
           type="button"
           onClick={() => {
             setMobileOpen(false);
+            setActiveSection("story");
             scrollToWithLenis(0);
           }}
           className="flex items-center gap-2 sm:gap-3 group cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] rounded-md text-left"
@@ -159,7 +165,7 @@ export default function Navbar() {
                 key={link.href}
                 type="button"
                 aria-current={isActive ? "page" : undefined}
-                onClick={() => handleLink(link.href)}
+                onClick={() => handleLink(link.href, link.id)}
                 className={`font-sans text-xs uppercase tracking-wider px-3.5 py-1.5 rounded-md font-semibold transition-all duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#EFB80D] ${
                   isActive
                     ? "bg-[#EFB80D] text-[#000000]"
@@ -210,16 +216,23 @@ export default function Navbar() {
             id="mobile-nav-drawer"
             className="md:hidden relative z-50 mt-2 max-w-xs sm:max-w-sm mx-auto bg-[#111111] border border-[#EFB80D]/40 rounded-xl p-3 flex flex-col gap-1 shadow-2xl"
           >
-            {navLinks.map((link) => (
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
               <button
                 key={link.href}
                 type="button"
-                onClick={() => handleLink(link.href)}
-                className="font-sans text-sm font-semibold text-left px-3.5 py-2.5 rounded-lg text-white hover:bg-[#EFB80D] hover:text-[#000000] active:bg-[#EFB80D] transition-colors cursor-pointer"
+                onClick={() => handleLink(link.href, link.id)}
+                className={`font-sans text-sm font-semibold text-left px-3.5 py-2.5 rounded-lg transition-colors cursor-pointer ${
+                  isActive
+                    ? "bg-[#EFB80D] text-[#000000]"
+                    : "text-white hover:bg-[#EFB80D] hover:text-[#000000] active:bg-[#EFB80D]"
+                }`}
               >
                 {link.label}
               </button>
-            ))}
+              );
+            })}
             <a
               href={orderWhatsAppUrl}
               target="_blank"
