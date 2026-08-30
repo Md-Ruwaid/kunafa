@@ -95,21 +95,27 @@ export default function KunafaExplodeCanvas() {
 
   const lastDrawnIndexRef = useRef(0);
 
-  // Canvas drawing with subtle zoom-in and smooth center alignment
-  const drawFrame = useCallback((index: number) => {
+  // Continuous sub-frame rendering with dual-frame blending for maximum smoothness
+  const drawFrame = useCallback((exactIndex: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    let targetImg = imagesRef.current[index];
-    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
-      targetImg = imagesRef.current[lastDrawnIndexRef.current];
-    }
-    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
 
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    // Cap DPR at 2 for mobile GPU battery/memory efficiency
+    const frameFloor = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.floor(exactIndex)));
+    const frameCeil = Math.max(0, Math.min(TOTAL_FRAMES - 1, Math.ceil(exactIndex)));
+    const blend = exactIndex - frameFloor;
+
+    let img1 = imagesRef.current[frameFloor];
+    let img2 = imagesRef.current[frameCeil];
+
+    if (!img1 || !img1.complete || img1.naturalWidth === 0) {
+      img1 = imagesRef.current[lastDrawnIndexRef.current];
+    }
+    if (!img1 || !img1.complete || img1.naturalWidth === 0) return;
+
+    // Cap DPR at 2 for mobile GPU efficiency
     const dpr = Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1);
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
@@ -126,7 +132,6 @@ export default function KunafaExplodeCanvas() {
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    // Subtle zoom-in (1.14x) so the kunafa is prominent and delicious while preserving full explosion visibility
     const isMobile = width < 768;
     const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
     const scale = isMobile ? baseScale * 1.05 : baseScale * 1.15;
@@ -142,8 +147,16 @@ export default function KunafaExplodeCanvas() {
     ctx.imageSmoothingQuality = "high";
 
     try {
-      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
-      lastDrawnIndexRef.current = index;
+      ctx.drawImage(img1, offsetX, offsetY, drawWidth, drawHeight);
+
+      // Micro-blend next frame for seamless sub-frame continuous animation
+      if (blend > 0.02 && img2 && img2.complete && img2.naturalWidth > 0 && frameFloor !== frameCeil) {
+        ctx.globalAlpha = blend;
+        ctx.drawImage(img2, offsetX, offsetY, drawWidth, drawHeight);
+        ctx.globalAlpha = 1.0;
+      }
+
+      lastDrawnIndexRef.current = frameFloor;
     } catch {
       // Safe fallback
     }
@@ -203,7 +216,7 @@ export default function KunafaExplodeCanvas() {
   // Single synchronized scroll handler with requestAnimationFrame
   useEffect(() => {
     let animFrame: number;
-    let lastFrame = -1;
+    let lastProgress = -1;
 
     const handleScroll = () => {
       if (!containerRef.current) return;
@@ -216,13 +229,11 @@ export default function KunafaExplodeCanvas() {
       const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
       setProgress(p);
 
-      const targetFrame = Math.min(
-        TOTAL_FRAMES - 1,
-        Math.floor(p * TOTAL_FRAMES)
-      );
-      if (targetFrame !== lastFrame) {
-        lastFrame = targetFrame;
-        drawFrame(targetFrame);
+      // Smooth continuous floating frame index
+      const exactFrame = p * (TOTAL_FRAMES - 1);
+      if (Math.abs(p - lastProgress) > 0.0005) {
+        lastProgress = p;
+        drawFrame(exactFrame);
       }
     };
 
@@ -247,42 +258,30 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[550vh] sm:h-[600vh] bg-[#030303]"
+      className="relative w-full h-[700vh] sm:h-[750vh] bg-[#030303]"
     >
-      {/* Preloader / Initial Loading indicator */}
+      {/* Preloader / Initial Loading indicator — Clean, Textless Luxury Loader */}
       <AnimatePresence>
         {!isLoaded && (
           <motion.div
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303] text-[#FFF8EC]"
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030303]"
           >
-            <div className="relative mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#111111] border border-white/10 flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+            <div className="relative flex flex-col items-center">
+              {/* Minimalist Captain Gold Spinner */}
+              <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center bg-[#0c0c0c] shadow-2xl mb-5">
+                <div className="w-7 h-7 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
               </div>
-            </div>
 
-            <div className="font-display font-bold text-xl sm:text-2xl text-white mb-3">
-              PREPARING THE HEARTH
-            </div>
-
-            {/* Progress bar */}
-            <div className="w-48 h-1 bg-[#111111] rounded-full overflow-hidden mb-3 border border-white/5">
-              <div
-                className="h-full bg-[#EFB80D] transition-all duration-150 ease-out"
-                style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] sm:text-xs text-white/50">
-                LOADING EXPERIENCE
-              </span>
-              <span className="font-mono text-[10px] sm:text-xs text-[#EFB80D]">
-                {Math.round((loadedCount / TOTAL_FRAMES) * 100)}%
-              </span>
+              {/* Ultra-slim progress indicator without text */}
+              <div className="w-36 h-0.5 bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_8px_#EFB80D]"
+                  style={{ width: `${(loadedCount / TOTAL_FRAMES) * 100}%` }}
+                />
+              </div>
             </div>
           </motion.div>
         )}
