@@ -97,6 +97,8 @@ export default function KunafaExplodeCanvas() {
   const lastDrawnFrameRef = useRef(-1);
   const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
+  const lastDrawnPRef = useRef(-1);
+
   // Cache canvas layout dimensions via ResizeObserver — runs only on resize
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -121,7 +123,7 @@ export default function KunafaExplodeCanvas() {
 
       // Redraw current frame at new size
       if (lastDrawnFrameRef.current >= 0) {
-        drawFrame(lastDrawnFrameRef.current);
+        drawFrame(lastDrawnFrameRef.current, progressRef.current);
       }
     };
 
@@ -133,8 +135,8 @@ export default function KunafaExplodeCanvas() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // High-performance single frame draw — no context acquisition, no resize logic
-  const drawFrame = useCallback((frameIndex: number) => {
+  // High-performance dynamic zoom frame draw — close-up on initial view, smoothly zooms out on scroll
+  const drawFrame = useCallback((frameIndex: number, currentProgress: number = 0) => {
     const ctx = ctxRef.current;
     if (!ctx) return;
 
@@ -157,14 +159,52 @@ export default function KunafaExplodeCanvas() {
     ctx.fillRect(0, 0, width, height);
 
     const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
-    const scale = isMobile ? baseScale * 1.05 : baseScale * 1.15;
 
+    // ── Dynamic Zoom Curve ──
+    // On Mobile: Starts dramatically zoomed in (1.75x) on initial view to fill the screen with mouth-watering detail
+    // and smoothly zooms out to 1.08x between p=0.0 and p=0.22 as the explosion begins.
+    // On Desktop: Starts at 1.30x cinematic close-up and eases out to 1.15x.
+    let zoomFactor = 1;
+    if (isMobile) {
+      const zoomProgress = Math.min(1, Math.max(0, currentProgress / 0.22));
+      const ease = 0.5 * (1 + Math.cos(Math.PI * zoomProgress)); // 1.0 at start -> 0.0 at end of zoom
+      zoomFactor = 1.08 + (1.75 - 1.08) * ease;
+    } else {
+      const zoomProgress = Math.min(1, Math.max(0, currentProgress / 0.20));
+      const ease = 0.5 * (1 + Math.cos(Math.PI * zoomProgress));
+      zoomFactor = 1.15 + (1.30 - 1.15) * ease;
+    }
+
+    const scale = baseScale * zoomFactor;
     const drawWidth = FRAME_WIDTH * scale;
     const drawHeight = FRAME_HEIGHT * scale;
     const offsetX = (width - drawWidth) / 2;
-    const offsetY = isMobile
-      ? Math.max(0, (height - drawHeight) / 2 + 55)
-      : (height - drawHeight) / 2;
+
+    // Dynamic vertical framing on mobile
+    let offsetY = (height - drawHeight) / 2;
+    if (isMobile) {
+      const posProgress = Math.min(1, Math.max(0, currentProgress / 0.22));
+      offsetY = (height - drawHeight) / 2 + 25 + posProgress * 30;
+    }
+
+    // Ambient warm golden hearth glow behind the kunafa at the beginning
+    if (currentProgress < 0.25) {
+      const glowOpacity = Math.max(0, 1 - currentProgress / 0.25) * 0.35;
+      const glowRadius = Math.min(width, height) * (isMobile ? 0.7 : 0.55);
+      const gradient = ctx.createRadialGradient(
+        width / 2,
+        offsetY + drawHeight / 2,
+        15,
+        width / 2,
+        offsetY + drawHeight / 2,
+        glowRadius
+      );
+      gradient.addColorStop(0, `rgba(239, 184, 13, ${glowOpacity})`);
+      gradient.addColorStop(0.5, `rgba(224, 83, 68, ${glowOpacity * 0.25})`);
+      gradient.addColorStop(1, "rgba(3, 3, 3, 0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
 
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
@@ -172,6 +212,7 @@ export default function KunafaExplodeCanvas() {
     try {
       ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
       lastDrawnFrameRef.current = clampedIndex;
+      lastDrawnPRef.current = currentProgress;
     } catch {
       // Safe fallback
     }
@@ -198,12 +239,12 @@ export default function KunafaExplodeCanvas() {
         setLoadedCount(count);
         if (i === 1) {
           imagesRef.current[0] = img;
-          drawFrame(0);
+          drawFrame(0, 0);
         }
         if (count >= TOTAL_FRAMES) {
           imagesRef.current = loadedImages;
           setIsLoaded(true);
-          drawFrame(0);
+          drawFrame(0, 0);
         }
       };
 
@@ -214,7 +255,7 @@ export default function KunafaExplodeCanvas() {
         if (count >= TOTAL_FRAMES) {
           imagesRef.current = loadedImages;
           setIsLoaded(true);
-          drawFrame(0);
+          drawFrame(0, 0);
         }
       };
 
@@ -241,10 +282,12 @@ export default function KunafaExplodeCanvas() {
           const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
           progressRef.current = p;
 
-          // Draw the correct frame
+          // Draw the correct frame & update dynamic zoom during scroll
           const targetFrame = Math.round(p * (TOTAL_FRAMES - 1));
-          if (targetFrame !== lastDrawnFrameRef.current) {
-            drawFrame(targetFrame);
+          const shouldRedrawZoom = p < 0.25 && Math.abs(p - lastDrawnPRef.current) > 0.001;
+
+          if (targetFrame !== lastDrawnFrameRef.current || shouldRedrawZoom) {
+            drawFrame(targetFrame, p);
           }
 
           // Update text overlay opacity/transforms directly via DOM — zero React re-renders
@@ -330,6 +373,12 @@ export default function KunafaExplodeCanvas() {
               {/* Mobile */}
               <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
                 <div className="max-w-md mx-auto py-2">
+                  {idx === 0 && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#141414]/90 border border-[#EFB80D]/30 text-[9.5px] font-mono tracking-widest text-[#EFB80D] uppercase mb-2 shadow-lg backdrop-blur-md">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D] animate-ping" />
+                      <span>LIVE COPPER HEARTH</span>
+                    </div>
+                  )}
                   <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
                     {act.headline}
                   </h2>
@@ -358,6 +407,12 @@ export default function KunafaExplodeCanvas() {
                       : "text-left"
                   }`}
                 >
+                  {idx === 0 && (
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#141414]/90 border border-[#EFB80D]/30 text-xs font-mono tracking-widest text-[#EFB80D] uppercase mb-3 shadow-lg backdrop-blur-md">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D] animate-ping" />
+                      <span>AUTHENTIC LEVANTINE RECIPE · LIVE HEARTH</span>
+                    </div>
+                  )}
                   <h2
                     className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
                       act.align === "center"
@@ -380,10 +435,10 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute inset-x-0 bottom-0 h-32 sm:h-48 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10" />
 
         {/* Mobile scroll hint */}
-        <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
-          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest text-white/60 bg-[#030303] px-3 py-1 rounded-full border border-white/10">
+        <div className="absolute bottom-5 inset-x-0 z-20 flex justify-center pointer-events-none md:hidden">
+          <div className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-widest text-[#EFB80D] bg-[#111111]/90 px-3.5 py-1.5 rounded-full border border-[#EFB80D]/30 shadow-lg backdrop-blur-md animate-bounce">
             <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D]" />
-            <span>SCROLL TO SAIL</span>
+            <span>SWIPE TO SAIL ↓</span>
           </div>
         </div>
       </div>
