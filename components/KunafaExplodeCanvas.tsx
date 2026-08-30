@@ -54,7 +54,7 @@ const ACTS = [
         Reassembled to <SwashAccent color="gold">Perfection</SwashAccent>
       </>
     ),
-    body: "Since 2021, over 50,000 voyagers across Hyderabad have tasted the original recipe. From Barkas to our branches — fresh-pressed, every time.",
+    body: "",
   },
 ];
 
@@ -403,9 +403,11 @@ export default function KunafaExplodeCanvas() {
                   <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
                     {act.headline}
                   </h2>
-                  <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
-                    {act.body}
-                  </p>
+                  {act.body && (
+                    <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
+                      {act.body}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -437,9 +439,11 @@ export default function KunafaExplodeCanvas() {
                   >
                     {act.headline}
                   </h2>
-                  <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
-                    {act.body}
-                  </p>
+                  {act.body && (
+                    <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
+                      {act.body}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
