@@ -59,10 +59,8 @@ function getActOpacity(progress: number, range: [number, number]): number {
   if (progress < start) return 0;
   if (progress > end) return 0;
 
-  // First act should be fully visible at the start
+  // First act fully visible at the start
   if (start === 0 && progress < fadeIn) return 1;
-  // Last act should remain visible towards the bottom
-  if (end >= 0.99 && progress > end - fadeOut) return 1;
 
   if (progress < start + fadeIn) return (progress - start) / fadeIn;
   if (progress > end - fadeOut) return (end - progress) / fadeOut;
@@ -88,49 +86,76 @@ export default function KunafaExplodeCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
 
-  const targetProgressRef = useRef(0);
-  const currentProgressRef = useRef(0);
+  // All scroll state lives in refs — zero React re-renders during scroll
+  const progressRef = useRef(0);
   const lastDrawnFrameRef = useRef(-1);
+  const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
-  // Razor-sharp single frame drawing with high performance & no ghosting
-  const drawFrame = useCallback((frameIndex: number) => {
+  // Cache canvas layout dimensions via ResizeObserver — runs only on resize
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const updateLayout = () => {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const targetW = Math.round(width * dpr);
+      const targetH = Math.round(height * dpr);
+
+      if (canvas.width !== targetW || canvas.height !== targetH) {
+        canvas.width = targetW;
+        canvas.height = targetH;
+      }
+
+      layoutRef.current = { width, height, dpr, isMobile: width < 768 };
+
+      // Re-acquire context after resize
+      ctxRef.current = canvas.getContext("2d", { alpha: false });
+
+      // Redraw current frame at new size
+      if (lastDrawnFrameRef.current >= 0) {
+        drawFrame(lastDrawnFrameRef.current);
+      }
+    };
+
+    const ro = new ResizeObserver(updateLayout);
+    ro.observe(canvas);
+    updateLayout();
+
+    return () => ro.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // High-performance single frame draw — no context acquisition, no resize logic
+  const drawFrame = useCallback((frameIndex: number) => {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
 
     const clampedIndex = Math.max(0, Math.min(TOTAL_FRAMES - 1, frameIndex));
     let targetImg = imagesRef.current[clampedIndex];
 
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
-      targetImg = imagesRef.current[lastDrawnFrameRef.current];
+      if (lastDrawnFrameRef.current >= 0) {
+        targetImg = imagesRef.current[lastDrawnFrameRef.current];
+      }
     }
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
 
-    const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) return;
-
-    // Cap DPR at 2 for mobile GPU efficiency
-    const dpr = Math.min(2, typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1);
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const targetW = Math.round(width * dpr);
-    const targetH = Math.round(height * dpr);
-
-    if (canvas.width !== targetW || canvas.height !== targetH) {
-      canvas.width = targetW;
-      canvas.height = targetH;
-    }
+    const { width, height, dpr, isMobile } = layoutRef.current;
+    if (width === 0 || height === 0) return;
 
     ctx.save();
     ctx.scale(dpr, dpr);
     ctx.fillStyle = "#030303";
     ctx.fillRect(0, 0, width, height);
 
-    const isMobile = width < 768;
     const baseScale = Math.min(width / FRAME_WIDTH, height / FRAME_HEIGHT);
     const scale = isMobile ? baseScale * 1.05 : baseScale * 1.15;
 
@@ -161,7 +186,6 @@ export default function KunafaExplodeCanvas() {
     let count = 0;
     const pad = (n: number) => String(n).padStart(3, "0");
 
-    // Preload explosion sequence frames
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new Image();
       const idx = i - 1;
@@ -198,58 +222,62 @@ export default function KunafaExplodeCanvas() {
     }
 
     imagesRef.current = loadedImages;
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [drawFrame]);
 
-  // Inertial LERP continuous animation loop for ultra-smooth 60/120fps motion
+  // Single RAF loop — reads Lenis-smoothed scroll directly, updates canvas + text overlays via DOM
   useEffect(() => {
     let animFrame: number;
     let isRunning = true;
 
-    const updateTarget = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const totalScrollable = rect.height - window.innerHeight;
-      if (totalScrollable <= 0) return;
-      const scrolled = -rect.top;
-      const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
-      targetProgressRef.current = p;
-    };
-
-    const renderLoop = () => {
+    const tick = () => {
       if (!isRunning) return;
 
-      const diff = targetProgressRef.current - currentProgressRef.current;
-      if (Math.abs(diff) > 0.0001) {
-        currentProgressRef.current += diff * 0.18;
-      } else {
-        currentProgressRef.current = targetProgressRef.current;
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const totalScrollable = rect.height - window.innerHeight;
+        if (totalScrollable > 0) {
+          const scrolled = -rect.top;
+          const p = Math.max(0, Math.min(1, scrolled / totalScrollable));
+          progressRef.current = p;
+
+          // Draw the correct frame
+          const targetFrame = Math.round(p * (TOTAL_FRAMES - 1));
+          if (targetFrame !== lastDrawnFrameRef.current) {
+            drawFrame(targetFrame);
+          }
+
+          // Update text overlay opacity/transforms directly via DOM — zero React re-renders
+          for (let i = 0; i < ACTS.length; i++) {
+            const el = overlayRefs.current[i];
+            if (!el) continue;
+
+            const opacity = getActOpacity(p, ACTS[i].range);
+            const translateX = getActX(p, ACTS[i].range, ACTS[i].align);
+
+            if (opacity <= 0.001) {
+              el.style.opacity = "0";
+              el.style.visibility = "hidden";
+            } else {
+              el.style.opacity = String(opacity);
+              el.style.visibility = "visible";
+              // Apply translateX to the desktop inner container
+              const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
+              if (desktopInner) {
+                desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
+              }
+            }
+          }
+        }
       }
 
-      const p = currentProgressRef.current;
-      setProgress(p);
-
-      const targetFrame = Math.round(p * (TOTAL_FRAMES - 1));
-      if (targetFrame !== lastDrawnFrameRef.current) {
-        drawFrame(targetFrame);
-      }
-
-      animFrame = requestAnimationFrame(renderLoop);
+      animFrame = requestAnimationFrame(tick);
     };
 
-    window.addEventListener("scroll", updateTarget, { passive: true });
-    window.addEventListener("resize", updateTarget, { passive: true });
-    window.addEventListener("orientationchange", updateTarget, { passive: true });
-    updateTarget();
-    animFrame = requestAnimationFrame(renderLoop);
+    animFrame = requestAnimationFrame(tick);
 
     return () => {
       isRunning = false;
-      window.removeEventListener("scroll", updateTarget);
-      window.removeEventListener("resize", updateTarget);
-      window.removeEventListener("orientationchange", updateTarget);
       cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);
@@ -259,7 +287,7 @@ export default function KunafaExplodeCanvas() {
       ref={containerRef}
       className="relative w-full h-[700vh] sm:h-[750vh] bg-[#030303]"
     >
-      {/* Preloader / Initial Loading indicator — Single Elegant Loading Line */}
+      {/* Preloader — Single Elegant Loading Line */}
       <AnimatePresence>
         {!isLoaded && (
           <motion.div
@@ -268,7 +296,6 @@ export default function KunafaExplodeCanvas() {
             transition={{ duration: 0.6, ease: "easeInOut" }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#030303]"
           >
-            {/* Single Loading Line */}
             <div className="w-48 sm:w-64 h-1 bg-white/10 rounded-full overflow-hidden shadow-inner">
               <div
                 className="h-full bg-[#EFB80D] transition-all duration-150 ease-out shadow-[0_0_12px_#EFB80D]"
@@ -281,85 +308,75 @@ export default function KunafaExplodeCanvas() {
 
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
-        {/* Canvas behind everything */}
+        {/* Canvas */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
         />
 
-        {/* Seamless edge blends */}
+        {/* Edge blends */}
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
-        {/* Text Overlay Layer — z-20, positioned without blocking the central visual */}
+        {/* Text Overlay Layer — DOM-driven, zero React re-renders */}
         <div className="absolute inset-0 z-20 pointer-events-none">
-          {ACTS.map((act, idx) => {
-            const opacity = getActOpacity(progress, act.range);
-            const translateX = getActX(progress, act.range, act.align);
-
-            if (opacity <= 0.001) return null;
-
-            return (
-              <div
-                key={idx}
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  opacity,
-                  willChange: "opacity, transform",
-                }}
-              >
-                {/* ── MOBILE VIEW: Positioned strictly ABOVE the video at the top ── */}
-                <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
-                  <div className="max-w-md mx-auto py-2">
-                    <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
-                      {act.headline}
-                    </h2>
-                    <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
-                      {act.body}
-                    </p>
-                  </div>
-                </div>
-
-                {/* ── DESKTOP VIEW: Placed at top or flanked left/right leaving central video clear ── */}
-                <div
-                  className={`hidden md:flex absolute inset-0 items-center ${
-                    act.align === "left"
-                      ? "justify-start pl-12 lg:pl-20 xl:pl-28"
-                      : act.align === "right"
-                      ? "justify-end pr-12 lg:pr-20 xl:pr-28"
-                      : "items-start pt-24 lg:pt-28 justify-center text-center"
-                  }`}
-                  style={{
-                    transform: `translate3d(${translateX}px, 0, 0)`,
-                  }}
-                >
-                  <div
-                    className={`max-w-md lg:max-w-lg ${
-                      act.align === "center"
-                        ? "text-center mx-auto"
-                        : "text-left"
-                    }`}
-                  >
-                    <h2
-                      className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
-                        act.align === "center"
-                          ? "text-4xl lg:text-6xl"
-                          : "text-3xl lg:text-5xl"
-                      }`}
-                    >
-                      {act.headline}
-                    </h2>
-                    <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
-                      {act.body}
-                    </p>
-                  </div>
+          {ACTS.map((act, idx) => (
+            <div
+              key={idx}
+              ref={(el) => { overlayRefs.current[idx] = el; }}
+              className="absolute inset-0 pointer-events-none"
+              style={{ opacity: 0, visibility: "hidden", willChange: "opacity" }}
+            >
+              {/* Mobile */}
+              <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
+                <div className="max-w-md mx-auto py-2">
+                  <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
+                    {act.headline}
+                  </h2>
+                  <p className="font-sans text-xs sm:text-sm text-white/85 leading-relaxed">
+                    {act.body}
+                  </p>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Desktop */}
+              <div
+                data-desktop
+                className={`hidden md:flex absolute inset-0 items-center ${
+                  act.align === "left"
+                    ? "justify-start pl-12 lg:pl-20 xl:pl-28"
+                    : act.align === "right"
+                    ? "justify-end pr-12 lg:pr-20 xl:pr-28"
+                    : "items-start pt-24 lg:pt-28 justify-center text-center"
+                }`}
+                style={{ willChange: "transform" }}
+              >
+                <div
+                  className={`max-w-md lg:max-w-lg ${
+                    act.align === "center"
+                      ? "text-center mx-auto"
+                      : "text-left"
+                  }`}
+                >
+                  <h2
+                    className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
+                      act.align === "center"
+                        ? "text-4xl lg:text-6xl"
+                        : "text-3xl lg:text-5xl"
+                    }`}
+                  >
+                    {act.headline}
+                  </h2>
+                  <p className="font-sans text-sm lg:text-base text-white/85 leading-relaxed">
+                    {act.body}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Transparent bottom fade gradient into next section */}
+        {/* Bottom fade */}
         <div className="absolute inset-x-0 bottom-0 h-32 sm:h-48 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-10" />
 
         {/* Mobile scroll hint */}

@@ -8,25 +8,16 @@ export default function HomePage() {
   return (
     <main className="relative min-h-screen bg-[#050505]">
       {/* 1. Scrollytelling Voyage Canvas */}
-      <section id="story" className="relative">
-        <KunafaExplodeCanvas />
-      </section>
+      <KunafaExplodeCanvas />
 
       {/* 2. About Us */}
-      <section id="about">
-        <AboutSection />
-      </section>
+      <AboutSection />
 
       {/* 3. The Artisanal Platters Menu */}
-      <section id="menu">
-        <MenuPreview />
-      </section>
+      <MenuPreview />
 
       {/* 4. The Captain's Chart — Hyderabad Branches */}
-      <section id="locations">
-        <CaptainsChart />
-      </section>
+      <CaptainsChart />
     </main>
   );
 }
-

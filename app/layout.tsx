@@ -3,6 +3,7 @@ import { Fraunces, Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -64,8 +65,6 @@ export const metadata: Metadata = {
     canonical: "https://captainkunafa.com",
   },
 };
-
-import SmoothScroll from "@/components/SmoothScroll";
 
 export default function RootLayout({
   children,
