@@ -62,7 +62,7 @@ const ACTS = [
         Reassembled to <SwashAccent color="gold">Perfection</SwashAccent>
       </>
     ),
-    body: "",
+    body: "Served sizzling hot within 60 seconds of pan flip. Taste authentic Levantine perfection.",
   },
 ];
 
