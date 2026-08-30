@@ -373,12 +373,6 @@ export default function KunafaExplodeCanvas() {
               {/* Mobile */}
               <div className="md:hidden absolute top-0 inset-x-0 pt-16 sm:pt-20 px-4 sm:px-6 text-center">
                 <div className="max-w-md mx-auto py-2">
-                  {idx === 0 && (
-                    <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#141414]/90 border border-[#EFB80D]/30 text-[9.5px] font-mono tracking-widest text-[#EFB80D] uppercase mb-2 shadow-lg backdrop-blur-md">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D] animate-ping" />
-                      <span>LIVE COPPER HEARTH</span>
-                    </div>
-                  )}
                   <h2 className="font-display font-bold text-2xl sm:text-3xl leading-tight text-[#FFF8EC] mb-2">
                     {act.headline}
                   </h2>
@@ -407,12 +401,6 @@ export default function KunafaExplodeCanvas() {
                       : "text-left"
                   }`}
                 >
-                  {idx === 0 && (
-                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#141414]/90 border border-[#EFB80D]/30 text-xs font-mono tracking-widest text-[#EFB80D] uppercase mb-3 shadow-lg backdrop-blur-md">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#EFB80D] animate-ping" />
-                      <span>AUTHENTIC LEVANTINE RECIPE · LIVE HEARTH</span>
-                    </div>
-                  )}
                   <h2
                     className={`font-display font-bold leading-[1.15] text-[#FFF8EC] mb-3 lg:mb-4 ${
                       act.align === "center"
