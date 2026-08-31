@@ -464,27 +464,27 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
-        {/* Tutorial Scroll Down Indicator — Centered, floats/bounces, disappears on first scroll */}
+        {/* Minimalist 2D Scroll Indicator — Centered, clean flat typography & line arrow, fades on first scroll */}
         <div
           ref={scrollIndicatorRef}
           style={{ opacity: 1, visibility: "visible" }}
-          className="absolute bottom-6 sm:bottom-8 inset-x-0 flex flex-col items-center justify-center pointer-events-none z-30 transition-transform duration-300"
+          className="absolute bottom-10 sm:bottom-12 inset-x-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none"
         >
-          <div className="flex flex-col items-center gap-1 sm:gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#050505]/75 backdrop-blur-md border border-[#EFB80D]/30 shadow-[0_4px_24px_rgba(0,0,0,0.8),0_0_15px_rgba(239,184,13,0.15)] animate-bounce">
-            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] text-[#EFB80D] uppercase font-bold">
-              Scroll to Explore
+          <div className="flex flex-col items-center gap-1.5 animate-bounce">
+            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.25em] text-white/70 uppercase">
+              Scroll
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#EFB80D"
-              strokeWidth="2.5"
+              stroke="currentColor"
+              strokeWidth="1.75"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#EFB80D] drop-shadow-[0_0_6px_rgba(239,184,13,0.8)]"
+              className="w-4 h-4 text-white/70"
             >
               <path d="m6 9 6 6 6-6" />
             </svg>
