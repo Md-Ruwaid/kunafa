@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import Lenis from "lenis";
+import { registerLenis, unregisterLenis } from "@/lib/lenis";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -27,9 +28,14 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     // Make lenis accessible globally for any components that need to trigger scroll jumps
     (window as unknown as { lenis: unknown }).lenis = lenis;
+    // Applies any scroll lock requested before this effect ran (child effects
+    // run first, so SitePreloader can lock scrolling before Lenis exists).
+    registerLenis(lenis);
 
     return () => {
       cancelAnimationFrame(animFrame);
+      unregisterLenis();
+      delete (window as unknown as { lenis?: unknown }).lenis;
       lenis.destroy();
     };
   }, []);

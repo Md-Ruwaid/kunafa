@@ -1,14 +1,11 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "captainkunafa.com",
-        pathname: "/**",
-      },
-    ],
+  // Pin the workspace root. Without this Turbopack walks up and finds an
+  // unrelated lockfile in the parent directory, warning on every build.
+  turbopack: {
+    root: path.resolve(__dirname),
   },
 };
 

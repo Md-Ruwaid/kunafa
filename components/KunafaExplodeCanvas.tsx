@@ -2,19 +2,25 @@
 
 import React, { useEffect, useRef, useCallback } from "react";
 import SwashAccent from "@/components/SwashAccent";
+import {
+  DESKTOP_FRAMES,
+  DESKTOP_HEIGHT,
+  DESKTOP_WIDTH,
+  MOBILE_BREAKPOINT,
+  MOBILE_FRAMES,
+  MOBILE_HEIGHT,
+  MOBILE_WIDTH,
+  activeFrameKind,
+  frameUrl,
+} from "@/lib/frames";
 
-// Frame Sequence Config
-const DESKTOP_FRAMES = 100;
-const DESKTOP_WIDTH = 1280;
-const DESKTOP_HEIGHT = 720;
-
-const MOBILE_FRAMES = 130;
-const MOBILE_WIDTH = 720;
-const MOBILE_HEIGHT = 1280;
-
-function pad(n: number): string {
-  return String(n).padStart(3, "0");
-}
+/**
+ * AboutSection is pulled up over this container with `-mt-[100vh]`, so the last
+ * viewport of the runway is spent underneath it. Scroll progress is normalised
+ * against the runway MINUS that overlap, which makes the sequence finish exactly
+ * as AboutSection starts to cover it. Keep in sync with AboutSection's margin.
+ */
+const ABOUT_OVERLAP_VIEWPORTS = 1;
 
 // Mobile non-linear frame distribution curve:
 // Stage 1 (0 -> 0.32 scroll): Ultra-slow, steady initial levitation (frames 0 to 10) for Phrase 1
@@ -50,6 +56,7 @@ const ACTS = [
         Hyderabad&apos;s Most <SwashAccent color="gold">Talked-About</SwashAccent> Kunafa
       </>
     ),
+    plainHeadline: "Hyderabad’s Most Talked-About Kunafa",
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
@@ -60,6 +67,7 @@ const ACTS = [
         Deconstructed <SwashAccent color="gold">Golden Crisp</SwashAccent> &amp; Heat
       </>
     ),
+    plainHeadline: "Deconstructed Golden Crisp & Heat",
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
   {
@@ -70,6 +78,7 @@ const ACTS = [
         The Molten <SwashAccent color="gold">Akawi &amp; Nablusi</SwashAccent> Heart
       </>
     ),
+    plainHeadline: "The Molten Akawi & Nablusi Heart",
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
   {
@@ -80,6 +89,7 @@ const ACTS = [
         Reassembled to <SwashAccent color="gold">Perfection</SwashAccent>
       </>
     ),
+    plainHeadline: "Reassembled to Perfection",
     body: "Served sizzling hot within 60 seconds of pan flip. Taste authentic Levantine perfection.",
   },
 ];
@@ -206,14 +216,12 @@ export default function KunafaExplodeCanvas() {
       else hasPreloadedDesktopRef.current = true;
 
       const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
-      const folder = isMob ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
-      const ext = isMob ? "webp" : "png";
       const loadedArr: HTMLImageElement[] = new Array(count);
 
       for (let i = 1; i <= count; i++) {
         const img = new Image();
         const idx = i - 1;
-        img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
+        img.src = frameUrl(kind, i);
         loadedArr[idx] = img;
 
         img.onload = () => {
@@ -248,10 +256,10 @@ export default function KunafaExplodeCanvas() {
         canvas.height = targetH;
       }
 
-      const isMobile = width < 768;
+      const isMobile = width < MOBILE_BREAKPOINT;
       layoutRef.current = { width, height, dpr, isMobile };
 
-      // Lazily preload opposite frame sequence if user crosses 768px breakpoint
+      // Lazily preload opposite frame sequence if the user crosses the breakpoint
       if (isMobile) preloadFrameSet("mobile");
       else preloadFrameSet("desktop");
 
@@ -278,8 +286,7 @@ export default function KunafaExplodeCanvas() {
 
   // Initial preload of active viewport frame sequence
   useEffect(() => {
-    const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
-    preloadFrameSet(isMobileInitial ? "mobile" : "desktop");
+    preloadFrameSet(activeFrameKind());
   }, [preloadFrameSet]);
 
   // Single high-performance RAF loop — paused when offscreen via IntersectionObserver
@@ -291,7 +298,9 @@ export default function KunafaExplodeCanvas() {
 
     const measureLayout = () => {
       if (containerRef.current) {
-        cachedTotalScrollable = containerRef.current.offsetHeight - window.innerHeight;
+        // Sticky panel costs one viewport; AboutSection covers the next one.
+        const consumed = window.innerHeight * (1 + ABOUT_OVERLAP_VIEWPORTS);
+        cachedTotalScrollable = containerRef.current.offsetHeight - consumed;
       }
     };
 
@@ -390,14 +399,32 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[1200vh] sm:h-[550vh] bg-[#030303]"
+      id="story"
+      className="relative w-full h-[1200vh] md:h-[550vh] bg-[#030303]"
     >
+      {/*
+        Screen-reader copy of the story. The animated overlays below are driven by
+        RAF and spend most of their life at `visibility: hidden`, which removes
+        them from the accessibility tree — so the narrative is published once here
+        in reading order and the visual layer is marked aria-hidden.
+      */}
+      <div className="sr-only">
+        <h2>The Kunafa Story</h2>
+        {ACTS.map((act, i) => (
+          <section key={i}>
+            <h3>{act.plainHeadline}</h3>
+            <p>{act.body}</p>
+          </section>
+        ))}
+      </div>
+
       {/* Sticky viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
         {/* Canvas */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full pointer-events-none"
         />
 
         {/* Edge blends */}
@@ -411,6 +438,7 @@ export default function KunafaExplodeCanvas() {
             ref={(el) => {
               overlayRefs.current[i] = el;
             }}
+            aria-hidden="true"
             style={{ opacity: 0, visibility: "hidden" }}
             className={`absolute inset-x-0 top-0 h-screen flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
               act.align === "center"
