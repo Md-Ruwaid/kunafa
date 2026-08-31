@@ -4,12 +4,11 @@ import React, { useEffect, useRef, useCallback } from "react";
 import SwashAccent from "@/components/SwashAccent";
 
 // Frame Sequence Config
-// Frame Sequence Config
 const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 130;
+const MOBILE_FRAMES = 50;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
