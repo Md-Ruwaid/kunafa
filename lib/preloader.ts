@@ -4,8 +4,8 @@
  * completely loaded into GPU/memory BEFORE the preloader lifts.
  */
 
-const DESKTOP_FRAMES = 50;
-const MOBILE_FRAMES = 49;
+const DESKTOP_FRAMES = 100;
+const MOBILE_FRAMES = 97;
 
 function pad(n: number): string {
   return String(n).padStart(3, "0");
@@ -50,7 +50,10 @@ export function preloadAllSiteAssets(
     "/platters/platter-choco.webp",
   ];
 
+  const totalAssets = count + platters.length;
+  let loadedAssets = 0;
   let hasCompleted = false;
+
   const imagesArr: HTMLImageElement[] = new Array(count);
 
   const notifyComplete = () => {
@@ -63,53 +66,50 @@ export function preloadAllSiteAssets(
     onComplete();
   };
 
-  // 1. Load Frame 1 with high priority for instant LCP paint
-  const frame1 = new Image();
-  frame1.src = `${folder}/ezgif-frame-001.${ext}`;
-  frame1.decoding = "async";
-  frame1.fetchPriority = "high";
-  imagesArr[0] = frame1;
+  const checkProgress = () => {
+    if (hasCompleted) return;
+    loadedAssets++;
+    const pct = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
+    onProgress(pct);
 
-  if (frame1.complete && frame1.naturalWidth > 0) {
-    onProgress(100);
-    notifyComplete();
-  } else {
-    frame1.onload = () => {
-      onProgress(100);
+    if (loadedAssets >= totalAssets) {
       notifyComplete();
-    };
-    frame1.onerror = () => {
-      onProgress(100);
-      notifyComplete();
-    };
-  }
-
-  // 2. Stream remaining frames in background
-  const loadRemaining = () => {
-    for (let i = 2; i <= count; i++) {
-      const img = new Image();
-      img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
-      img.decoding = "async";
-      imagesArr[i - 1] = img;
     }
-
-    platters.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.decoding = "async";
-    });
   };
 
-  if ("requestIdleCallback" in window) {
-    (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(loadRemaining);
-  } else {
-    setTimeout(loadRemaining, 50);
+  // 1. Eagerly load all high-resolution animation frames in parallel
+  for (let i = 1; i <= count; i++) {
+    const img = new Image();
+    img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
+    img.decoding = "async";
+    if (i === 1) img.fetchPriority = "high";
+    imagesArr[i - 1] = img;
+
+    if (img.complete && img.naturalWidth > 0) {
+      checkProgress();
+    } else {
+      img.onload = checkProgress;
+      img.onerror = checkProgress;
+    }
   }
 
-  // Fallback safety
+  // 2. Preload 3D Gallery Platter textures
+  platters.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+    img.decoding = "async";
+    if (img.complete && img.naturalWidth > 0) {
+      checkProgress();
+    } else {
+      img.onload = checkProgress;
+      img.onerror = checkProgress;
+    }
+  });
+
+  // 3. Fallback safety timer: in case a frame request is slow or dropped on cellular data
   setTimeout(() => {
     if (!hasCompleted) {
       notifyComplete();
     }
-  }, 1000);
+  }, 6000);
 }

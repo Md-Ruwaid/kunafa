@@ -14,6 +14,9 @@ export default function SitePreloader({ onComplete }: SitePreloaderProps) {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
+    // Lock scroll while preloading
+    document.body.style.overflow = "hidden";
+
     let mounted = true;
 
     preloadAllSiteAssets(
@@ -28,13 +31,15 @@ export default function SitePreloader({ onComplete }: SitePreloaderProps) {
         setTimeout(() => {
           if (!mounted) return;
           setIsDone(true);
+          document.body.style.overflow = "";
           if (onComplete) onComplete();
-        }, 250);
+        }, 300);
       }
     );
 
     return () => {
       mounted = false;
+      document.body.style.overflow = "";
     };
   }, [onComplete]);
 
