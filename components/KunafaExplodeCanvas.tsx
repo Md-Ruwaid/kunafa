@@ -464,27 +464,27 @@ export default function KunafaExplodeCanvas() {
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
 
-        {/* Minimalist 2D Scroll Indicator — Centered, clean flat typography & line arrow, fades on first scroll */}
+        {/* Prominent 2D Center Scroll Indicator — Large, centered, clean flat style, disappears on first scroll */}
         <div
           ref={scrollIndicatorRef}
           style={{ opacity: 1, visibility: "visible" }}
-          className="absolute bottom-10 sm:bottom-12 inset-x-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none"
+          className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-30 select-none pt-40 sm:pt-48"
         >
-          <div className="flex flex-col items-center gap-1.5 animate-bounce">
-            <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.25em] text-white/70 uppercase">
-              Scroll
+          <div className="flex flex-col items-center gap-2.5 animate-bounce">
+            <span className="font-mono text-xs sm:text-sm tracking-[0.3em] text-white/90 uppercase font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              Scroll to Explore
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
+              width="28"
+              height="28"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.75"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="w-4 h-4 text-white/70"
+              className="w-6 h-6 sm:w-7 sm:h-7 text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
             >
               <path d="m6 9 6 6 6-6" />
             </svg>
