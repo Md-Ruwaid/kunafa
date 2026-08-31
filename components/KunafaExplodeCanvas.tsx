@@ -427,7 +427,7 @@ export default function KunafaExplodeCanvas() {
     <div
       ref={containerRef}
       id="story"
-      className="relative w-full h-[300vh] sm:h-[250vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[350vh] sm:h-[300vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
