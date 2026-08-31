@@ -188,7 +188,7 @@ export default function KunafaExplodeCanvas() {
       : (height - drawHeight) / 2;
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = isMobile ? "medium" : "high";
+    ctx.imageSmoothingQuality = "high";
 
     try {
       ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
@@ -269,8 +269,8 @@ export default function KunafaExplodeCanvas() {
     const updateLayout = () => {
       const isMobile = window.innerWidth < 768 || canvas.clientWidth < 768;
       const rawDpr = window.devicePixelRatio || 1;
-      // Clamped DPR: 1.5 on mobile, 2.0 on desktop to prevent GPU overdraw
-      const dpr = isMobile ? Math.min(1.5, rawDpr) : Math.min(2, rawDpr);
+      // Full Retina / OLED sub-pixel fidelity (supports up to 3x DPR without blurriness)
+      const dpr = Math.min(rawDpr, 3);
 
       const width = canvas.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800);
       const height = canvas.clientHeight || (typeof window !== "undefined" ? window.innerHeight : 600);
