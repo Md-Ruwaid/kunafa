@@ -122,6 +122,7 @@ export default function KunafaExplodeCanvas() {
   const mobileImagesRef = useRef<HTMLImageElement[]>([]);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const overlayRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   const hasPreloadedMobileRef = useRef(false);
   const hasPreloadedDesktopRef = useRef(false);
@@ -395,6 +396,20 @@ export default function KunafaExplodeCanvas() {
         }
       }
 
+      // Update scroll tutorial arrow indicator (fades out smoothly on first scroll progress 0.0 -> 0.035)
+      if (scrollIndicatorRef.current) {
+        const indicatorOpacity = Math.max(0, 1 - smoothProgress / 0.035);
+        if (indicatorOpacity <= 0.01) {
+          if (scrollIndicatorRef.current.style.visibility !== "hidden") {
+            scrollIndicatorRef.current.style.opacity = "0";
+            scrollIndicatorRef.current.style.visibility = "hidden";
+          }
+        } else {
+          scrollIndicatorRef.current.style.opacity = String(indicatorOpacity);
+          scrollIndicatorRef.current.style.visibility = "visible";
+        }
+      }
+
       animFrame = requestAnimationFrame(tick);
     };
 
@@ -448,6 +463,33 @@ export default function KunafaExplodeCanvas() {
         {/* Edge blends */}
         <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-t from-[#030303] via-[#030303]/80 to-transparent pointer-events-none z-10" />
+
+        {/* Tutorial Scroll Down Indicator — Centered, floats/bounces, disappears on first scroll */}
+        <div
+          ref={scrollIndicatorRef}
+          style={{ opacity: 1, visibility: "visible" }}
+          className="absolute bottom-6 sm:bottom-8 inset-x-0 flex flex-col items-center justify-center pointer-events-none z-30 transition-transform duration-300"
+        >
+          <div className="flex flex-col items-center gap-1 sm:gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#050505]/75 backdrop-blur-md border border-[#EFB80D]/30 shadow-[0_4px_24px_rgba(0,0,0,0.8),0_0_15px_rgba(239,184,13,0.15)] animate-bounce">
+            <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] text-[#EFB80D] uppercase font-bold">
+              Scroll to Explore
+            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#EFB80D"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#EFB80D] drop-shadow-[0_0_6px_rgba(239,184,13,0.8)]"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+        </div>
 
         {/* Text Story Overlays — Styled with Tailwind, transforms managed via RAF ref updates */}
         {ACTS.map((act, i) => (
