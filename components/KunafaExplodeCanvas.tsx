@@ -339,7 +339,7 @@ export default function KunafaExplodeCanvas() {
         ([entry]) => {
           isInViewRef.current = entry.isIntersecting;
         },
-        { rootMargin: "30% 0px 30% 0px" }
+        { rootMargin: "0px 0px 0px 0px" }
       );
       observer.observe(containerRef.current);
     }
@@ -362,17 +362,10 @@ export default function KunafaExplodeCanvas() {
       if (cachedTotalScrollable > 0) {
         const targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
         const isMobile = layoutRef.current.isMobile;
-        // Responsive and fluid lerp factor for instant touch feedback and silky momentum
-        const lerpFactor = isMobile ? 0.11 : 0.14;
 
-        // Continuous smooth lerp for buttery, stutter-free 60-120 FPS momentum
-        const diff = targetProgress - smoothProgress;
-        if (Math.abs(diff) > 0.00005) {
-          smoothProgress += diff * lerpFactor;
-        } else {
-          smoothProgress = targetProgress;
-        }
-
+        // Lenis already smooths the underlying scroll position, so we track it directly
+        // instead of re-smoothing an already-smoothed value.
+        smoothProgress = targetProgress;
         progressRef.current = smoothProgress;
 
         // Draw the correct frame for current device
