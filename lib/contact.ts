@@ -1,7 +1,26 @@
-// Central Contact & WhatsApp link builder
-// PLACEHOLDER — replace with real numbers before launch
+// ============================================================================
+// ⚠️ CLIENT CONTACT & HOTLINE CONFIGURATION BLOCK (PLACEHOLDER)
+// Replace these placeholder contact numbers before production client launch.
+// ============================================================================
 
-export const BRAND_PHONE_DISPLAY = "+91 90000 00001"; // Central Kitchen & HQ (Barkas)
+export const BRAND_CONTACT_CONFIG = {
+  // Main Hotline / Central Kitchen & HQ (Barkas)
+  mainHotline: "+91 90000 00001", // PLACEHOLDER — Update with verified client hotline
+
+  // Direct branch numbers
+  branchPhones: {
+    barkas: "+91 90000 00001", // PLACEHOLDER — Update with real Barkas branch number
+    malakpet: "+91 90000 00002", // PLACEHOLDER — Update with real Malakpet branch number
+    tolichowki: "+91 90000 00003", // PLACEHOLDER — Update with real Tolichowki branch number
+    jubileehills: "+91 90000 00004", // PLACEHOLDER — Update with real Jubilee Hills branch number
+    aerocity: "+91 90000 00005", // PLACEHOLDER — Update with real Aero City branch number
+  },
+
+  // Aero City location details
+  aeroCityAddress: "PLACEHOLDER — Aero City, Shamshabad Road, Hyderabad", // PLACEHOLDER — Update with real street address
+} as const;
+
+export const BRAND_PHONE_DISPLAY = BRAND_CONTACT_CONFIG.mainHotline;
 
 /**
  * Builds a standardized WhatsApp direct-message URL.

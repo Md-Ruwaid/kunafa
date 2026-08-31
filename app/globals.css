@@ -27,12 +27,14 @@
 @layer base {
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     scroll-behavior: smooth;
     background-color: #050505;
     color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
@@ -42,6 +44,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
   }
 
   /* Universal focus-visible */
@@ -52,6 +56,18 @@
   textarea:focus-visible {
     outline: 2px solid #EFB80D !important;
     outline-offset: 2px !important;
+  }
+}
+
+/* Optimize off-screen rendering on mobile devices */
+@media (min-width: 0px) {
+  #about,
+  #branches,
+  #menu,
+  #map-section,
+  footer {
+    content-visibility: auto;
+    contain-intrinsic-size: 800px;
   }
 }
 

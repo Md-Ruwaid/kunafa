@@ -318,10 +318,12 @@ class App {
   }
 
   createRenderer() {
+    const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
     this.renderer = new Renderer({
       alpha: true,
-      antialias: true,
-      dpr: Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, 2),
+      antialias: !isMobile,
+      dpr: Math.min(typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1, isMobile ? 1.5 : 2),
+      powerPreference: "high-performance",
     });
     this.gl = this.renderer.gl;
     this.gl.clearColor(0, 0, 0, 0);

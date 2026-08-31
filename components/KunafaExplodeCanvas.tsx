@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useCallback } from "react";
 import SwashAccent from "@/components/SwashAccent";
 
 // Frame Sequence Config
+// Frame Sequence Config
 const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
@@ -16,34 +17,57 @@ function pad(n: number): string {
   return String(n).padStart(3, "0");
 }
 
-// Mobile non-linear frame distribution curve:
-// Stage 1 (0 -> 0.32 scroll): Ultra-slow, steady initial levitation (frames 0 to 10) for Phrase 1
-// Stage 2 (0.32 -> 0.60 scroll): Gentle separation (frames 10 to 35) for Phrase 2
-// Stage 3 (0.60 -> 0.82 scroll): Molten cheese heart explosion (frames 35 to 90) for Phrase 3
-// Stage 4 (0.82 -> 1.00 scroll): Smooth crisp reassembly (frames 90 to 130) for Phrase 4
+// Mobile & Desktop inverted sensitivity frame distribution curve:
+// Stage 1 (0.00 -> 0.15 scroll): Fast, high-sensitivity opening (0.00 -> 0.30 frames)
+// Stage 2 (0.15 -> 0.38 scroll): Gentle separation & golden crisp lift (0.30 -> 0.55 frames)
+// Stage 3 (0.38 -> 0.60 scroll): Energetic molten cheese heart explosion (0.55 -> 0.85 frames)
+// Stage 4 (0.60 -> 0.94 scroll): Slower, deliberate reassembly (0.85 -> 1.00 frames)
+// Tail Buffer (0.94 -> 1.00 scroll): Frame held at 1.0 so AboutSection eases up smoothly without snapping
 function getFrameProgress(progress: number, isMobile: boolean): number {
-  if (!isMobile) return progress;
+  if (isMobile) {
+    if (progress <= 0.15) {
+      const t = progress / 0.15;
+      return t * 0.30;
+    }
+    if (progress <= 0.38) {
+      const t = (progress - 0.15) / 0.23;
+      return 0.30 + t * 0.25;
+    }
+    if (progress <= 0.60) {
+      const t = (progress - 0.38) / 0.22;
+      return 0.55 + t * 0.30;
+    }
+    if (progress <= 0.94) {
+      const t = (progress - 0.60) / 0.34;
+      return 0.85 + Math.pow(t, 0.85) * 0.15;
+    }
+    return 1.0;
+  }
 
-  if (progress <= 0.32) {
-    const t = progress / 0.32;
-    return Math.pow(t, 2.0) * 0.08;
+  // Desktop responsive front-loaded curve with smooth tail buffer
+  if (progress <= 0.18) {
+    const t = progress / 0.18;
+    return t * 0.32;
   }
-  if (progress <= 0.60) {
-    const t = (progress - 0.32) / 0.28;
-    return 0.08 + Math.pow(t, 1.3) * 0.20;
+  if (progress <= 0.42) {
+    const t = (progress - 0.18) / 0.24;
+    return 0.32 + t * 0.26;
   }
-  if (progress <= 0.82) {
-    const t = (progress - 0.60) / 0.22;
-    return 0.28 + t * 0.42;
+  if (progress <= 0.65) {
+    const t = (progress - 0.42) / 0.23;
+    return 0.58 + t * 0.28;
   }
-  const t = (progress - 0.82) / 0.18;
-  return 0.70 + Math.pow(t, 0.9) * 0.30;
+  if (progress <= 0.94) {
+    const t = (progress - 0.65) / 0.29;
+    return 0.86 + Math.pow(t, 0.9) * 0.14;
+  }
+  return 1.0;
 }
 
 // Structured story acts: Origin → Craft → Core Science → The Promise
 const ACTS = [
   {
-    range: [0, 0.28] as [number, number],
+    range: [0, 0.18] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -53,7 +77,7 @@ const ACTS = [
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
-    range: [0.32, 0.56] as [number, number],
+    range: [0.20, 0.40] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -63,7 +87,7 @@ const ACTS = [
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
   {
-    range: [0.60, 0.80] as [number, number],
+    range: [0.44, 0.65] as [number, number],
     align: "right" as const,
     headline: (
       <>
@@ -73,7 +97,7 @@ const ACTS = [
     body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
   },
   {
-    range: [0.84, 0.98] as [number, number],
+    range: [0.70, 0.94] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -87,8 +111,8 @@ const ACTS = [
 // Helper: Calculate opacity with smooth fade in / hold / fade out
 function getActOpacity(progress: number, range: [number, number]): number {
   const [start, end] = range;
-  const fadeIn = 0.04;
-  const fadeOut = 0.04;
+  const fadeIn = 0.035;
+  const fadeOut = 0.035;
 
   if (progress < start || progress > end) return 0;
   if (progress < start + fadeIn) return (progress - start) / fadeIn;
@@ -104,7 +128,7 @@ function getActX(
 ): number {
   if (align === "center") return 0;
   const [start] = range;
-  const fadeIn = 0.04;
+  const fadeIn = 0.035;
   if (progress < start + fadeIn) {
     const t = (progress - start) / fadeIn;
     return align === "left" ? -16 * (1 - t) : 16 * (1 - t);
@@ -129,7 +153,7 @@ export default function KunafaExplodeCanvas() {
   const lastDrawnFrameRef = useRef(-1);
   const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
-  // High-performance frame draw supporting responsive portrait mobile (130 frames) & landscape desktop (100 frames)
+  // High-performance frame draw supporting responsive portrait mobile & landscape desktop
   const drawFrame = useCallback((frameIndex: number) => {
     const ctx = ctxRef.current;
     if (!ctx) return;
@@ -179,11 +203,11 @@ export default function KunafaExplodeCanvas() {
     const drawHeight = frameHeight * scale;
     const offsetX = (width - drawWidth) / 2;
     const offsetY = isMobile
-      ? Math.max(0, (height - drawHeight) / 2 + 40)
+      ? Math.max(0, (height - drawHeight) / 2 + 35)
       : (height - drawHeight) / 2;
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
+    ctx.imageSmoothingQuality = isMobile ? "medium" : "high";
 
     try {
       ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
@@ -195,7 +219,7 @@ export default function KunafaExplodeCanvas() {
     ctx.restore();
   }, []);
 
-  // Frame preloader function guarded to only download required sequence
+  // Progressive Frame Preloader: Eagerly loads first 8-10 frames, background-loads the rest
   const preloadFrameSet = useCallback(
     (kind: "mobile" | "desktop") => {
       const isMob = kind === "mobile";
@@ -207,13 +231,16 @@ export default function KunafaExplodeCanvas() {
 
       const count = isMob ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const folder = isMob ? "/mobile-view-framesv2" : "/Kunafa-animations-v2";
-      const ext = isMob ? "webp" : "png";
+      // Both desktop and mobile now use ultra-optimized WebP
+      const ext = "webp";
       const loadedArr: HTMLImageElement[] = new Array(count);
 
-      for (let i = 1; i <= count; i++) {
-        const img = new Image();
+      const loadSingle = (i: number) => {
         const idx = i - 1;
+        if (loadedArr[idx]) return;
+        const img = new Image();
         img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
+        img.decoding = "async";
         loadedArr[idx] = img;
 
         img.onload = () => {
@@ -223,6 +250,30 @@ export default function KunafaExplodeCanvas() {
             drawFrame(0);
           }
         };
+      };
+
+      // Stage 1: Load frame 1 immediately for instant paint
+      loadSingle(1);
+
+      // Stage 2: Eagerly load initial scroll range (frames 2 to 10)
+      const initialBatch = Math.min(10, count);
+      for (let i = 2; i <= initialBatch; i++) {
+        loadSingle(i);
+      }
+
+      // Stage 3: Progressively load remaining frames in background batches
+      const loadRemaining = () => {
+        for (let i = initialBatch + 1; i <= count; i++) {
+          loadSingle(i);
+        }
+      };
+
+      if (typeof window !== "undefined") {
+        if ("requestIdleCallback" in window) {
+          (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(loadRemaining);
+        } else {
+          setTimeout(loadRemaining, 50);
+        }
       }
 
       if (isMob) mobileImagesRef.current = loadedArr;
@@ -237,7 +288,11 @@ export default function KunafaExplodeCanvas() {
     if (!canvas) return;
 
     const updateLayout = () => {
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const isMobile = window.innerWidth < 768 || canvas.clientWidth < 768;
+      const rawDpr = window.devicePixelRatio || 1;
+      // Clamped DPR: 1.5 on mobile, 2.0 on desktop to prevent GPU overdraw
+      const dpr = isMobile ? Math.min(1.5, rawDpr) : Math.min(2, rawDpr);
+
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       const targetW = Math.round(width * dpr);
@@ -248,7 +303,6 @@ export default function KunafaExplodeCanvas() {
         canvas.height = targetH;
       }
 
-      const isMobile = width < 768;
       layoutRef.current = { width, height, dpr, isMobile };
 
       // Lazily preload opposite frame sequence if user crosses 768px breakpoint
@@ -297,6 +351,7 @@ export default function KunafaExplodeCanvas() {
 
     measureLayout();
     window.addEventListener("resize", measureLayout, { passive: true });
+    window.addEventListener("orientationchange", measureLayout, { passive: true });
 
     // IntersectionObserver to pause loop when container is off-screen
     let observer: IntersectionObserver | null = null;
@@ -305,7 +360,7 @@ export default function KunafaExplodeCanvas() {
         ([entry]) => {
           isInViewRef.current = entry.isIntersecting;
         },
-        { rootMargin: "50% 0px 50% 0px" }
+        { rootMargin: "30% 0px 30% 0px" }
       );
       observer.observe(containerRef.current);
     }
@@ -328,8 +383,8 @@ export default function KunafaExplodeCanvas() {
       if (cachedTotalScrollable > 0) {
         const targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
         const isMobile = layoutRef.current.isMobile;
-        // Gentler lerp on mobile to completely absorb touch spikes
-        const lerpFactor = isMobile ? 0.055 : 0.14;
+        // Responsive and fluid lerp factor for instant touch feedback and silky momentum
+        const lerpFactor = isMobile ? 0.11 : 0.14;
 
         // Continuous smooth lerp for buttery, stutter-free 60-120 FPS momentum
         const diff = targetProgress - smoothProgress;
@@ -383,6 +438,7 @@ export default function KunafaExplodeCanvas() {
       isRunning = false;
       if (observer) observer.disconnect();
       window.removeEventListener("resize", measureLayout);
+      window.removeEventListener("orientationchange", measureLayout);
       cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);
@@ -390,14 +446,14 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[1200vh] sm:h-[550vh] bg-[#030303]"
+      className="relative w-full h-[600vh] sm:h-[550vh] bg-[#030303] will-change-transform"
     >
-      {/* Sticky viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#030303]">
+      {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
+      <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
         {/* Canvas */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none transform-gpu"
         />
 
         {/* Edge blends */}
@@ -412,7 +468,7 @@ export default function KunafaExplodeCanvas() {
               overlayRefs.current[i] = el;
             }}
             style={{ opacity: 0, visibility: "hidden" }}
-            className={`absolute inset-x-0 top-0 h-screen flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
+            className={`absolute inset-x-0 top-0 h-[100dvh] h-screen flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
               act.align === "center"
                 ? "items-center justify-start pt-20 sm:pt-24 text-center"
                 : act.align === "left"
@@ -423,7 +479,7 @@ export default function KunafaExplodeCanvas() {
             {/* Desktop Inner Container for Parallax Slide */}
             <div
               data-desktop
-              className={`max-w-xl flex flex-col ${
+              className={`max-w-xl flex flex-col will-change-transform ${
                 act.align === "center"
                   ? "items-center text-center"
                   : act.align === "left"
@@ -432,13 +488,13 @@ export default function KunafaExplodeCanvas() {
               }`}
             >
               {/* Act Heading */}
-              <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
+              <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                 {act.headline}
               </h2>
 
               {/* Act Body Narrative */}
               {act.body && (
-                <p className="mt-3 sm:mt-4 font-sans text-xs sm:text-base text-white/85 leading-relaxed font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] max-w-lg">
+                <p className="mt-3 sm:mt-4 font-sans text-xs sm:text-base text-white/85 leading-relaxed font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] max-w-lg">
                   {act.body}
                 </p>
               )}

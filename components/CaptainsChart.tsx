@@ -16,10 +16,12 @@ import {
 import SwashAccent from "@/components/SwashAccent";
 import BrandName from "@/components/BrandName";
 import type { BranchLocation } from "@/components/CaptainsMap";
-import { buildWhatsAppLink } from "@/lib/contact";
+import { buildWhatsAppLink, BRAND_CONTACT_CONFIG } from "@/lib/contact";
 
-// ─── 5 Official Captain Kunafa Branches in Hyderabad ────────────────────────
-// PLACEHOLDER — Verify branch phone numbers, addresses, and hours with client before launch
+// ============================================================================
+// ⚠️ BRANCH LOCATIONS & CONTACT CONFIGURATION BLOCK (PLACEHOLDER)
+// Drop verified client addresses, phone numbers, and coordinates here before launch.
+// ============================================================================
 
 const BRANCHES: BranchLocation[] = [
   {
@@ -28,7 +30,7 @@ const BRANCHES: BranchLocation[] = [
     area: "Old City, Hyderabad",
     code: "HYD-01",
     address: "Main Road, Opp. Al-Jubail Hotel, Barkas, Hyderabad",
-    phone: "+91 90000 00001", // Central HQ / Hotline
+    phone: BRAND_CONTACT_CONFIG.branchPhones.barkas, // Central HQ / Hotline
     hours: "01:00 PM – 02:00 AM",
     highlight: "Original Location (Est. 2021)",
     description: [
@@ -47,7 +49,7 @@ const BRANCHES: BranchLocation[] = [
     area: "Main Road, Malakpet",
     code: "HYD-02",
     address: "Near Super Bazar, Main Road, Malakpet, Hyderabad",
-    phone: "+91 90000 00002", // PLACEHOLDER
+    phone: BRAND_CONTACT_CONFIG.branchPhones.malakpet, // PLACEHOLDER — Update with real Malakpet number
     hours: "02:00 PM – 01:30 AM",
     highlight: "Dine-in & Takeaway",
     description: [
@@ -64,7 +66,7 @@ const BRANCHES: BranchLocation[] = [
     area: "Paramount Colony, Tolichowki",
     code: "HYD-03",
     address: "Paramount Colony Gate, Tolichowki, Hyderabad",
-    phone: "+91 90000 00003", // PLACEHOLDER
+    phone: BRAND_CONTACT_CONFIG.branchPhones.tolichowki, // PLACEHOLDER — Update with real Tolichowki number
     hours: "01:00 PM – 02:00 AM",
     highlight: "Late Night Dine-in",
     description: [
@@ -81,7 +83,7 @@ const BRANCHES: BranchLocation[] = [
     area: "Road No. 36, Jubilee Hills",
     code: "HYD-04",
     address: "Road No. 36, Near Peddamma Temple, Jubilee Hills, Hyderabad",
-    phone: "+91 90000 00004", // PLACEHOLDER
+    phone: BRAND_CONTACT_CONFIG.branchPhones.jubileehills, // PLACEHOLDER — Update with real Jubilee Hills number
     hours: "12:00 PM – 01:30 AM",
     highlight: "Premium Dine-in Lounge",
     description: [
@@ -97,8 +99,8 @@ const BRANCHES: BranchLocation[] = [
     name: "Aero City",
     area: "Aero City, Shamshabad",
     code: "HYD-05",
-    address: "PLACEHOLDER — Aero City, Shamshabad Road, Hyderabad", // PLACEHOLDER — confirm real address before launch
-    phone: "+91 90000 00005", // PLACEHOLDER
+    address: BRAND_CONTACT_CONFIG.aeroCityAddress, // PLACEHOLDER — confirm real street address before launch
+    phone: BRAND_CONTACT_CONFIG.branchPhones.aerocity, // PLACEHOLDER — Update with real Aero City number
     hours: "12:00 PM – 01:00 AM",
     highlight: "Airport Corridor Outlet",
     description: [
