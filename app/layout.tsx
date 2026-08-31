@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
+import { SITE_URL } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -39,6 +40,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
   description:
     "Hand-pressed on live copper pans with authentic Akawi cheese, cold-pressed ghee, and Aleppo pistachios. Visit our branches in Barkas, Jubilee Hills, Malakpet, Tolichowki & Aero City. Founded by Saud bin Nasar Khulagi.",
@@ -57,13 +59,13 @@ export const metadata: Metadata = {
     title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
     description:
       "Handcrafted on live copper pans across our branches in Hyderabad. Fresh-pressed every single order with 48 dB acoustic crunch.",
-    url: "https://captainkunafa.com",
+    url: SITE_URL,
     siteName: "Kunafa",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "https://captainkunafa.com/og-image.jpg",
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "Kunafa - Authentic Levantine Kunafa in Hyderabad",
@@ -75,10 +77,10 @@ export const metadata: Metadata = {
     title: "Kunafa | Authentic Middle Eastern Kunafa in Hyderabad",
     description:
       "Handcrafted on live copper pans across our branches in Hyderabad. Fresh-pressed every single order.",
-    images: ["https://captainkunafa.com/og-image.jpg"],
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   alternates: {
-    canonical: "https://captainkunafa.com",
+    canonical: SITE_URL,
   },
 };
 
@@ -101,9 +103,9 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Restaurant",
               name: "Kunafa",
-              image: "https://captainkunafa.com/og-image.jpg",
-              "@id": "https://captainkunafa.com",
-              url: "https://captainkunafa.com",
+              image: `${SITE_URL}/og-image.jpg`,
+              "@id": SITE_URL,
+              url: SITE_URL,
               telephone: "+919000000001",
               priceRange: "₹₹",
               servesCuisine: ["Middle Eastern", "Dessert", "Levantine"],

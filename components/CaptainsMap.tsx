@@ -48,6 +48,11 @@ function createMarkerIcon(isActive: boolean) {
   });
 }
 
+// Only two icons ever exist. Building them inline in the render would allocate a
+// fresh L.divIcon per marker on every branch change.
+const ACTIVE_ICON = createMarkerIcon(true);
+const IDLE_ICON = createMarkerIcon(false);
+
 function MapController({ activeBranch }: { activeBranch: BranchLocation }) {
   const map = useMap();
 
@@ -119,7 +124,7 @@ function CaptainsMap({
             <Marker
               key={branch.id}
               position={[branch.lat, branch.lng]}
-              icon={createMarkerIcon(isActive)}
+              icon={isActive ? ACTIVE_ICON : IDLE_ICON}
               eventHandlers={{
                 click: () => onSelectBranch(idx),
               }}

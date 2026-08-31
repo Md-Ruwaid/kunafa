@@ -6,13 +6,11 @@ import "./CircularGallery.css";
 
 export interface GalleryItem {
   image: string;
-  text?: string;
 }
 
 export interface CircularGalleryProps {
   items: GalleryItem[];
   bend?: number;
-  textColor?: string;
   borderRadius?: number;
   scrollSpeed?: number;
   scrollEase?: number;
@@ -286,6 +284,7 @@ class App {
   boundOnTouchMove!: (e: TouchEvent | MouseEvent) => void;
   boundOnTouchUp!: () => void;
   boundOnKeyDown!: (e: KeyboardEvent) => void;
+  boundUpdate: () => void = () => this.update();
 
   constructor(
     container: HTMLDivElement,
@@ -420,10 +419,13 @@ class App {
   }
 
   onWheel(e: WheelEvent) {
-    const delta = e.deltaY || (e as unknown as { wheelDelta?: number }).wheelDelta || e.detail;
-    if (Math.abs(delta) > 3) {
-      // Gentle wheel scrolling
-      this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.04;
+    // Only horizontal intent (trackpad swipe, shift+wheel) rotates the carousel.
+    // A plain vertical wheel must fall through to the page: the listener is
+    // passive, so consuming deltaY here would scroll the page AND spin the
+    // gallery at the same time.
+    const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.shiftKey ? e.deltaY : 0;
+    if (Math.abs(horizontal) > 3) {
+      this.scroll.target += (horizontal > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.04;
       this.onCheckDebounce();
     }
   }
@@ -514,7 +516,7 @@ class App {
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
-    this.raf = window.requestAnimationFrame(this.update.bind(this));
+    this.raf = window.requestAnimationFrame(this.boundUpdate);
   }
 
   addEventListeners() {
@@ -562,8 +564,13 @@ class App {
       this.container.removeEventListener("wheel", this.boundOnWheel);
       this.container.removeEventListener("keydown", this.boundOnKeyDown);
     }
-    if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
-      this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas);
+    if (this.renderer && this.renderer.gl) {
+      const gl = this.renderer.gl;
+      gl.canvas.parentNode?.removeChild(gl.canvas);
+      // Browsers cap live WebGL contexts (~16). Without an explicit release the
+      // context survives unmount and every HMR cycle leaks one.
+      const loseContext = gl.getExtension("WEBGL_lose_context");
+      loseContext?.loseContext();
     }
   }
 }

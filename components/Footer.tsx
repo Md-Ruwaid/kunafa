@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { Shield, Phone, ArrowUp } from "lucide-react";
 import BrandName from "@/components/BrandName";
 import { buildWhatsAppLink, BRAND_PHONE_DISPLAY } from "@/lib/contact";
@@ -103,6 +104,27 @@ export default function Footer() {
             <span>Back to Top</span>
             <ArrowUp className="w-3.5 h-3.5" />
           </button>
+        </div>
+      </div>
+
+      {/* Oversized wordmark. Breaks out of the footer's horizontal padding and
+          bottom padding so the letterforms run edge to edge and sit on the
+          footer's bottom edge. Decorative only — the brand name above is the
+          real text. */}
+      <div
+        aria-hidden="true"
+        className="footer-wordmark-wrap pointer-events-none select-none mt-8 sm:mt-10 -mx-4 sm:-mx-8 -mb-10 sm:-mb-12"
+      >
+        <div className="footer-wordmark-line">
+          <span className="footer-wordmark">kunafa</span>
+          <Image
+            src="/cap-cutout.webp"
+            alt=""
+            width={900}
+            height={635}
+            sizes="30vw"
+            className="footer-wordmark-cap"
+          />
         </div>
       </div>
     </footer>

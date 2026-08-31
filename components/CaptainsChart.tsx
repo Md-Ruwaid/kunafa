@@ -264,7 +264,7 @@ export default function CaptainsChart() {
                     title={`Real Google Maps Location for ${activeBranch.name}`}
                     src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
                     className="w-full h-full border-0"
-                    loading="eager"
+                    loading="lazy"
                     allowFullScreen
                     referrerPolicy="no-referrer-when-downgrade"
                   />
