@@ -20,22 +20,22 @@ export const SIGNATURE_MENU_ITEMS = [
   {
     id: "classic-cream",
     name: "Classic Cream Kunafa",
-    image: "/platters/platter-original.png",
+    image: "/platters/platter-original.webp",
   },
   {
     id: "emerald-pistachio",
     name: "Emerald Pistachio Kunafa",
-    image: "/platters/platter-pistachio.png",
+    image: "/platters/platter-pistachio.webp",
   },
   {
     id: "lotus-biscoff",
     name: "Lotus Biscoff Kunafa",
-    image: "/platters/platter-biscoff.png",
+    image: "/platters/platter-biscoff.webp",
   },
   {
     id: "belgian-chocolate",
     name: "Belgian Chocolate Kunafa",
-    image: "/platters/platter-choco.png",
+    image: "/platters/platter-choco.webp",
   },
 ];
 
