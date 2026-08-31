@@ -5,13 +5,13 @@ import SwashAccent from "@/components/SwashAccent";
 import { getCachedFrames } from "@/lib/preloader";
 
 // Frame Sequence Config
-const DESKTOP_FRAMES = 100;
-const DESKTOP_WIDTH = 1280;
-const DESKTOP_HEIGHT = 720;
+const DESKTOP_FRAMES = 50;
+const DESKTOP_WIDTH = 960;
+const DESKTOP_HEIGHT = 540;
 
-const MOBILE_FRAMES = 97;
-const MOBILE_WIDTH = 720;
-const MOBILE_HEIGHT = 1280;
+const MOBILE_FRAMES = 49;
+const MOBILE_WIDTH = 540;
+const MOBILE_HEIGHT = 960;
 
 function pad(n: number): string {
   return String(n).padStart(3, "0");

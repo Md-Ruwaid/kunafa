@@ -4,8 +4,8 @@
  * completely loaded into GPU/memory BEFORE the preloader lifts.
  */
 
-const DESKTOP_FRAMES = 100;
-const MOBILE_FRAMES = 97;
+const DESKTOP_FRAMES = 50;
+const MOBILE_FRAMES = 49;
 
 function pad(n: number): string {
   return String(n).padStart(3, "0");
@@ -44,16 +44,13 @@ export function preloadAllSiteAssets(
   const ext = "webp";
 
   const platters = [
-    "/platters/platter-original.png",
-    "/platters/platter-pistachio.png",
-    "/platters/platter-biscoff.png",
-    "/platters/platter-choco.png",
+    "/platters/platter-original.webp",
+    "/platters/platter-pistachio.webp",
+    "/platters/platter-biscoff.webp",
+    "/platters/platter-choco.webp",
   ];
 
-  const totalAssets = count + platters.length;
-  let loadedAssets = 0;
   let hasCompleted = false;
-
   const imagesArr: HTMLImageElement[] = new Array(count);
 
   const notifyComplete = () => {
@@ -66,49 +63,53 @@ export function preloadAllSiteAssets(
     onComplete();
   };
 
-  const checkProgress = () => {
-    if (hasCompleted) return;
-    loadedAssets++;
-    const pct = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
-    onProgress(pct);
+  // 1. Load Frame 1 with high priority for instant LCP paint
+  const frame1 = new Image();
+  frame1.src = `${folder}/ezgif-frame-001.${ext}`;
+  frame1.decoding = "async";
+  frame1.fetchPriority = "high";
+  imagesArr[0] = frame1;
 
-    if (loadedAssets >= totalAssets) {
+  if (frame1.complete && frame1.naturalWidth > 0) {
+    onProgress(100);
+    notifyComplete();
+  } else {
+    frame1.onload = () => {
+      onProgress(100);
       notifyComplete();
-    }
-  };
-
-  // 1. Eagerly load & decode all animation frames
-  for (let i = 1; i <= count; i++) {
-    const img = new Image();
-    img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
-    img.decoding = "async";
-    imagesArr[i - 1] = img;
-
-    if (img.complete && img.naturalWidth > 0) {
-      checkProgress();
-    } else {
-      img.onload = checkProgress;
-      img.onerror = checkProgress;
-    }
+    };
+    frame1.onerror = () => {
+      onProgress(100);
+      notifyComplete();
+    };
   }
 
-  // 2. Preload 3D Gallery Platter textures
-  platters.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-    img.decoding = "async";
-    if (img.complete && img.naturalWidth > 0) {
-      checkProgress();
-    } else {
-      img.onload = checkProgress;
-      img.onerror = checkProgress;
+  // 2. Stream remaining frames in background
+  const loadRemaining = () => {
+    for (let i = 2; i <= count; i++) {
+      const img = new Image();
+      img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
+      img.decoding = "async";
+      imagesArr[i - 1] = img;
     }
-  });
 
-  // 3. Fallback safety timer: in case a frame request is slow or dropped on cellular data
+    platters.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.decoding = "async";
+    });
+  };
+
+  if ("requestIdleCallback" in window) {
+    (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(loadRemaining);
+  } else {
+    setTimeout(loadRemaining, 50);
+  }
+
+  // Fallback safety
   setTimeout(() => {
     if (!hasCompleted) {
       notifyComplete();
     }
-  }, 6000);
+  }, 1000);
 }
