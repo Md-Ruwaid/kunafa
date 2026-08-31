@@ -7,7 +7,7 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="relative z-30 -mt-[100vh] min-h-screen flex flex-col justify-center items-center py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#050505] text-[#FFF8EC] rounded-t-2xl sm:rounded-t-3xl border-t-2 border-[#EFB80D]/40 shadow-[0_-50px_120px_rgba(0,0,0,1)] will-change-[box-shadow]"
+      className="relative z-30 min-h-screen flex flex-col justify-center items-center py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#050505] text-[#FFF8EC] rounded-t-2xl sm:rounded-t-3xl border-t-2 border-[#EFB80D]/40 shadow-[0_-50px_120px_rgba(0,0,0,1)] will-change-[box-shadow]"
     >
       <div className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-8 my-auto">
         <h2 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">

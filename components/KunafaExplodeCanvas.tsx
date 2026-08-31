@@ -226,6 +226,7 @@ export default function KunafaExplodeCanvas() {
           if (i === 1) {
             if (isMob) mobileImagesRef.current[0] = img;
             else desktopImagesRef.current[0] = img;
+            // Draw initial frame as soon as frame 1 completes loading
             drawFrame(0);
           }
         };
@@ -272,8 +273,8 @@ export default function KunafaExplodeCanvas() {
       // Clamped DPR: 1.5 on mobile, 2.0 on desktop to prevent GPU overdraw
       const dpr = isMobile ? Math.min(1.5, rawDpr) : Math.min(2, rawDpr);
 
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
+      const width = canvas.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800);
+      const height = canvas.clientHeight || (typeof window !== "undefined" ? window.innerHeight : 600);
       const targetW = Math.round(width * dpr);
       const targetH = Math.round(height * dpr);
 
@@ -315,16 +316,16 @@ export default function KunafaExplodeCanvas() {
     preloadFrameSet(isMobileInitial ? "mobile" : "desktop");
   }, [preloadFrameSet]);
 
-  // Single high-performance RAF loop — paused when offscreen via IntersectionObserver
+  // Single high-performance RAF loop — completely paused when offscreen via IntersectionObserver
   useEffect(() => {
-    let animFrame: number;
+    let animFrame = 0;
     let isRunning = true;
-    let cachedTotalScrollable = 0;
+    let cachedTotalScrollable = 1;
     let smoothProgress = 0;
 
     const measureLayout = () => {
       if (containerRef.current) {
-        cachedTotalScrollable = containerRef.current.offsetHeight - window.innerHeight;
+        cachedTotalScrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
       }
     };
 
@@ -332,71 +333,56 @@ export default function KunafaExplodeCanvas() {
     window.addEventListener("resize", measureLayout, { passive: true });
     window.addEventListener("orientationchange", measureLayout, { passive: true });
 
-    // IntersectionObserver to pause loop when container is off-screen
-    let observer: IntersectionObserver | null = null;
-    if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
-      observer = new IntersectionObserver(
-        ([entry]) => {
-          isInViewRef.current = entry.isIntersecting;
-        },
-        { rootMargin: "0px 0px 0px 0px" }
-      );
-      observer.observe(containerRef.current);
-    }
-
     const tick = () => {
       if (!isRunning) return;
 
-      // Skip processing when scrolled far outside the hero viewport
+      // If offscreen, do NOT schedule further frames — save battery and CPU
       if (!isInViewRef.current) {
-        animFrame = requestAnimationFrame(tick);
+        animFrame = 0;
         return;
       }
 
       const currentScrollY = window.scrollY;
 
-      if (cachedTotalScrollable <= 0) {
+      if (cachedTotalScrollable <= 1) {
         measureLayout();
       }
 
-      if (cachedTotalScrollable > 0) {
-        const targetProgress = Math.max(0, Math.min(1, currentScrollY / cachedTotalScrollable));
-        const isMobile = layoutRef.current.isMobile;
+      const maxScroll = Math.max(1, cachedTotalScrollable);
+      const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
+      const isMobile = layoutRef.current.isMobile;
 
-        // Lenis already smooths the underlying scroll position, so we track it directly
-        // instead of re-smoothing an already-smoothed value.
-        smoothProgress = targetProgress;
-        progressRef.current = smoothProgress;
+      smoothProgress = targetProgress;
+      progressRef.current = smoothProgress;
 
-        // Draw the correct frame for current device
-        const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
-        const frameProgress = getFrameProgress(smoothProgress, isMobile);
-        const targetFrame = Math.round(frameProgress * (totalFrames - 1));
+      // Draw the correct frame for current device
+      const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
+      const frameProgress = getFrameProgress(smoothProgress, isMobile);
+      const targetFrame = Math.round(frameProgress * (totalFrames - 1));
 
-        if (targetFrame !== lastDrawnFrameRef.current) {
-          drawFrame(targetFrame);
-        }
+      if (targetFrame !== lastDrawnFrameRef.current) {
+        drawFrame(targetFrame);
+      }
 
-        // Update text overlay opacity/transforms directly via DOM — zero React re-renders
-        for (let i = 0; i < ACTS.length; i++) {
-          const el = overlayRefs.current[i];
-          if (!el) continue;
+      // Update text overlay opacity/transforms directly via DOM — zero React re-renders
+      for (let i = 0; i < ACTS.length; i++) {
+        const el = overlayRefs.current[i];
+        if (!el) continue;
 
-          const opacity = getActOpacity(smoothProgress, ACTS[i].range);
-          const translateX = getActX(smoothProgress, ACTS[i].range, ACTS[i].align);
+        const opacity = getActOpacity(smoothProgress, ACTS[i].range);
+        const translateX = getActX(smoothProgress, ACTS[i].range, ACTS[i].align);
 
-          if (opacity <= 0.001) {
-            if (el.style.visibility !== "hidden") {
-              el.style.opacity = "0";
-              el.style.visibility = "hidden";
-            }
-          } else {
-            el.style.opacity = String(opacity);
-            el.style.visibility = "visible";
-            const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
-            if (desktopInner) {
-              desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
-            }
+        if (opacity <= 0.001) {
+          if (el.style.visibility !== "hidden") {
+            el.style.opacity = "0";
+            el.style.visibility = "hidden";
+          }
+        } else {
+          el.style.opacity = String(opacity);
+          el.style.visibility = "visible";
+          const desktopInner = el.querySelector<HTMLElement>("[data-desktop]");
+          if (desktopInner) {
+            desktopInner.style.transform = `translate3d(${translateX}px, 0, 0)`;
           }
         }
       }
@@ -404,20 +390,43 @@ export default function KunafaExplodeCanvas() {
       animFrame = requestAnimationFrame(tick);
     };
 
-    animFrame = requestAnimationFrame(tick);
+    const startLoop = () => {
+      if (!animFrame && isRunning && isInViewRef.current) {
+        animFrame = requestAnimationFrame(tick);
+      }
+    };
+
+    // IntersectionObserver to truly pause/resume RAF loop
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined" && containerRef.current) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const wasInView = isInViewRef.current;
+          isInViewRef.current = entry.isIntersecting;
+          if (entry.isIntersecting && !wasInView) {
+            startLoop();
+          }
+        },
+        { rootMargin: "0px 0px 0px 0px" }
+      );
+      observer.observe(containerRef.current);
+    }
+
+    startLoop();
 
     return () => {
       isRunning = false;
       if (observer) observer.disconnect();
       window.removeEventListener("resize", measureLayout);
       window.removeEventListener("orientationchange", measureLayout);
-      cancelAnimationFrame(animFrame);
+      if (animFrame) cancelAnimationFrame(animFrame);
     };
   }, [drawFrame]);
 
   return (
     <div
       ref={containerRef}
+      id="story"
       className="relative w-full h-[300vh] sm:h-[250vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}

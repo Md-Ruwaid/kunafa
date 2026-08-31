@@ -61,6 +61,7 @@
 /* Optimize off-screen rendering on mobile devices */
 @media (min-width: 0px) {
   #about,
+  #locations,
   #branches,
   #menu,
   #map-section,

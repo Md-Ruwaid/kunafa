@@ -371,7 +371,8 @@ class App {
   onTouchDown(e: TouchEvent | MouseEvent) {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
-    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const touch = "touches" in e ? (e.touches[0] || (e as TouchEvent).changedTouches?.[0]) : null;
+    const clientX = touch ? touch.clientX : (e as MouseEvent).clientX;
     this.start = clientX;
     this.lastTouchX = clientX;
     this.lastTouchTime = performance.now();
@@ -386,7 +387,8 @@ class App {
 
   onTouchMove(e: TouchEvent | MouseEvent) {
     if (!this.isDown) return;
-    const x = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const touch = "touches" in e ? (e.touches[0] || (e as TouchEvent).changedTouches?.[0]) : null;
+    const x = touch ? touch.clientX : (e as MouseEvent).clientX;
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
 
     // Reduced sensitivity for calm, controlled dragging on both mobile and desktop
