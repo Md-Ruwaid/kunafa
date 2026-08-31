@@ -130,6 +130,8 @@ export default function CaptainsChart() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
+
   // IntersectionObserver to smoothly initialize on viewport entry
   useEffect(() => {
     const el = sectionRef.current;
@@ -149,6 +151,7 @@ export default function CaptainsChart() {
 
   const handleSelectBranch = useCallback((idx: number) => {
     setActiveBranchIndex(idx);
+    setIsMapLoaded(true);
   }, []);
 
   const activeBranch = BRANCHES[activeBranchIndex];
@@ -178,7 +181,7 @@ export default function CaptainsChart() {
           className="flex flex-wrap justify-center gap-2 sm:gap-2.5 mb-6 sm:mb-8"
         >
           {BRANCHES.map((branch, idx) => {
-            const isCurrent = idx === activeBranchIndex;
+            const isCurrent = idx === activeBranchIndex && isMapLoaded;
             return (
               <button
                 key={branch.id}
@@ -212,35 +215,60 @@ export default function CaptainsChart() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* View Mode Toggle */}
-                <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-md border border-white/10 text-[10px] sm:text-xs font-mono">
+                {isMapLoaded ? (
+                  <>
+                    {/* View Mode Toggle */}
+                    <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-md border border-white/10 text-[10px] sm:text-xs font-mono">
+                      <button
+                        type="button"
+                        aria-label="Switch to Google Maps view"
+                        onClick={() => setMapMode("google")}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          mapMode === "google"
+                            ? "bg-[#EFB80D] text-black font-black shadow-sm"
+                            : "text-white/70 hover:text-white"
+                        }`}
+                      >
+                        <MapIcon className="w-3 h-3" aria-hidden="true" />
+                        <span>Google Maps</span>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Switch to Interactive Map view"
+                        onClick={() => setMapMode("nautical")}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
+                          mapMode === "nautical"
+                            ? "bg-[#EFB80D] text-black font-black shadow-sm"
+                            : "text-white/70 hover:text-white"
+                        }`}
+                      >
+                        <Layers className="w-3 h-3" aria-hidden="true" />
+                        <span className="hidden xs:inline">Interactive Map</span>
+                      </button>
+                    </div>
+
+                    {/* Hide Map Toggle */}
+                    <button
+                      type="button"
+                      aria-label="Close Map view"
+                      onClick={() => setIsMapLoaded(false)}
+                      className="px-2 py-1 rounded bg-[#1c1c1c] hover:bg-[#282828] text-white/70 hover:text-white font-mono text-[10px] sm:text-xs border border-white/10 transition-colors"
+                    >
+                      Hide Map
+                    </button>
+                  </>
+                ) : (
+                  /* Open Map Toggle Button */
                   <button
                     type="button"
-                    aria-label="Switch to Google Maps view"
-                    onClick={() => setMapMode("google")}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
-                      mapMode === "google"
-                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
+                    aria-label="Load live interactive map"
+                    onClick={() => setIsMapLoaded(true)}
+                    className="flex items-center gap-1 px-3 py-1 rounded-md bg-[#EFB80D] text-black font-mono font-bold text-[10.5px] sm:text-xs shadow-sm hover:bg-[#f5c632] transition-colors cursor-pointer"
                   >
                     <MapIcon className="w-3 h-3" aria-hidden="true" />
-                    <span>Google Maps</span>
+                    <span>Open Map</span>
                   </button>
-                  <button
-                    type="button"
-                    aria-label="Switch to Interactive Map view"
-                    onClick={() => setMapMode("nautical")}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
-                      mapMode === "nautical"
-                        ? "bg-[#EFB80D] text-black font-black shadow-sm"
-                        : "text-white/70 hover:text-white"
-                    }`}
-                  >
-                    <Layers className="w-3 h-3" aria-hidden="true" />
-                    <span className="hidden xs:inline">Interactive Map</span>
-                  </button>
-                </div>
+                )}
 
                 {/* Direct Google Maps Shortlink */}
                 <a
@@ -261,27 +289,58 @@ export default function CaptainsChart() {
               className="relative w-full bg-[#111111]"
               style={{ height: "min(460px, 58vw)", minHeight: 320 }}
             >
-              {isVisible ? (
-                mapMode === "google" ? (
-                  <iframe
-                    key={activeBranch.id}
-                    title={`Real Google Maps Location for ${activeBranch.name}`}
-                    src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
-                    className="w-full h-full border-0"
-                    loading="eager"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+              {isMapLoaded ? (
+                isVisible ? (
+                  mapMode === "google" ? (
+                    <iframe
+                      key={activeBranch.id}
+                      title={`Real Google Maps Location for ${activeBranch.name}`}
+                      src={`https://maps.google.com/maps?q=${activeBranch.embedQuery}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
+                      className="w-full h-full border-0"
+                      loading="eager"
+                      allowFullScreen
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  ) : (
+                    <CaptainsMap
+                      branches={BRANCHES}
+                      activeBranchIndex={activeBranchIndex}
+                      onSelectBranch={handleSelectBranch}
+                    />
+                  )
                 ) : (
-                  <CaptainsMap
-                    branches={BRANCHES}
-                    activeBranchIndex={activeBranchIndex}
-                    onSelectBranch={handleSelectBranch}
-                  />
+                  <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+                  </div>
                 )
               ) : (
-                <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full border-2 border-[#EFB80D] border-t-transparent animate-spin" />
+                /* Sleek On-Demand Map Placeholder (Zero Network/CPU Overhead Until Clicked) */
+                <div className="w-full h-full bg-[#0d0d0d] flex flex-col items-center justify-center text-center p-6 select-none relative overflow-hidden">
+                  {/* Subtle Grid Background Pattern */}
+                  <div className="absolute inset-0 bg-[radial-gradient(#EFB80D_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+
+                  {/* Pulsing Pin Icon */}
+                  <div className="relative mb-4">
+                    <div className="w-14 h-14 rounded-full bg-[#EFB80D]/10 border border-[#EFB80D]/30 flex items-center justify-center text-[#EFB80D] shadow-[0_0_25px_rgba(239,184,13,0.2)]">
+                      <MapPin className="w-6 h-6 animate-pulse" />
+                    </div>
+                  </div>
+
+                  <h3 className="font-display font-bold text-lg sm:text-xl text-white mb-1.5">
+                    {activeBranch.name}
+                  </h3>
+                  <p className="font-sans text-xs sm:text-sm text-white/60 max-w-sm mb-5">
+                    Click any branch above or tap below to load the live map & navigation.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsMapLoaded(true)}
+                    className="btn-tactile-base btn-tactile-gold font-bold px-5 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm flex items-center gap-2 cursor-pointer"
+                  >
+                    <MapIcon className="w-4 h-4" />
+                    <span>View {activeBranch.name} on Map</span>
+                  </button>
                 </div>
               )}
             </div>
