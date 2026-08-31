@@ -301,3 +301,120 @@
 
 
 
+
+/* ── Oversized footer wordmark ──────────────────────────────────────────────
+   Edge-to-edge "kunafa" wordmark in the Luckiest Guy brand face (which has no
+   lowercase forms, so it sets as KUNAFA). Sized in vw so it tracks the
+   viewport at every breakpoint, with the full glyph height on show. The K
+   wears the captain's cap. Purely decorative — the footer already carries the brand name
+   in real text, so the whole block is aria-hidden.
+   The global prefers-reduced-motion block above stops the shimmer. */
+.footer-wordmark-wrap {
+  /* "kunafa" sets 3.335em wide in Luckiest Guy; with -0.045em tracking over
+     6 characters that is 3.065em, so 30.3vw spans ~99% of any viewport. */
+  --wm-size: 30.3vw;
+  /* Glyph ink box, measured from the rendered face in --wm-size units. */
+  --wm-ink-h: 0.7246;
+  --wm-ink-top: -0.14;
+  /* Fraction of the ink height left visible. 1 = the whole wordmark. */
+  --wm-reveal: 1;
+  /* Headroom above the ink for the cap, also in --wm-size units. */
+  --wm-cap-lift: 0.39;
+  /* Sliver of floor below the baseline so sub-pixel rounding never shaves the
+     bottom of the letterforms. */
+  --wm-floor: 0.02;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+  height: calc(
+    var(--wm-size) *
+      (var(--wm-cap-lift) + var(--wm-ink-h) * var(--wm-reveal) + var(--wm-floor))
+  );
+}
+
+/* Molten glow pooled under the letterforms. */
+.footer-wordmark-wrap::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -30%;
+  width: 78%;
+  height: 120%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(239, 184, 13, 0.22) 0%,
+    rgba(224, 83, 68, 0.10) 42%,
+    transparent 72%
+  );
+  filter: blur(46px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Sized to the text so the cap can be placed in percentages of the wordmark
+   width rather than of the viewport. Pulled up so the ink starts exactly
+   --wm-cap-lift below the top of the crop. */
+.footer-wordmark-line {
+  position: relative;
+  display: inline-block;
+  font-size: var(--wm-size);
+  line-height: 0.74;
+  margin-top: calc(var(--wm-size) * (var(--wm-cap-lift) - var(--wm-ink-top)));
+}
+
+.footer-wordmark {
+  display: block;
+  font-family: var(--font-luckiest-guy), "Luckiest Guy", cursive, sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+
+  background-image: linear-gradient(
+    100deg,
+    #6B4A05 0%,
+    #EFB80D 16%,
+    #FFF3C4 27%,
+    #EFB80D 38%,
+    #E05344 50%,
+    #EFB80D 62%,
+    #FFF3C4 73%,
+    #EFB80D 84%,
+    #6B4A05 100%
+  );
+  background-size: 220% auto;
+  background-position: 0% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  animation: wordmarkShimmer 9s linear infinite;
+}
+
+@keyframes wordmarkShimmer {
+  to {
+    background-position: 220% center;
+  }
+}
+
+/* The cap, worn on the K. --wm-cap-x is the K's ink centre and --wm-cap-w its
+   width, both as fractions of the wordmark width, so the cap tracks the glyph
+   at every viewport size. */
+.footer-wordmark-cap {
+  --wm-cap-x: 0.112;
+  --wm-cap-w: 0.2;
+
+  position: absolute;
+  left: calc(var(--wm-cap-x) * 100%);
+  top: calc(var(--wm-ink-top) * 1em);
+  width: calc(var(--wm-cap-w) * 100%);
+  height: auto;
+  transform: translate(-50%, -68%) rotate(8deg);
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 0.06em 0.05em rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
