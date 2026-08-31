@@ -452,10 +452,24 @@ export default function KunafaExplodeCanvas() {
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
+        {/* Instant SSR/First-Paint LCP Hero Poster */}
+        <picture className="absolute inset-0 w-full h-full pointer-events-none -z-0">
+          <source media="(max-width: 767px)" srcSet="/mobile-view-framesv2/ezgif-frame-001.webp" type="image/webp" />
+          <source media="(min-width: 768px)" srcSet="/Kunafa-animations-v2/ezgif-frame-001.webp" type="image/webp" />
+          <img
+            src="/mobile-view-framesv2/ezgif-frame-001.webp"
+            alt="Captain Kunafa Hero"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="w-full h-full object-contain"
+          />
+        </picture>
+
         {/* Canvas */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none transform-gpu"
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none transform-gpu z-10"
         />
 
         {/* Edge blends */}
