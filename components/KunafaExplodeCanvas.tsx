@@ -352,7 +352,15 @@ export default function KunafaExplodeCanvas() {
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
-      smoothProgress = targetProgress;
+      // Silky momentum lerp: on mobile 0.09 gives ultra-fluid gliding across all frames
+      const lerpFactor = isMobile ? 0.09 : 0.14;
+      const diff = targetProgress - smoothProgress;
+      if (Math.abs(diff) > 0.00008) {
+        smoothProgress += diff * lerpFactor;
+      } else {
+        smoothProgress = targetProgress;
+      }
+
       progressRef.current = smoothProgress;
 
       // Draw the correct frame for current device

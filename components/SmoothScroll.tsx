@@ -5,20 +5,15 @@ import Lenis from "lenis";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Initialize Lenis with mobile touch sync for buttery-smooth inertial momentum
-    const isTouch =
-      typeof window !== "undefined" &&
-      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
-
+    // Initialize Lenis for buttery-smooth inertial momentum scrolling
     const lenis = new Lenis({
-      duration: isTouch ? 0.8 : 1.0,
+      duration: 1.0,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.1,
-      syncTouch: true,
+      touchMultiplier: 1.0,
     });
 
     let animFrame: number;
