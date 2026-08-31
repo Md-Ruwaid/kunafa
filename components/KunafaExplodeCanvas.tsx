@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useCallback } from "react";
 import SwashAccent from "@/components/SwashAccent";
+import { getCachedFrames } from "@/lib/preloader";
 
 // Frame Sequence Config
 const DESKTOP_FRAMES = 100;
@@ -206,6 +207,19 @@ export default function KunafaExplodeCanvas() {
       if (isMob && hasPreloadedMobileRef.current) return;
       if (!isMob && hasPreloadedDesktopRef.current) return;
 
+      const cached = getCachedFrames(kind);
+      if (cached && cached.length > 0) {
+        if (isMob) {
+          hasPreloadedMobileRef.current = true;
+          mobileImagesRef.current = cached;
+        } else {
+          hasPreloadedDesktopRef.current = true;
+          desktopImagesRef.current = cached;
+        }
+        drawFrame(0);
+        return;
+      }
+
       if (isMob) hasPreloadedMobileRef.current = true;
       else hasPreloadedDesktopRef.current = true;
 
@@ -236,25 +250,9 @@ export default function KunafaExplodeCanvas() {
       // Stage 1: Load frame 1 immediately for instant paint
       loadSingle(1);
 
-      // Stage 2: Eagerly load initial scroll range (frames 2 to 10)
-      const initialBatch = Math.min(10, count);
-      for (let i = 2; i <= initialBatch; i++) {
+      // Stage 2: Eagerly load all frames for instant smooth playback
+      for (let i = 2; i <= count; i++) {
         loadSingle(i);
-      }
-
-      // Stage 3: Progressively load remaining frames in background batches
-      const loadRemaining = () => {
-        for (let i = initialBatch + 1; i <= count; i++) {
-          loadSingle(i);
-        }
-      };
-
-      if (typeof window !== "undefined") {
-        if ("requestIdleCallback" in window) {
-          (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(loadRemaining);
-        } else {
-          setTimeout(loadRemaining, 50);
-        }
       }
 
       if (isMob) mobileImagesRef.current = loadedArr;
