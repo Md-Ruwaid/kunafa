@@ -216,6 +216,7 @@ export default function CaptainsChart() {
                 <div className="flex items-center bg-[#1c1c1c] p-0.5 rounded-md border border-white/10 text-[10px] sm:text-xs font-mono">
                   <button
                     type="button"
+                    aria-label="Switch to Google Maps view"
                     onClick={() => setMapMode("google")}
                     className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                       mapMode === "google"
@@ -223,11 +224,12 @@ export default function CaptainsChart() {
                         : "text-white/70 hover:text-white"
                     }`}
                   >
-                    <MapIcon className="w-3 h-3" />
+                    <MapIcon className="w-3 h-3" aria-hidden="true" />
                     <span>Google Maps</span>
                   </button>
                   <button
                     type="button"
+                    aria-label="Switch to Interactive Map view"
                     onClick={() => setMapMode("nautical")}
                     className={`flex items-center gap-1 px-2.5 py-1 rounded transition-all cursor-pointer ${
                       mapMode === "nautical"
@@ -235,7 +237,7 @@ export default function CaptainsChart() {
                         : "text-white/70 hover:text-white"
                     }`}
                   >
-                    <Layers className="w-3 h-3" />
+                    <Layers className="w-3 h-3" aria-hidden="true" />
                     <span className="hidden xs:inline">Interactive Map</span>
                   </button>
                 </div>
