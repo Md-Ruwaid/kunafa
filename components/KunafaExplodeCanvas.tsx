@@ -8,7 +8,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 50;
+const MOBILE_FRAMES = 97;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -63,10 +63,10 @@ function getFrameProgress(progress: number, isMobile: boolean): number {
   return 1.0;
 }
 
-// Structured story acts: Origin → Craft → Core Science → The Promise
+// Structured story acts: Origin → Craft (explosion and reassembly speak for themselves visually)
 const ACTS = [
   {
-    range: [0, 0.18] as [number, number],
+    range: [0, 0.25] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -76,7 +76,7 @@ const ACTS = [
     body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
-    range: [0.20, 0.40] as [number, number],
+    range: [0.28, 0.52] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -84,26 +84,6 @@ const ACTS = [
       </>
     ),
     body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
-  },
-  {
-    range: [0.44, 0.65] as [number, number],
-    align: "right" as const,
-    headline: (
-      <>
-        The Molten <SwashAccent color="gold">Akawi &amp; Nablusi</SwashAccent> Heart
-      </>
-    ),
-    body: "18-hour cold-desalinated mountain Akawi and Nablusi curd, unfurling under heat with raw first-harvest Aleppo emerald pistachios.",
-  },
-  {
-    range: [0.70, 0.94] as [number, number],
-    align: "center" as const,
-    headline: (
-      <>
-        Reassembled to <SwashAccent color="gold">Perfection</SwashAccent>
-      </>
-    ),
-    body: "Served sizzling hot within 60 seconds of pan flip. Taste authentic Levantine perfection.",
   },
 ];
 
@@ -445,7 +425,7 @@ export default function KunafaExplodeCanvas() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[600vh] sm:h-[550vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[300vh] sm:h-[250vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
