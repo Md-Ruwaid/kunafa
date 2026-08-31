@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   MapPin,
   Clock,
@@ -349,86 +348,80 @@ export default function CaptainsChart() {
           {/* Active Branch Spotlight Card */}
           <div className="lg:col-span-5">
             <div aria-live="polite" aria-atomic="true">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeBranch.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.15 }}
-                  className="bg-[#121212] border-2 border-[#EFB80D] rounded-xl p-5 sm:p-7 relative overflow-hidden shadow-2xl"
-                >
-                  {/* Header */}
-                  <div className="mb-3">
-                    <div className="text-xs text-white/80 font-semibold mb-1">
-                      {activeBranch.area}
-                    </div>
-                    <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
-                      {activeBranch.name}
-                    </h3>
+              <div
+                key={activeBranch.id}
+                className="bg-[#121212] border-2 border-[#EFB80D] rounded-xl p-5 sm:p-7 relative overflow-hidden shadow-2xl transition-all duration-150"
+              >
+                {/* Header */}
+                <div className="mb-3">
+                  <div className="text-xs text-white/80 font-semibold mb-1">
+                    {activeBranch.area}
                   </div>
+                  <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
+                    {activeBranch.name}
+                  </h3>
+                </div>
 
-                  {/* Description with structured BrandName formatting (Item 4.4) */}
-                  <p className="font-sans text-xs sm:text-sm text-white/90 leading-relaxed mb-4 font-medium">
-                    {activeBranch.description.map((chunk, i) =>
-                      chunk === "BRAND" ? <BrandName key={i} /> : chunk
-                    )}
-                  </p>
+                {/* Description with structured BrandName formatting (Item 4.4) */}
+                <p className="font-sans text-xs sm:text-sm text-white/90 leading-relaxed mb-4 font-medium">
+                  {activeBranch.description.map((chunk, i) =>
+                    chunk === "BRAND" ? <BrandName key={i} /> : chunk
+                  )}
+                </p>
 
-                  {/* Meta details */}
-                  <div className="space-y-2.5 border-t border-white/10 pt-3.5 mb-5 font-sans text-xs text-white/85 font-medium">
-                    <div className="flex items-start gap-2.5">
-                      <MapPin className="w-4 h-4 text-[#EFB80D] shrink-0 mt-0.5" />
-                      <span>{activeBranch.address}</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <Clock className="w-4 h-4 text-[#EFB80D] shrink-0" />
-                      <span>{activeBranch.hours}</span>
-                    </div>
-                    <div className="flex items-center gap-2.5">
-                      <Phone className="w-4 h-4 text-[#EFB80D] shrink-0" />
-                      <span>{activeBranch.phone}</span>
-                    </div>
+                {/* Meta details */}
+                <div className="space-y-2.5 border-t border-white/10 pt-3.5 mb-5 font-sans text-xs text-white/85 font-medium">
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-[#EFB80D] shrink-0 mt-0.5" />
+                    <span>{activeBranch.address}</span>
                   </div>
-
-                  {/* Actions — Official Google Maps Link, WhatsApp & Direct Call */}
-                  <div className="grid grid-cols-3 gap-2">
-                    {/* Real Google Maps Shortlink */}
-                    <a
-                      href={activeBranch.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
-                      className="btn-tactile-base btn-tactile-gold flex flex-col items-center justify-center gap-1 font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-lg"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                      <span>Directions</span>
-                    </a>
-
-                    {/* WhatsApp */}
-                    <a
-                      href={branchWhatsAppUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`WhatsApp ${activeBranch.name}`}
-                      className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-[#25D366]"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      <span>WhatsApp</span>
-                    </a>
-
-                    {/* Direct Phone Call */}
-                    <a
-                      href={`tel:${activeBranch.phone.replace(/\s/g, "")}`}
-                      aria-label={`Call ${activeBranch.name}`}
-                      className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-white"
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>Call</span>
-                    </a>
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="w-4 h-4 text-[#EFB80D] shrink-0" />
+                    <span>{activeBranch.hours}</span>
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-4 h-4 text-[#EFB80D] shrink-0" />
+                    <span>{activeBranch.phone}</span>
+                  </div>
+                </div>
+
+                {/* Actions — Official Google Maps Link, WhatsApp & Direct Call */}
+                <div className="grid grid-cols-3 gap-2">
+                  {/* Real Google Maps Shortlink */}
+                  <a
+                    href={activeBranch.mapUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Get directions to ${activeBranch.name} on Google Maps`}
+                    className="btn-tactile-base btn-tactile-gold flex flex-col items-center justify-center gap-1 font-sans font-black text-[10px] sm:text-xs py-2.5 rounded-lg"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    <span>Directions</span>
+                  </a>
+
+                  {/* WhatsApp */}
+                  <a
+                    href={branchWhatsAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Order from ${activeBranch.name} on WhatsApp`}
+                    className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-[#25D366]"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  {/* Direct Phone Call */}
+                  <a
+                    href={`tel:${activeBranch.phone.replace(/\s/g, "")}`}
+                    aria-label={`Call ${activeBranch.name}`}
+                    className="btn-tactile-base btn-tactile-dark flex flex-col items-center justify-center gap-1 font-sans font-bold text-[10px] sm:text-xs py-2.5 rounded-lg hover:text-white"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -93,11 +93,6 @@ export default function RootLayout({
       className={`${fraunces.variable} ${workSans.variable} ${ibmPlexMono.variable} ${luckiestGuy.variable}`}
     >
       <head>
-        {/* Preconnects for critical external origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://unpkg.com" />
-
         {/* Eager Preload for LCP Hero First Frame */}
         <link
           rel="preload"
