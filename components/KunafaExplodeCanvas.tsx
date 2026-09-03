@@ -22,44 +22,48 @@ function pad(n: number): string {
 // Mobile Stage 2 (0.18 -> 0.42 scroll): Crust separation & molten cheese stretch (0.22 -> 0.54 frames, frames 21 to 52)
 // Mobile Stage 3 (0.42 -> 0.68 scroll): Molten cheese heart explosion (0.54 -> 0.84 frames, frames 52 to 81)
 // Mobile Stage 4 (0.68 -> 0.94 scroll): Peak explosion suspension (0.84 -> 1.00 frames, frames 81 to 97)
-// Tail Buffer (0.74 -> 1.00 scroll): Frame held at 1.0 so finished assembled platter rests peacefully before AboutSection covers it
+// Frame Progression: Animation finishes cleanly by 55% (mobile) / 58% (desktop) scroll.
+// From 55% -> 100% scroll: The pristine finished kunafa platter is locked on the end frame
+// while the About Us panel slowly and smoothly glides up over it.
 function getFrameProgress(progress: number, isMobile: boolean): number {
   if (isMobile) {
-    if (progress <= 0.18) {
-      const t = progress / 0.18;
+    if (progress <= 0.14) {
+      const t = progress / 0.14;
       return t * 0.22;
     }
-    if (progress <= 0.42) {
-      const t = (progress - 0.18) / 0.24;
-      return 0.22 + t * 0.32;
+    if (progress <= 0.32) {
+      const t = (progress - 0.14) / 0.18;
+      return 0.22 + t * 0.34;
     }
-    if (progress <= 0.74) {
-      const t = (progress - 0.42) / 0.32;
-      return 0.54 + Math.pow(t, 0.9) * 0.46;
+    if (progress <= 0.55) {
+      const t = (progress - 0.32) / 0.23;
+      return 0.56 + Math.pow(t, 0.9) * 0.44;
     }
+    // Steady hold on final assembled platter while AboutSection slowly glides up
     return 1.0;
   }
 
-  // Desktop responsive front-loaded curve with generous 28% tail buffer
-  if (progress <= 0.18) {
-    const t = progress / 0.18;
+  // Desktop responsive curve — finishes by progress = 0.58
+  if (progress <= 0.15) {
+    const t = progress / 0.15;
     return t * 0.28;
   }
-  if (progress <= 0.42) {
-    const t = (progress - 0.18) / 0.24;
-    return 0.28 + t * 0.32;
+  if (progress <= 0.34) {
+    const t = (progress - 0.15) / 0.19;
+    return 0.28 + t * 0.34;
   }
-  if (progress <= 0.72) {
-    const t = (progress - 0.42) / 0.30;
-    return 0.60 + Math.pow(t, 0.9) * 0.40;
+  if (progress <= 0.58) {
+    const t = (progress - 0.34) / 0.24;
+    return 0.62 + Math.pow(t, 0.9) * 0.38;
   }
+  // Steady hold on final assembled platter while AboutSection slowly glides up
   return 1.0;
 }
 
-// Structured story acts: Origin → Craft (explosion and reassembly speak for themselves visually)
+// Structured story acts: Headline overlays clear early so final reassembled platter is pristine
 const ACTS = [
   {
-    range: [0, 0.25] as [number, number],
+    range: [0, 0.22] as [number, number],
     align: "center" as const,
     headline: (
       <>
@@ -68,7 +72,7 @@ const ACTS = [
     ),
   },
   {
-    range: [0.28, 0.52] as [number, number],
+    range: [0.25, 0.46] as [number, number],
     align: "left" as const,
     headline: (
       <>
@@ -335,7 +339,7 @@ export default function KunafaExplodeCanvas() {
     let isRunning = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
     const initialWinH = typeof window !== "undefined" ? window.innerHeight : 800;
-    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 1.8 : 2.2));
+    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 2.2 : 2.5));
     let smoothProgress = 0;
 
     let lastMeasuredWidth = typeof window !== "undefined" ? window.innerWidth : 0;
@@ -346,7 +350,7 @@ export default function KunafaExplodeCanvas() {
         if (height > winH) {
           cachedTotalScrollable = height - winH;
         } else {
-          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 1.8 : 2.2));
+          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 2.2 : 2.5));
         }
       }
     };
@@ -375,13 +379,13 @@ export default function KunafaExplodeCanvas() {
       const lenisScroll = (window as unknown as { lenis?: { scroll?: number } }).lenis?.scroll;
       const currentScrollY = typeof lenisScroll === "number" ? lenisScroll : window.scrollY;
 
-      const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.2);
+      const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.5);
       const maxScroll = Math.max(minScrollBoundary, cachedTotalScrollable);
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
       // Silky-smooth frame interpolation with fluid touch & wheel momentum
-      const lerpFactor = isMobile ? 0.14 : 0.10;
+      const lerpFactor = isMobile ? 0.16 : 0.12;
       const diff = targetProgress - smoothProgress;
       if (Math.abs(diff) > 0.00005) {
         smoothProgress += diff * lerpFactor;
@@ -490,7 +494,7 @@ export default function KunafaExplodeCanvas() {
     <div
       ref={containerRef}
       id="story"
-      className="relative w-full h-[280vh] sm:h-[320vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[320vh] sm:h-[350vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
