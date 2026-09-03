@@ -17,49 +17,49 @@ function pad(n: number): string {
   return String(n).padStart(3, "0");
 }
 
-// Smooth, proportional frame distribution curve (gentle 1:1 opening, no rushing or skipping frames at start)
-// Stage 1 (0.00 -> 0.24 scroll): Gentle 1:1 opening lift (0.00 -> 0.24 frames)
-// Stage 2 (0.24 -> 0.48 scroll): Separation & golden crisp lift (0.24 -> 0.54 frames)
-// Stage 3 (0.48 -> 0.72 scroll): Molten cheese heart explosion (0.54 -> 0.84 frames)
-// Stage 4 (0.72 -> 0.94 scroll): Slower, deliberate reassembly (0.84 -> 1.00 frames)
+// Mobile & Desktop inverted sensitivity frame distribution curve:
+// Stage 1 (0.00 -> 0.15 scroll): Fast, high-sensitivity opening (0.00 -> 0.30 frames)
+// Stage 2 (0.15 -> 0.38 scroll): Gentle separation & golden crisp lift (0.30 -> 0.55 frames)
+// Stage 3 (0.38 -> 0.60 scroll): Energetic molten cheese heart explosion (0.55 -> 0.85 frames)
+// Stage 4 (0.60 -> 0.94 scroll): Slower, deliberate reassembly (0.85 -> 1.00 frames)
 // Tail Buffer (0.94 -> 1.00 scroll): Frame held at 1.0 so AboutSection eases up smoothly without snapping
 function getFrameProgress(progress: number, isMobile: boolean): number {
   if (isMobile) {
-    if (progress <= 0.24) {
-      const t = progress / 0.24;
-      return t * 0.24;
+    if (progress <= 0.15) {
+      const t = progress / 0.15;
+      return t * 0.30;
     }
-    if (progress <= 0.48) {
-      const t = (progress - 0.24) / 0.24;
-      return 0.24 + t * 0.30;
+    if (progress <= 0.38) {
+      const t = (progress - 0.15) / 0.23;
+      return 0.30 + t * 0.25;
     }
-    if (progress <= 0.72) {
-      const t = (progress - 0.48) / 0.24;
-      return 0.54 + t * 0.30;
+    if (progress <= 0.60) {
+      const t = (progress - 0.38) / 0.22;
+      return 0.55 + t * 0.30;
     }
     if (progress <= 0.94) {
-      const t = (progress - 0.72) / 0.22;
-      return 0.84 + Math.pow(t, 0.9) * 0.16;
+      const t = (progress - 0.60) / 0.34;
+      return 0.85 + Math.pow(t, 0.85) * 0.15;
     }
     return 1.0;
   }
 
-  // Desktop smooth 1:1 opening without sudden acceleration
-  if (progress <= 0.24) {
-    const t = progress / 0.24;
-    return t * 0.24;
+  // Desktop responsive front-loaded curve with smooth tail buffer
+  if (progress <= 0.18) {
+    const t = progress / 0.18;
+    return t * 0.32;
   }
-  if (progress <= 0.48) {
-    const t = (progress - 0.24) / 0.24;
-    return 0.24 + t * 0.30;
+  if (progress <= 0.42) {
+    const t = (progress - 0.18) / 0.24;
+    return 0.32 + t * 0.26;
   }
-  if (progress <= 0.72) {
-    const t = (progress - 0.48) / 0.24;
-    return 0.54 + t * 0.30;
+  if (progress <= 0.65) {
+    const t = (progress - 0.42) / 0.23;
+    return 0.58 + t * 0.28;
   }
   if (progress <= 0.94) {
-    const t = (progress - 0.72) / 0.22;
-    return 0.84 + Math.pow(t, 0.9) * 0.16;
+    const t = (progress - 0.65) / 0.29;
+    return 0.86 + Math.pow(t, 0.9) * 0.14;
   }
   return 1.0;
 }
@@ -95,11 +95,6 @@ function getActOpacity(progress: number, range: [number, number]): number {
   const fadeOut = 0.035;
 
   if (progress < start || progress > end) return 0;
-  // Act 1 starts at 0, so it is fully visible immediately on page load
-  if (start === 0) {
-    if (progress > end - fadeOut) return (end - progress) / fadeOut;
-    return 1;
-  }
   if (progress < start + fadeIn) return (progress - start) / fadeIn;
   if (progress > end - fadeOut) return (end - progress) / fadeOut;
   return 1;
@@ -139,8 +134,8 @@ export default function KunafaExplodeCanvas() {
   const lastDrawnFrameRef = useRef(-1);
   const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
 
-  // High-performance continuous sub-frame draw with real-time GPU crossfade blending
-  const drawFrame = useCallback((exactIndex: number) => {
+  // High-performance frame draw supporting responsive portrait mobile & landscape desktop
+  const drawFrame = useCallback((frameIndex: number) => {
     const ctx = ctxRef.current;
     if (!ctx) return;
 
@@ -152,33 +147,25 @@ export default function KunafaExplodeCanvas() {
     const frameHeight = isMobile ? MOBILE_HEIGHT : DESKTOP_HEIGHT;
     const images = isMobile ? mobileImagesRef.current : desktopImagesRef.current;
 
-    const clampedIndex = Math.max(0, Math.min(totalFrames - 1, exactIndex));
-    const floorIndex = Math.floor(clampedIndex);
-    const ceilIndex = Math.min(totalFrames - 1, floorIndex + 1);
-    const blend = clampedIndex - floorIndex;
+    const clampedIndex = Math.max(0, Math.min(totalFrames - 1, frameIndex));
+    let targetImg = images[clampedIndex];
 
-    const isReady = (img?: HTMLImageElement): boolean =>
-      Boolean(img && img.complete && img.naturalWidth > 0);
-
-    let targetImg1 = images[floorIndex];
-    let targetImg2 = images[ceilIndex];
-
-    if (!isReady(targetImg1)) {
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
       // Rapid fallback: find the nearest loaded frame in either direction
       for (let dist = 1; dist < totalFrames; dist++) {
-        const prev = floorIndex - dist;
-        const next = floorIndex + dist;
-        if (prev >= 0 && isReady(images[prev])) {
-          targetImg1 = images[prev];
+        const prev = clampedIndex - dist;
+        const next = clampedIndex + dist;
+        if (prev >= 0 && images[prev]?.complete && images[prev]?.naturalWidth > 0) {
+          targetImg = images[prev];
           break;
         }
-        if (next < totalFrames && isReady(images[next])) {
-          targetImg1 = images[next];
+        if (next < totalFrames && images[next]?.complete && images[next]?.naturalWidth > 0) {
+          targetImg = images[next];
           break;
         }
       }
     }
-    if (!isReady(targetImg1)) return;
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
 
     ctx.save();
     ctx.scale(dpr, dpr);
@@ -204,15 +191,8 @@ export default function KunafaExplodeCanvas() {
     ctx.imageSmoothingQuality = "high";
 
     try {
-      // Draw base floor frame
-      ctx.drawImage(targetImg1, offsetX, offsetY, drawWidth, drawHeight);
-
-      // Smooth sub-frame micro-blend
-      if (blend > 0.02 && floorIndex !== ceilIndex && isReady(targetImg2)) {
-        ctx.globalAlpha = blend;
-        ctx.drawImage(targetImg2, offsetX, offsetY, drawWidth, drawHeight);
-        ctx.globalAlpha = 1.0;
-      }
+      ctx.drawImage(targetImg, offsetX, offsetY, drawWidth, drawHeight);
+      lastDrawnFrameRef.current = clampedIndex;
     } catch {
       // Safe fallback
     }
@@ -312,11 +292,11 @@ export default function KunafaExplodeCanvas() {
       const ctx = canvas.getContext("2d", { alpha: false });
       if (ctx) ctxRef.current = ctx;
 
-      // Redraw current frame with sub-frame precision
+      // Redraw current frame
       const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const frameProgress = getFrameProgress(progressRef.current, isMobile);
-      const exactFrame = frameProgress * (totalFrames - 1);
-      drawFrame(exactFrame);
+      const frame = Math.round(frameProgress * (totalFrames - 1));
+      drawFrame(frame);
     };
 
     const ctx = canvas.getContext("2d", { alpha: false });
@@ -371,10 +351,10 @@ export default function KunafaExplodeCanvas() {
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
-      // Silky momentum lerp: responsive tracking without spongey buffer
-      const lerpFactor = isMobile ? 0.12 : 0.16;
+      // Silky momentum lerp: on mobile 0.09 gives ultra-fluid gliding across all frames
+      const lerpFactor = isMobile ? 0.09 : 0.14;
       const diff = targetProgress - smoothProgress;
-      if (Math.abs(diff) > 0.00004) {
+      if (Math.abs(diff) > 0.00008) {
         smoothProgress += diff * lerpFactor;
       } else {
         smoothProgress = targetProgress;
@@ -382,14 +362,13 @@ export default function KunafaExplodeCanvas() {
 
       progressRef.current = smoothProgress;
 
-      // Continuous sub-frame rendering: re-draw smoothly whenever frame changes
+      // Draw the correct frame for current device
       const totalFrames = isMobile ? MOBILE_FRAMES : DESKTOP_FRAMES;
       const frameProgress = getFrameProgress(smoothProgress, isMobile);
-      const exactFrame = frameProgress * (totalFrames - 1);
+      const targetFrame = Math.round(frameProgress * (totalFrames - 1));
 
-      if (Math.abs(exactFrame - lastDrawnFrameRef.current) > 0.005) {
-        lastDrawnFrameRef.current = exactFrame;
-        drawFrame(exactFrame);
+      if (targetFrame !== lastDrawnFrameRef.current) {
+        drawFrame(targetFrame);
       }
 
       // Update text overlay opacity/transforms directly via DOM — zero React re-renders
