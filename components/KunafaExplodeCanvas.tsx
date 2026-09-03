@@ -269,8 +269,8 @@ export default function KunafaExplodeCanvas() {
     const updateLayout = () => {
       const isMobile = window.innerWidth < 768 || canvas.clientWidth < 768;
       const rawDpr = window.devicePixelRatio || 1;
-      // Cap DPR at 2 for mobile GPU battery/memory efficiency (50% less fill-rate with full visual clarity)
-      const dpr = Math.min(rawDpr, 2);
+      // Full Retina / OLED sub-pixel fidelity (supports up to 3x DPR for ultra-crisp display)
+      const dpr = Math.min(rawDpr, 3);
 
       const width = canvas.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800);
       const height = canvas.clientHeight || (typeof window !== "undefined" ? window.innerHeight : 600);
@@ -288,8 +288,8 @@ export default function KunafaExplodeCanvas() {
       if (isMobile) preloadFrameSet("mobile");
       else preloadFrameSet("desktop");
 
-      // Re-acquire context after resize with desynchronized low latency
-      const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+      // Re-acquire context after resize
+      const ctx = canvas.getContext("2d", { alpha: false });
       if (ctx) ctxRef.current = ctx;
 
       // Redraw current frame
