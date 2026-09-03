@@ -58,18 +58,7 @@
   }
 }
 
-/* Optimize off-screen rendering on mobile devices */
-@media (min-width: 0px) {
-  #about,
-  #locations,
-  #branches,
-  #menu,
-  #map-section,
-  footer {
-    content-visibility: auto;
-    contain-intrinsic-size: 800px;
-  }
-}
+
 
 /* Typography Classes */
 .font-display {

@@ -275,6 +275,8 @@ class App {
   viewport!: { width: number; height: number };
   isDown = false;
   start = 0;
+  startY = 0;
+  isDirectionLocked = false;
   lastTouchX = 0;
   lastTouchTime = 0;
   touchVelocity = 0;
@@ -370,10 +372,13 @@ class App {
 
   onTouchDown(e: TouchEvent | MouseEvent) {
     this.isDown = true;
+    this.isDirectionLocked = false;
     this.scroll.position = this.scroll.current;
     const touch = "touches" in e ? (e.touches[0] || (e as TouchEvent).changedTouches?.[0]) : null;
     const clientX = touch ? touch.clientX : (e as MouseEvent).clientX;
+    const clientY = touch ? touch.clientY : (e as MouseEvent).clientY;
     this.start = clientX;
+    this.startY = clientY;
     this.lastTouchX = clientX;
     this.lastTouchTime = performance.now();
     this.touchVelocity = 0;
@@ -389,7 +394,22 @@ class App {
     if (!this.isDown) return;
     const touch = "touches" in e ? (e.touches[0] || (e as TouchEvent).changedTouches?.[0]) : null;
     const x = touch ? touch.clientX : (e as MouseEvent).clientX;
+    const y = touch ? touch.clientY : (e as MouseEvent).clientY;
     const isMobile = typeof window !== "undefined" ? window.innerWidth < 768 : false;
+
+    // On mobile touch: detect if user intends vertical page scroll vs horizontal gallery spin
+    if (touch && isMobile && !this.isDirectionLocked) {
+      const dx = Math.abs(x - this.start);
+      const dy = Math.abs(y - (this.startY || y));
+      if (dy > dx && dy > 5) {
+        // User is scrolling the page vertically — immediately release gallery lock so page scrolls freely
+        this.isDown = false;
+        return;
+      }
+      if (dx > dy && dx > 5) {
+        this.isDirectionLocked = true;
+      }
+    }
 
     // Reduced sensitivity for calm, controlled dragging on both mobile and desktop
     const dragSensitivity = isMobile ? this.scrollSpeed * 0.045 : this.scrollSpeed * 0.010;
