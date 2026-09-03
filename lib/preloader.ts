@@ -55,13 +55,13 @@ export function preloadAllSiteAssets(
   let hasCompleted = false;
 
   const imagesArr: HTMLImageElement[] = new Array(count);
+  if (isMobile) mobileFramesCache = imagesArr;
+  else desktopFramesCache = imagesArr;
 
   const notifyComplete = () => {
     if (hasCompleted) return;
     hasCompleted = true;
     isPreloadCompleted = true;
-    if (isMobile) mobileFramesCache = imagesArr;
-    else desktopFramesCache = imagesArr;
     onProgress(100);
     onComplete();
   };

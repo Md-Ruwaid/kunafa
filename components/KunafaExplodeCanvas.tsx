@@ -132,7 +132,13 @@ export default function KunafaExplodeCanvas() {
   // All scroll state lives in refs — zero React re-renders during scroll
   const progressRef = useRef(0);
   const lastDrawnFrameRef = useRef(-1);
-  const layoutRef = useRef({ width: 0, height: 0, dpr: 1, isMobile: false });
+  const layoutRef = useRef({
+    width: 0,
+    height: 0,
+    dpr: 1,
+    isMobile: typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  });
+  const lastRenderedImgRef = useRef<HTMLImageElement | null>(null);
 
   // High-performance frame draw supporting responsive portrait mobile & landscape desktop
   const drawFrame = useCallback((frameIndex: number) => {
@@ -151,21 +157,21 @@ export default function KunafaExplodeCanvas() {
     let targetImg = images[clampedIndex];
 
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
-      // Rapid fallback: find the nearest loaded frame in either direction
-      for (let dist = 1; dist < totalFrames; dist++) {
-        const prev = clampedIndex - dist;
-        const next = clampedIndex + dist;
-        if (prev >= 0 && images[prev]?.complete && images[prev]?.naturalWidth > 0) {
+      // Monotonic fallback: search backwards for the nearest loaded frame (never jump forward into future frames)
+      for (let prev = clampedIndex - 1; prev >= 0; prev--) {
+        if (images[prev]?.complete && images[prev]?.naturalWidth > 0) {
           targetImg = images[prev];
-          break;
-        }
-        if (next < totalFrames && images[next]?.complete && images[next]?.naturalWidth > 0) {
-          targetImg = images[next];
           break;
         }
       }
     }
+
+    if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) {
+      targetImg = lastRenderedImgRef.current ?? images[0];
+    }
     if (!targetImg || !targetImg.complete || targetImg.naturalWidth === 0) return;
+
+    lastRenderedImgRef.current = targetImg;
 
     ctx.save();
     ctx.scale(dpr, dpr);
@@ -322,14 +328,23 @@ export default function KunafaExplodeCanvas() {
     let cachedTotalScrollable = 1;
     let smoothProgress = 0;
 
+    let lastMeasuredWidth = typeof window !== "undefined" ? window.innerWidth : 0;
     const measureLayout = () => {
       if (containerRef.current) {
         cachedTotalScrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
       }
     };
 
+    const handleResize = () => {
+      // Prevent mobile address-bar collapse height jitter: only recalculate when viewport width changes
+      if (window.innerWidth !== lastMeasuredWidth) {
+        lastMeasuredWidth = window.innerWidth;
+        measureLayout();
+      }
+    };
+
     measureLayout();
-    window.addEventListener("resize", measureLayout, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("orientationchange", measureLayout, { passive: true });
 
     const tick = () => {
@@ -351,8 +366,8 @@ export default function KunafaExplodeCanvas() {
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
-      // Silky momentum lerp: on mobile 0.09 gives ultra-fluid gliding across all frames
-      const lerpFactor = isMobile ? 0.09 : 0.14;
+      // Snappy direct touch tracking lerp: on mobile 0.18 tracks finger motion without lag or rubber-banding
+      const lerpFactor = isMobile ? 0.18 : 0.14;
       const diff = targetProgress - smoothProgress;
       if (Math.abs(diff) > 0.00008) {
         smoothProgress += diff * lerpFactor;
@@ -451,7 +466,7 @@ export default function KunafaExplodeCanvas() {
       isRunning = false;
       if (observer) observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibility);
-      window.removeEventListener("resize", measureLayout);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("orientationchange", measureLayout);
       if (animFrame) cancelAnimationFrame(animFrame);
     };
