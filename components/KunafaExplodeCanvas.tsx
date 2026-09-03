@@ -43,17 +43,18 @@ function getFrameProgress(progress: number, isMobile: boolean): number {
     return 1.0;
   }
 
-  // Desktop responsive curve — finishes by progress = 0.58
-  if (progress <= 0.15) {
-    const t = progress / 0.15;
+  // Desktop responsive curve — finishes cleanly by progress = 0.52
+  // From 0.52 -> 1.00: Frame 100 is locked steady while AboutSection slowly and smoothly glides over it
+  if (progress <= 0.14) {
+    const t = progress / 0.14;
     return t * 0.28;
   }
-  if (progress <= 0.34) {
-    const t = (progress - 0.15) / 0.19;
+  if (progress <= 0.32) {
+    const t = (progress - 0.14) / 0.18;
     return 0.28 + t * 0.34;
   }
-  if (progress <= 0.58) {
-    const t = (progress - 0.34) / 0.24;
+  if (progress <= 0.52) {
+    const t = (progress - 0.32) / 0.20;
     return 0.62 + Math.pow(t, 0.9) * 0.38;
   }
   // Steady hold on final assembled platter while AboutSection slowly glides up
