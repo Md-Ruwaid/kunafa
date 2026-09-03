@@ -343,7 +343,7 @@ export default function KunafaExplodeCanvas() {
     let isRunning = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
     const initialWinH = typeof window !== "undefined" ? window.innerHeight : 800;
-    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 2.5 : 2.0));
+    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 1.5 : 2.0));
     let smoothProgress = 0;
 
     let lastMeasuredWidth = typeof window !== "undefined" ? window.innerWidth : 0;
@@ -354,7 +354,7 @@ export default function KunafaExplodeCanvas() {
         if (height > winH) {
           cachedTotalScrollable = height - winH;
         } else {
-          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 2.5 : 2.0));
+          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 1.5 : 2.0));
         }
       }
     };
@@ -383,7 +383,7 @@ export default function KunafaExplodeCanvas() {
       const lenisScroll = (window as unknown as { lenis?: { scroll?: number } }).lenis?.scroll;
       const currentScrollY = typeof lenisScroll === "number" ? lenisScroll : window.scrollY;
 
-      const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.5);
+      const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.2);
       const maxScroll = Math.max(minScrollBoundary, cachedTotalScrollable);
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
@@ -498,7 +498,7 @@ export default function KunafaExplodeCanvas() {
     <div
       ref={containerRef}
       id="story"
-      className="relative w-full h-[350vh] sm:h-[250vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[250vh] sm:h-[300vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
@@ -562,20 +562,20 @@ export default function KunafaExplodeCanvas() {
             }}
             style={{ opacity: 0, visibility: "hidden" }}
             className={`absolute inset-x-0 top-0 h-screen h-[100svh] flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${act.align === "center"
-                ? "items-center justify-start pt-20 sm:pt-24 text-center"
-                : act.align === "left"
-                  ? "items-start justify-center text-left"
-                  : "items-end justify-center text-right"
+              ? "items-center justify-start pt-20 sm:pt-24 text-center"
+              : act.align === "left"
+                ? "items-start justify-center text-left"
+                : "items-end justify-center text-right"
               }`}
           >
             {/* Desktop Inner Container for Parallax Slide */}
             <div
               data-desktop
               className={`max-w-xl flex flex-col will-change-transform ${act.align === "center"
-                  ? "items-center text-center"
-                  : act.align === "left"
-                    ? "items-start text-left"
-                    : "items-end text-right"
+                ? "items-center text-center"
+                : act.align === "left"
+                  ? "items-start text-left"
+                  : "items-end text-right"
                 }`}
             >
               {/* Act Heading */}
