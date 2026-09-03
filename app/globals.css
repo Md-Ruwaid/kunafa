@@ -314,6 +314,14 @@
   transform: translateY(2px);
 }
 
+/* =========================================================================
+   Performance Optimization: Content Visibility for Below-the-Fold Sections
+   ========================================================================= */
+.cv-auto-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 750px;
+}
+
 
 
 

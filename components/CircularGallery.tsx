@@ -604,7 +604,7 @@ export default function CircularGallery({
             app.pause();
           }
         },
-        { threshold: 0.02 }
+        { threshold: 0.02, rootMargin: "150px 0px" }
       );
       observer.observe(containerRef.current);
     }

@@ -77,31 +77,52 @@ export function preloadAllSiteAssets(
     }
   };
 
-  // 1. Eagerly load all high-resolution animation frames in parallel
+  // 1. Eagerly load frames with GPU off-thread decoding and critical-path prioritization
   for (let i = 1; i <= count; i++) {
     const img = new Image();
-    img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
     img.decoding = "async";
-    if (i === 1) img.fetchPriority = "high";
+    // Prioritize the first 20 frames so hero becomes interactive immediately
+    if (i <= 20) {
+      img.fetchPriority = "high";
+    }
+
+    const onImageReady = () => {
+      if (typeof img.decode === "function") {
+        img.decode().catch(() => {}).finally(checkProgress);
+      } else {
+        checkProgress();
+      }
+    };
+
+    img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
     imagesArr[i - 1] = img;
 
     if (img.complete && img.naturalWidth > 0) {
-      checkProgress();
+      onImageReady();
     } else {
-      img.onload = checkProgress;
+      img.onload = onImageReady;
       img.onerror = checkProgress;
     }
   }
 
-  // 2. Preload 3D Gallery Platter textures
+  // 2. Preload 3D Gallery Platter textures with async decoding
   platters.forEach((src) => {
     const img = new Image();
-    img.src = src;
     img.decoding = "async";
+
+    const onImageReady = () => {
+      if (typeof img.decode === "function") {
+        img.decode().catch(() => {}).finally(checkProgress);
+      } else {
+        checkProgress();
+      }
+    };
+
+    img.src = src;
     if (img.complete && img.naturalWidth > 0) {
-      checkProgress();
+      onImageReady();
     } else {
-      img.onload = checkProgress;
+      img.onload = onImageReady;
       img.onerror = checkProgress;
     }
   });
@@ -111,5 +132,5 @@ export function preloadAllSiteAssets(
     if (!hasCompleted) {
       notifyComplete();
     }
-  }, 6000);
+  }, 5000);
 }

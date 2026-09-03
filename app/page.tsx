@@ -36,10 +36,14 @@ export default function HomePage() {
       <AboutSection />
 
       {/* 3. The Artisanal Platters Menu */}
-      <MenuPreview />
+      <div className="cv-auto-section">
+        <MenuPreview />
+      </div>
 
       {/* 4. The Captain's Chart — Hyderabad Branches */}
-      <CaptainsChart />
+      <div className="cv-auto-section">
+        <CaptainsChart />
+      </div>
     </main>
   );
 }

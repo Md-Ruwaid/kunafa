@@ -269,8 +269,8 @@ export default function KunafaExplodeCanvas() {
     const updateLayout = () => {
       const isMobile = window.innerWidth < 768 || canvas.clientWidth < 768;
       const rawDpr = window.devicePixelRatio || 1;
-      // Full Retina / OLED sub-pixel fidelity (supports up to 3x DPR without blurriness)
-      const dpr = Math.min(rawDpr, 3);
+      // Cap DPR at 2 for mobile GPU battery/memory efficiency (50% less fill-rate with full visual clarity)
+      const dpr = Math.min(rawDpr, 2);
 
       const width = canvas.clientWidth || (typeof window !== "undefined" ? window.innerWidth : 800);
       const height = canvas.clientHeight || (typeof window !== "undefined" ? window.innerHeight : 600);
@@ -288,8 +288,8 @@ export default function KunafaExplodeCanvas() {
       if (isMobile) preloadFrameSet("mobile");
       else preloadFrameSet("desktop");
 
-      // Re-acquire context after resize
-      const ctx = canvas.getContext("2d", { alpha: false });
+      // Re-acquire context after resize with desynchronized low latency
+      const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
       if (ctx) ctxRef.current = ctx;
 
       // Redraw current frame
@@ -433,11 +433,24 @@ export default function KunafaExplodeCanvas() {
       observer.observe(containerRef.current);
     }
 
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (animFrame) {
+          cancelAnimationFrame(animFrame);
+          animFrame = 0;
+        }
+      } else if (isInViewRef.current) {
+        startLoop();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
     startLoop();
 
     return () => {
       isRunning = false;
       if (observer) observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
       window.removeEventListener("resize", measureLayout);
       window.removeEventListener("orientationchange", measureLayout);
       if (animFrame) cancelAnimationFrame(animFrame);
