@@ -40,18 +40,18 @@ function getFrameProgress(progress: number, isMobile: boolean): number {
     return 1.0;
   }
 
-  // Desktop responsive front-loaded curve with smooth tail buffer
+  // Desktop responsive front-loaded curve with generous 28% tail buffer
   if (progress <= 0.18) {
     const t = progress / 0.18;
-    return t * 0.32;
+    return t * 0.28;
   }
   if (progress <= 0.42) {
     const t = (progress - 0.18) / 0.24;
-    return 0.32 + t * 0.26;
+    return 0.28 + t * 0.32;
   }
-  if (progress <= 0.74) {
-    const t = (progress - 0.42) / 0.32;
-    return 0.58 + Math.pow(t, 0.9) * 0.42;
+  if (progress <= 0.72) {
+    const t = (progress - 0.42) / 0.30;
+    return 0.60 + Math.pow(t, 0.9) * 0.40;
   }
   return 1.0;
 }
@@ -335,7 +335,7 @@ export default function KunafaExplodeCanvas() {
     let isRunning = true;
     const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
     const initialWinH = typeof window !== "undefined" ? window.innerHeight : 800;
-    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 1.8 : 2.0));
+    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 1.8 : 2.2));
     let smoothProgress = 0;
 
     let lastMeasuredWidth = typeof window !== "undefined" ? window.innerWidth : 0;
@@ -346,7 +346,7 @@ export default function KunafaExplodeCanvas() {
         if (height > winH) {
           cachedTotalScrollable = height - winH;
         } else {
-          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 1.8 : 2.0));
+          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 1.8 : 2.2));
         }
       }
     };
@@ -380,8 +380,8 @@ export default function KunafaExplodeCanvas() {
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
-      // Silky-smooth frame interpolation with fluid touch momentum
-      const lerpFactor = isMobile ? 0.14 : 0.12;
+      // Silky-smooth frame interpolation with fluid touch & wheel momentum
+      const lerpFactor = isMobile ? 0.14 : 0.10;
       const diff = targetProgress - smoothProgress;
       if (Math.abs(diff) > 0.00005) {
         smoothProgress += diff * lerpFactor;
@@ -490,7 +490,7 @@ export default function KunafaExplodeCanvas() {
     <div
       ref={containerRef}
       id="story"
-      className="relative w-full h-[280vh] sm:h-[300vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[280vh] sm:h-[320vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
