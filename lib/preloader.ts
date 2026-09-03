@@ -5,7 +5,7 @@
  */
 
 const DESKTOP_FRAMES = 100;
-const MOBILE_FRAMES = 97;
+const MOBILE_FRAMES = 120;
 
 function pad(n: number): string {
   return String(n).padStart(3, "0");

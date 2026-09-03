@@ -9,7 +9,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 97;
+const MOBILE_FRAMES = 120;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -17,29 +17,29 @@ function pad(n: number): string {
   return String(n).padStart(3, "0");
 }
 
-// Mobile & Desktop inverted sensitivity frame distribution curve:
-// Stage 1 (0.00 -> 0.15 scroll): Fast, high-sensitivity opening (0.00 -> 0.30 frames)
-// Stage 2 (0.15 -> 0.38 scroll): Gentle separation & golden crisp lift (0.30 -> 0.55 frames)
-// Stage 3 (0.38 -> 0.60 scroll): Energetic molten cheese heart explosion (0.55 -> 0.85 frames)
-// Stage 4 (0.60 -> 0.94 scroll): Slower, deliberate reassembly (0.85 -> 1.00 frames)
+// Mobile & Desktop sensitivity frame distribution curve:
+// Mobile Stage 1 (0.00 -> 0.22 scroll): Gentle 1:1 opening lift (0.00 -> 0.22 frames, frames 0 to 26)
+// Mobile Stage 2 (0.22 -> 0.46 scroll): Crust separation & molten cheese stretch (0.22 -> 0.54 frames, frames 26 to 65)
+// Mobile Stage 3 (0.46 -> 0.72 scroll): Molten cheese heart explosion (0.54 -> 0.84 frames, frames 65 to 101)
+// Mobile Stage 4 (0.72 -> 0.94 scroll): Peak explosion suspension (0.84 -> 1.00 frames, frames 101 to 120)
 // Tail Buffer (0.94 -> 1.00 scroll): Frame held at 1.0 so AboutSection eases up smoothly without snapping
 function getFrameProgress(progress: number, isMobile: boolean): number {
   if (isMobile) {
-    if (progress <= 0.15) {
-      const t = progress / 0.15;
-      return t * 0.30;
+    if (progress <= 0.22) {
+      const t = progress / 0.22;
+      return t * 0.22;
     }
-    if (progress <= 0.38) {
-      const t = (progress - 0.15) / 0.23;
-      return 0.30 + t * 0.25;
+    if (progress <= 0.46) {
+      const t = (progress - 0.22) / 0.24;
+      return 0.22 + t * 0.32;
     }
-    if (progress <= 0.60) {
-      const t = (progress - 0.38) / 0.22;
-      return 0.55 + t * 0.30;
+    if (progress <= 0.72) {
+      const t = (progress - 0.46) / 0.26;
+      return 0.54 + t * 0.30;
     }
     if (progress <= 0.94) {
-      const t = (progress - 0.60) / 0.34;
-      return 0.85 + Math.pow(t, 0.85) * 0.15;
+      const t = (progress - 0.72) / 0.22;
+      return 0.84 + Math.pow(t, 0.9) * 0.16;
     }
     return 1.0;
   }
