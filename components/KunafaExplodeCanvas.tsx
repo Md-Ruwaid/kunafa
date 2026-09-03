@@ -498,7 +498,7 @@ export default function KunafaExplodeCanvas() {
     <div
       ref={containerRef}
       id="story"
-      className="relative w-full h-[350vh] sm:h-[300vh] bg-[#030303] will-change-transform"
+      className="relative w-full h-[350vh] sm:h-[250vh] bg-[#030303] will-change-transform"
     >
       {/* Sticky viewport with dvh dynamic mobile browser bar handling */}
       <div className="sticky top-0 h-[100dvh] h-screen w-full overflow-hidden bg-[#030303]">
@@ -561,24 +561,22 @@ export default function KunafaExplodeCanvas() {
               overlayRefs.current[i] = el;
             }}
             style={{ opacity: 0, visibility: "hidden" }}
-            className={`absolute inset-x-0 top-0 h-screen h-[100svh] flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
-              act.align === "center"
+            className={`absolute inset-x-0 top-0 h-screen h-[100svh] flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${act.align === "center"
                 ? "items-center justify-start pt-20 sm:pt-24 text-center"
                 : act.align === "left"
-                ? "items-start justify-center text-left"
-                : "items-end justify-center text-right"
-            }`}
+                  ? "items-start justify-center text-left"
+                  : "items-end justify-center text-right"
+              }`}
           >
             {/* Desktop Inner Container for Parallax Slide */}
             <div
               data-desktop
-              className={`max-w-xl flex flex-col will-change-transform ${
-                act.align === "center"
+              className={`max-w-xl flex flex-col will-change-transform ${act.align === "center"
                   ? "items-center text-center"
                   : act.align === "left"
-                  ? "items-start text-left"
-                  : "items-end text-right"
-              }`}
+                    ? "items-start text-left"
+                    : "items-end text-right"
+                }`}
             >
               {/* Act Heading */}
               <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
