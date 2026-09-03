@@ -74,7 +74,6 @@ const ACTS = [
         Hyderabad&apos;s Most <SwashAccent color="gold">Talked-About</SwashAccent> Kunafa
       </>
     ),
-    body: "Hand-pressed on live copper hearths. 100% clarified ghee, molten mountain Akawi curd, drenched in Damascus rose attar. Fresh every single order.",
   },
   {
     range: [0.28, 0.52] as [number, number],
@@ -84,7 +83,6 @@ const ACTS = [
         Deconstructed <SwashAccent color="gold">Golden Crisp</SwashAccent> &amp; Heat
       </>
     ),
-    body: "Individual spun strands of clarified-butter pastry lift away under acoustic heat. Copper-pan roasted at precisely 205°C for the signature snap.",
   },
 ];
 
@@ -563,7 +561,7 @@ export default function KunafaExplodeCanvas() {
               overlayRefs.current[i] = el;
             }}
             style={{ opacity: 0, visibility: "hidden" }}
-            className={`absolute inset-x-0 top-0 h-[100dvh] h-screen flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
+            className={`absolute inset-x-0 top-0 h-screen h-[100svh] flex flex-col pointer-events-none z-20 px-6 sm:px-12 md:px-16 ${
               act.align === "center"
                 ? "items-center justify-start pt-20 sm:pt-24 text-center"
                 : act.align === "left"
@@ -586,13 +584,6 @@ export default function KunafaExplodeCanvas() {
               <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                 {act.headline}
               </h2>
-
-              {/* Act Body Narrative */}
-              {act.body && (
-                <p className="mt-3 sm:mt-4 font-sans text-xs sm:text-base text-white/85 leading-relaxed font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] max-w-lg">
-                  {act.body}
-                </p>
-              )}
             </div>
           </div>
         ))}
