@@ -88,7 +88,7 @@ function CaptainsMap({
   const activeBranch = branches[activeBranchIndex];
 
   return (
-    <div className="w-full h-full relative select-none">
+    <div className="w-full h-full relative select-none" data-lenis-prevent>
       <MapContainer
         center={HYD_CENTER}
         zoom={12}

@@ -382,15 +382,16 @@ export default function KunafaExplodeCanvas() {
         return;
       }
 
-      const currentScrollY = window.scrollY;
+      const lenisScroll = (window as unknown as { lenis?: { scroll?: number } }).lenis?.scroll;
+      const currentScrollY = typeof lenisScroll === "number" ? lenisScroll : window.scrollY;
 
       const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.5);
       const maxScroll = Math.max(minScrollBoundary, cachedTotalScrollable);
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 
-      // Snappy direct touch tracking lerp: on mobile 0.18 tracks finger motion without lag or rubber-banding
-      const lerpFactor = isMobile ? 0.18 : 0.14;
+      // Follow Lenis smooth inertial scroll with responsive lockstep tracking
+      const lerpFactor = isMobile ? 0.22 : 0.18;
       const diff = targetProgress - smoothProgress;
       if (Math.abs(diff) > 0.00008) {
         smoothProgress += diff * lerpFactor;
