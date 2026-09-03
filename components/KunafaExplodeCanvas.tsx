@@ -9,7 +9,7 @@ const DESKTOP_FRAMES = 100;
 const DESKTOP_WIDTH = 1280;
 const DESKTOP_HEIGHT = 720;
 
-const MOBILE_FRAMES = 120;
+const MOBILE_FRAMES = 97;
 const MOBILE_WIDTH = 720;
 const MOBILE_HEIGHT = 1280;
 
@@ -18,27 +18,27 @@ function pad(n: number): string {
 }
 
 // Mobile & Desktop sensitivity frame distribution curve:
-// Mobile Stage 1 (0.00 -> 0.22 scroll): Gentle 1:1 opening lift (0.00 -> 0.22 frames, frames 0 to 26)
-// Mobile Stage 2 (0.22 -> 0.46 scroll): Crust separation & molten cheese stretch (0.22 -> 0.54 frames, frames 26 to 65)
-// Mobile Stage 3 (0.46 -> 0.72 scroll): Molten cheese heart explosion (0.54 -> 0.84 frames, frames 65 to 101)
-// Mobile Stage 4 (0.72 -> 0.94 scroll): Peak explosion suspension (0.84 -> 1.00 frames, frames 101 to 120)
+// Mobile Stage 1 (0.00 -> 0.18 scroll): Gentle opening lift (0.00 -> 0.22 frames, frames 0 to 21)
+// Mobile Stage 2 (0.18 -> 0.42 scroll): Crust separation & molten cheese stretch (0.22 -> 0.54 frames, frames 21 to 52)
+// Mobile Stage 3 (0.42 -> 0.68 scroll): Molten cheese heart explosion (0.54 -> 0.84 frames, frames 52 to 81)
+// Mobile Stage 4 (0.68 -> 0.94 scroll): Peak explosion suspension (0.84 -> 1.00 frames, frames 81 to 97)
 // Tail Buffer (0.94 -> 1.00 scroll): Frame held at 1.0 so AboutSection eases up smoothly without snapping
 function getFrameProgress(progress: number, isMobile: boolean): number {
   if (isMobile) {
-    if (progress <= 0.22) {
-      const t = progress / 0.22;
+    if (progress <= 0.18) {
+      const t = progress / 0.18;
       return t * 0.22;
     }
-    if (progress <= 0.46) {
-      const t = (progress - 0.22) / 0.24;
+    if (progress <= 0.42) {
+      const t = (progress - 0.18) / 0.24;
       return 0.22 + t * 0.32;
     }
-    if (progress <= 0.72) {
-      const t = (progress - 0.46) / 0.26;
+    if (progress <= 0.68) {
+      const t = (progress - 0.42) / 0.26;
       return 0.54 + t * 0.30;
     }
     if (progress <= 0.94) {
-      const t = (progress - 0.72) / 0.22;
+      const t = (progress - 0.68) / 0.26;
       return 0.84 + Math.pow(t, 0.9) * 0.16;
     }
     return 1.0;
