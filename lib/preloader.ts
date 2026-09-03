@@ -77,60 +77,37 @@ export function preloadAllSiteAssets(
     }
   };
 
-  // 1. Eagerly load frames with GPU off-thread decoding and critical-path prioritization
+  // 1. Eagerly load all animation frames in parallel
   for (let i = 1; i <= count; i++) {
     const img = new Image();
-    img.decoding = "async";
-    // Prioritize the first 20 frames so hero becomes interactive immediately
-    if (i <= 20) {
-      img.fetchPriority = "high";
-    }
-
-    const onImageReady = () => {
-      if (typeof img.decode === "function") {
-        img.decode().catch(() => {}).finally(checkProgress);
-      } else {
-        checkProgress();
-      }
-    };
-
+    if (i === 1) img.fetchPriority = "high";
     img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
     imagesArr[i - 1] = img;
 
     if (img.complete && img.naturalWidth > 0) {
-      onImageReady();
+      checkProgress();
     } else {
-      img.onload = onImageReady;
+      img.onload = checkProgress;
       img.onerror = checkProgress;
     }
   }
 
-  // 2. Preload 3D Gallery Platter textures with async decoding
+  // 2. Preload 3D Gallery Platter textures
   platters.forEach((src) => {
     const img = new Image();
-    img.decoding = "async";
-
-    const onImageReady = () => {
-      if (typeof img.decode === "function") {
-        img.decode().catch(() => {}).finally(checkProgress);
-      } else {
-        checkProgress();
-      }
-    };
-
     img.src = src;
     if (img.complete && img.naturalWidth > 0) {
-      onImageReady();
+      checkProgress();
     } else {
-      img.onload = onImageReady;
+      img.onload = checkProgress;
       img.onerror = checkProgress;
     }
   });
 
-  // 3. Fallback safety timer: in case a frame request is slow or dropped on cellular data
+  // 3. Fallback safety timer: in case of extreme network drop on cellular data
   setTimeout(() => {
     if (!hasCompleted) {
       notifyComplete();
     }
-  }, 5000);
+  }, 25000);
 }

@@ -283,7 +283,10 @@ export default function KunafaExplodeCanvas() {
       const targetW = Math.round(width * dpr);
       const targetH = Math.round(height * dpr);
 
-      if (canvas.width !== targetW || canvas.height !== targetH) {
+      const widthChanged = Math.abs(canvas.width - targetW) > 4;
+      const heightChangedSignificantly = Math.abs(canvas.height - targetH) > 120;
+
+      if (canvas.width === 0 || widthChanged || heightChangedSignificantly) {
         canvas.width = targetW;
         canvas.height = targetH;
       }
@@ -309,10 +312,25 @@ export default function KunafaExplodeCanvas() {
     if (ctx) ctxRef.current = ctx;
     updateLayout();
 
-    const ro = new ResizeObserver(() => updateLayout());
-    ro.observe(canvas);
+    let lastWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+    let lastHeight = typeof window !== "undefined" ? window.innerHeight : 0;
+    const onWindowResize = () => {
+      const wDiff = Math.abs(window.innerWidth - lastWidth);
+      const hDiff = Math.abs(window.innerHeight - lastHeight);
+      // Only recalculate on real layout changes, ignoring mobile browser bar scroll oscillations
+      if (wDiff > 4 || hDiff > 120) {
+        lastWidth = window.innerWidth;
+        lastHeight = window.innerHeight;
+        updateLayout();
+      }
+    };
+    window.addEventListener("resize", onWindowResize, { passive: true });
+    window.addEventListener("orientationchange", updateLayout, { passive: true });
 
-    return () => ro.disconnect();
+    return () => {
+      window.removeEventListener("resize", onWindowResize);
+      window.removeEventListener("orientationchange", updateLayout);
+    };
   }, [drawFrame, preloadFrameSet]);
 
   // Initial preload of active viewport frame sequence
