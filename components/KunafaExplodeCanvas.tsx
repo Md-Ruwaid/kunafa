@@ -343,13 +343,21 @@ export default function KunafaExplodeCanvas() {
   useEffect(() => {
     let animFrame = 0;
     let isRunning = true;
-    let cachedTotalScrollable = 1;
+    const isMobileInitial = typeof window !== "undefined" ? window.innerWidth < 768 : false;
+    const initialWinH = typeof window !== "undefined" ? window.innerHeight : 800;
+    let cachedTotalScrollable = Math.round(initialWinH * (isMobileInitial ? 2.5 : 2.0));
     let smoothProgress = 0;
 
     let lastMeasuredWidth = typeof window !== "undefined" ? window.innerWidth : 0;
     const measureLayout = () => {
       if (containerRef.current) {
-        cachedTotalScrollable = Math.max(1, containerRef.current.offsetHeight - window.innerHeight);
+        const height = containerRef.current.offsetHeight;
+        const winH = window.innerHeight || 800;
+        if (height > winH) {
+          cachedTotalScrollable = height - winH;
+        } else {
+          cachedTotalScrollable = Math.round(winH * (layoutRef.current.isMobile ? 2.5 : 2.0));
+        }
       }
     };
 
@@ -376,11 +384,8 @@ export default function KunafaExplodeCanvas() {
 
       const currentScrollY = window.scrollY;
 
-      if (cachedTotalScrollable <= 1) {
-        measureLayout();
-      }
-
-      const maxScroll = Math.max(1, cachedTotalScrollable);
+      const minScrollBoundary = Math.round((window.innerHeight || 800) * 1.5);
+      const maxScroll = Math.max(minScrollBoundary, cachedTotalScrollable);
       const targetProgress = Math.max(0, Math.min(1, currentScrollY / maxScroll));
       const isMobile = layoutRef.current.isMobile;
 

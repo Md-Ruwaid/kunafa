@@ -58,6 +58,17 @@ export function preloadAllSiteAssets(
   if (isMobile) mobileFramesCache = imagesArr;
   else desktopFramesCache = imagesArr;
 
+  // Verify that all animation frames are actually in memory with valid dimensions
+  const areAllFramesVerified = () => {
+    for (let i = 0; i < count; i++) {
+      const img = imagesArr[i];
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const notifyComplete = () => {
     if (hasCompleted) return;
     hasCompleted = true;
@@ -69,27 +80,43 @@ export function preloadAllSiteAssets(
   const checkProgress = () => {
     if (hasCompleted) return;
     loadedAssets++;
-    const pct = Math.min(100, Math.round((loadedAssets / totalAssets) * 100));
+    const pct = Math.min(99, Math.round((loadedAssets / totalAssets) * 100));
     onProgress(pct);
 
-    if (loadedAssets >= totalAssets) {
+    if (loadedAssets >= totalAssets && areAllFramesVerified()) {
       notifyComplete();
     }
   };
 
-  // 1. Eagerly load all animation frames in parallel
-  for (let i = 1; i <= count; i++) {
+  // 1. Eagerly load all animation frames with auto-retry
+  const loadFrameWithRetry = (i: number, retries = 3) => {
     const img = new Image();
     if (i === 1) img.fetchPriority = "high";
     img.src = `${folder}/ezgif-frame-${pad(i)}.${ext}`;
     imagesArr[i - 1] = img;
 
-    if (img.complete && img.naturalWidth > 0) {
+    const onSuccess = () => {
       checkProgress();
+    };
+
+    const onError = () => {
+      if (retries > 0) {
+        setTimeout(() => loadFrameWithRetry(i, retries - 1), 300);
+      } else {
+        checkProgress();
+      }
+    };
+
+    if (img.complete && img.naturalWidth > 0) {
+      onSuccess();
     } else {
-      img.onload = checkProgress;
-      img.onerror = checkProgress;
+      img.onload = onSuccess;
+      img.onerror = onError;
     }
+  };
+
+  for (let i = 1; i <= count; i++) {
+    loadFrameWithRetry(i);
   }
 
   // 2. Preload 3D Gallery Platter textures
@@ -104,10 +131,10 @@ export function preloadAllSiteAssets(
     }
   });
 
-  // 3. Fallback safety timer: in case of extreme network drop on cellular data
+  // 3. Fallback safety timer: in case of extreme cellular network drop, verify and complete
   setTimeout(() => {
     if (!hasCompleted) {
       notifyComplete();
     }
-  }, 25000);
+  }, 30000);
 }
